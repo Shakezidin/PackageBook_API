@@ -29,6 +29,8 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 
 	admin := apiVersion.Group("/coordinator")
 	{
+		admin.POST("/signup", CoordinatorHandler.CoordinatorSignup)
+		admin.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		admin.POST("/login", CoordinatorHandler.CoordinatorLogin)
 	}
 }
@@ -37,6 +39,10 @@ func (c *Coordinator) CoordinatorLogin(ctx *gin.Context) {
 	handler.CoordinatorLoginHandler(ctx, c.client, "coordinator")
 }
 
-func (c *Coordinator)CoordinatorSignup(ctx *gin.Context){
-	handler.CoordinatorSignupHandler(ctx,c.client)
+func (c *Coordinator) CoordinatorSignup(ctx *gin.Context) {
+	handler.CoordinatorSignupHandler(ctx, c.client)
+}
+
+func (c *Coordinator) CoordinatorSignupVerify(ctx *gin.Context) {
+	handler.VerifySignup(ctx, c.client)
 }

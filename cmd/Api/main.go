@@ -5,6 +5,7 @@ import (
 
 	"github.com/Shakezidin/pkg/admin"
 	cnfg "github.com/Shakezidin/pkg/config"
+	"github.com/Shakezidin/pkg/coordinator"
 	"github.com/Shakezidin/pkg/server"
 )
 
@@ -16,6 +17,6 @@ func main() {
 
 	server := server.Server()
 	admin.NewAdminRoutes(server.R, *config)
-	// coordinator.NewCoordinatorRoute(server.R, *config)
+	coordinator.NewCoordinatorRoute(server.R, *config)
 	server.StartServer(config.APIPORT)
 }

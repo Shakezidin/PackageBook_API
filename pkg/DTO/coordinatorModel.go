@@ -1,6 +1,7 @@
 package dto
 
 type Addpackage struct {
+	Name string `json:"name"`
 	StartLocation    string `json:"startlocation"`
 	EndLocation      string `json:"endlocation"`
 	StartDateTime    string `json:"startdatetime"`

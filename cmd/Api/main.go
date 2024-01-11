@@ -16,5 +16,6 @@ func main() {
 
 	server := server.Server()
 	admin.NewAdminRoutes(server.R, *config)
+	// coordinator.NewCoordinatorRoute(server.R, *config)
 	server.StartServer(config.APIPORT)
 }

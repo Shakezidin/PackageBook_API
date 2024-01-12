@@ -21,7 +21,8 @@ type JwtClaims struct {
 	cfg *config.Configure
 }
 
-func ValidateToken(ctx *gin.Context, cfg config.Configure, role string) (string, error) {
+var jwtKey = []byte("SECRETKEY")
+func ValidateToken(ctx *gin.Context, role string) (string, error) {
 	headerToken := ctx.GetHeader("Authorization")
 	if headerToken == "" {
 		log.Print("bearer token missing")
@@ -30,9 +31,9 @@ func ValidateToken(ctx *gin.Context, cfg config.Configure, role string) (string,
 
 	claims := &Claims{}
 	token := string([]byte(headerToken)[7:])
-	fmt.Println(cfg.SECRETKEY)
+	fmt.Println(jwtKey)
 	parserToken, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
-		return []byte(cfg.SECRETKEY), nil
+		return []byte(jwtKey), nil
 	})
 
 	if err != nil {

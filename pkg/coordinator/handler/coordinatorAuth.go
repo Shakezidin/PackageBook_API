@@ -27,7 +27,7 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
-			"msg":"error",
+			"msg":    "error",
 		})
 		return
 	}
@@ -51,7 +51,6 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	fmt.Println(coordinator.Phone)
 	response, err := client.CoordinatorSignupRequest(cont, &cpb.Signup{
 		Name:     coordinator.Name,
 		Email:    coordinator.Email,

@@ -150,7 +150,7 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v logged in succesfully", login.Email),
+		"message": fmt.Sprintf("%v logged  in succesfully", login.Email),
 		"data":    response,
 	})
 }

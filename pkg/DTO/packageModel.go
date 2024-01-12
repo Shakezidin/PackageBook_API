@@ -46,13 +46,15 @@ type AddDestination struct {
 }
 
 type AddActivities struct {
-	ActivityName   string `json:"activityname" validate:"required"`
-	Description    string `json:"description" validate:"required"`
-	Price          int    `json:"price" validate:"required"`
-	Duration       string `json:"duration" validate:"required"`
-	Location       string `json:"location" validate:"required"`
-	DefficultLevel string `json:"difficultylevel" validate:"required"`
-	Image          string `json:"image" validate:"required"`
+	ActivityName string `json:"activityname" validate:"required"`
+	Description  string `json:"description" validate:"required"`
+	Price        int    `json:"price" validate:"required"`
+	Duration     string `json:"duration" validate:"required"`
+	Location     string `json:"location" validate:"required"`
+	ActivityType string `json:"activitytype" validate:"required"`
+	Image        string `json:"image" validate:"required"`
+	Date         string `json:"date" validate:"required"`
+	Time         string `json:"time" validate:"required"`
 }
 
 type AddPromotion struct {

@@ -2,7 +2,9 @@ package coordinator
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/Shakezidin/middleware"
 	"github.com/Shakezidin/pkg/config"
 	"github.com/Shakezidin/pkg/coordinator/handler"
 	pb "github.com/Shakezidin/pkg/coordinator/pb"
@@ -34,7 +36,21 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAddDestination)
+		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAddActivity)
 	}
+}
+
+func (a *Coordinator) CoordinatorAuthenticate(ctx *gin.Context) {
+	email, err := middleware.ValidateToken(ctx, "coordinator")
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error":  err.Error(),
+			"status": http.StatusUnauthorized,
+		})
+		return
+	}
+	ctx.Set("registered_email", email)
+	ctx.Next()
 }
 
 func (c *Coordinator) CoordinatorLogin(ctx *gin.Context) {
@@ -55,4 +71,8 @@ func (c *Coordinator) CoordinatorAddPackage(ctx *gin.Context) {
 
 func (c *Coordinator) CoordinatorAddDestination(ctx *gin.Context) {
 	handler.AddDestination(ctx, c.client)
+}
+
+func (c *Coordinator) CoordinatorAddActivity(ctx *gin.Context) {
+	handler.AddActivity(ctx, c.client)
 }

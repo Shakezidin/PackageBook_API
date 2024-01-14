@@ -64,7 +64,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		}
 		return
 	}
-	
+
 	id, _ := strconv.Atoi(Id)
 
 	var ctxt = context.Background()
@@ -102,7 +102,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 }
 
-func ViewPackage(ctx *gin.Context,client cpb.CoordinatorClient){
+func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
@@ -270,7 +270,7 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 }
 
-func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient){
+func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
@@ -285,7 +285,7 @@ func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient){
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorViewDestination(ctxt, &cpb.CoodinatorViewDestination{
-		Destination: int64(packageId),
+		DestinationId: int64(packageId),
 	})
 
 	if err != nil {
@@ -300,6 +300,41 @@ func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient){
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("destination fetched succesfully"),
+		"data":    response,
+	})
+}
+
+func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
+	packageIdStr := ctx.GetHeader("id")
+	packageId, err := strconv.Atoi(packageIdStr)
+
+	if err != nil {
+		fmt.Println("destination missing")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	var ctxt = context.Background()
+	response, err := client.CoordinatorViewActivity(ctxt, &cpb.ViewActivity{
+		ActivityId: int64(packageId),
+	})
+
+	if err != nil {
+		log.Printf("activity fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("activity fetched succesfully"),
 		"data":    response,
 	})
 }

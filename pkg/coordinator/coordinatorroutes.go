@@ -39,6 +39,7 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAddDestination)
 		coordinator.GET("/destination/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewDestination)
 		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAddActivity)
+		coordinator.GET("/activity/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewActivity)
 	}
 }
 
@@ -85,4 +86,8 @@ func (c *Coordinator)ViewPackage(ctx *gin.Context){
 
 func (c *Coordinator)ViewDestination(ctx *gin.Context){
 	handler.ViewDestination(ctx,c.client)
+}
+
+func (c *Coordinator)ViewActivity(ctx *gin.Context){
+	handler.ViewActivity(ctx,c.client)
 }

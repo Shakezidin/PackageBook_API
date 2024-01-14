@@ -34,14 +34,16 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/signup", CoordinatorHandler.CoordinatorSignup)
 		coordinator.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
-		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAddPackage)
+		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
+		coordinator.GET("/package/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewPackage)
 		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAddDestination)
+		coordinator.GET("/destination/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewDestination)
 		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAddActivity)
 	}
 }
 
 func (a *Coordinator) CoordinatorAuthenticate(ctx *gin.Context) {
-	email, err := middleware.ValidateToken(ctx, "coordinator")
+	email, _, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error":  err.Error(),
@@ -75,4 +77,12 @@ func (c *Coordinator) CoordinatorAddDestination(ctx *gin.Context) {
 
 func (c *Coordinator) CoordinatorAddActivity(ctx *gin.Context) {
 	handler.AddActivity(ctx, c.client)
+}
+
+func (c *Coordinator)ViewPackage(ctx *gin.Context){
+	handler.ViewPackage(ctx,c.client)
+}
+
+func (c *Coordinator)ViewDestination(ctx *gin.Context){
+	handler.ViewDestination(ctx,c.client)
 }

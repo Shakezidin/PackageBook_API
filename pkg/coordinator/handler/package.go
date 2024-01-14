@@ -29,7 +29,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	email, err := middleware.ValidateToken(ctx, "coordinator")
+	email, Id, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
 		log.Printf("token validation error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -64,9 +64,12 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		}
 		return
 	}
+	
+	id, _ := strconv.Atoi(Id)
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorAddPackage(ctxt, &cpb.AddPackage{
+		CoorinatorId:     int64(id),
 		Packagename:      pkg.Name,
 		Coorinatoremail:  email,
 		Startdate:        pkg.StartDateTime,
@@ -94,6 +97,41 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("%v package created succesfully", pkg.Name),
+		"data":    response,
+	})
+
+}
+
+func ViewPackage(ctx *gin.Context,client cpb.CoordinatorClient){
+	packageIdStr := ctx.GetHeader("id")
+	packageId, err := strconv.Atoi(packageIdStr)
+	if err != nil {
+		fmt.Println("packageId missing")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	var ctxt = context.Background()
+	response, err := client.CoordinatorViewPackage(ctxt, &cpb.CoodinatorViewPackage{
+		PackageId: int64(packageId),
+	})
+
+	if err != nil {
+		log.Printf("package fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
 
@@ -230,4 +268,38 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 		"data":    response,
 	})
 
+}
+
+func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient){
+	packageIdStr := ctx.GetHeader("id")
+	packageId, err := strconv.Atoi(packageIdStr)
+	if err != nil {
+		fmt.Println("destination missing")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	var ctxt = context.Background()
+	response, err := client.CoordinatorViewDestination(ctxt, &cpb.CoodinatorViewDestination{
+		Destination: int64(packageId),
+	})
+
+	if err != nil {
+		log.Printf("destination fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("destination fetched succesfully"),
+		"data":    response,
+	})
 }

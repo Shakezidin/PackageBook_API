@@ -13,6 +13,7 @@ type Configure struct {
 	SECRETKEY          string `mapstructure:"SECRETKEY"`
 	REDISHOST          string `mapstructure:"REDISHOST"`
 	GRPCCORDINATORPORT string `mapstructure:"GRPCCORDINATORPORT"`
+	GRPCUSERPORT       string `mapstructure:"GRPCUSERPORT"`
 }
 
 func LoadConfigure() (*Configure, error) {

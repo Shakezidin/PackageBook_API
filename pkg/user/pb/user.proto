@@ -1,0 +1,58 @@
+syntax ="proto3";
+
+package pb;
+
+option go_package = ".";
+
+service User {
+    rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
+    rpc UserSignupRequest(Signup) returns(SignupResponce);
+    rpc UserSignupVerifyRequest(Verify)returns(VerifyResponce);
+}
+
+message UserLogin{
+    string email = 1;
+    string password = 2;
+    string role = 3;
+}
+
+message usrPackage{
+    string name = 1;
+    string startlocation = 2;
+    string endlocation = 3;
+    string startdatetime = 4;
+    string enddatetime = 5;
+    int32  price = 6;
+    string image = 7;
+    int32  destinationCount = 8;
+    string destination = 9;
+    int64 packageId = 10;
+}
+
+message UserLoginResponce{
+    repeated usrPackage Packages = 1;
+    string            token = 2;
+}
+
+message Signup{
+    string name =1;
+    string email = 2;
+    string phone = 3;
+    string password = 4;
+    string role = 5;
+}
+
+message SignupResponce{
+    string status = 1;
+    string message = 2;
+}
+
+message Verify{
+    int32 OTP =1;
+    string email = 2;
+}
+
+message VerifyResponce{
+    string status = 1;
+    string message = 2;
+}

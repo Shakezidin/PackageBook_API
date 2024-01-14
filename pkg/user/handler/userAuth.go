@@ -8,7 +8,7 @@ import (
 	"time"
 
 	dto "github.com/Shakezidin/pkg/DTO"
-	cpb "github.com/Shakezidin/pkg/coordinator/pb"
+	pb "github.com/Shakezidin/pkg/user/pb"
 	utility "github.com/Shakezidin/utility"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -16,7 +16,7 @@ import (
 
 // var validate = validator.New()
 
-func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
+func UserSignupHandler(ctx *gin.Context, client pb.UserClient, role string) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -51,11 +51,12 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorSignupRequest(cont, &cpb.CoordinatorSignup{
+	response, err := client.UserSignupRequest(cont, &pb.Signup{
 		Name:     coordinator.Name,
 		Email:    coordinator.Email,
 		Phone:    coordinator.Phone,
 		Password: coordinator.Password,
+		Role:     role,
 	})
 
 	if err != nil {
@@ -73,7 +74,7 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 }
 
-func VerifySignup(ctx *gin.Context, client cpb.CoordinatorClient) {
+func VerifySignup(ctx *gin.Context, client pb.UserClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -86,11 +87,13 @@ func VerifySignup(ctx *gin.Context, client cpb.CoordinatorClient) {
 		})
 		return
 	}
+	fmt.Println("hello")
 
-	response, err := client.CoordinatorSignupVerifyRequest(cont, &cpb.CoordinatorVerify{
+	response, err := client.UserSignupVerifyRequest(cont, &pb.Verify{
 		OTP:   int32(req.OTP),
 		Email: req.Email,
 	})
+	fmt.Println("gello")
 
 	if err != nil {
 		log.Printf("error registering user err: %v", err.Error())
@@ -108,7 +111,7 @@ func VerifySignup(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 }
 
-func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, role string) {
+func UserLoginHandler(ctx *gin.Context, client pb.UserClient, role string) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -133,10 +136,10 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 		})
 	}
 
-	response, err := client.CoordinatorLoginRequest(cont, &cpb.CoordinatorLogin{
+	response, err := client.UserLoginRequest(cont, &pb.UserLogin{
 		Email:    login.Email,
 		Password: login.Password,
-		Role:     role,
+		Role:     role,		
 	})
 
 	if err != nil {

@@ -8,15 +8,24 @@ service User {
     rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
     rpc UserSignupRequest(Signup) returns(SignupResponce);
     rpc UserSignupVerifyRequest(Verify)returns(VerifyResponce);
+    rpc UserViewPackage(ViewPackage)returns(ViewPacakgeResponce);
 }
 
-message UserLogin{
-    string email = 1;
-    string password = 2;
-    string role = 3;
+message usrCategory{
+    string categoryName = 1;
 }
 
-message usrPackage{
+message usrDestinations{
+    string DestinationName = 1;
+    string Description = 2;
+    int64 PackageID = 3;
+    int64 MinPrice = 4;
+    int64 MaxCapacity = 5;
+    string Image = 6;
+    int32 DestinationId = 7;
+}
+
+message ViewPacakgeResponce{
     string name = 1;
     string startlocation = 2;
     string endlocation = 3;
@@ -26,11 +35,24 @@ message usrPackage{
     string image = 7;
     int32  destinationCount = 8;
     string destination = 9;
-    int64 packageId = 10;
+    int64  PackageId = 10;
+    string Description = 11;
+    usrCategory category = 12;
+    repeated usrDestinations Destinations = 13;
+}
+
+message ViewPackage{
+    int64 packageId = 1;
+}
+
+message UserLogin{
+    string email = 1;
+    string password = 2;
+    string role = 3;
 }
 
 message UserLoginResponce{
-    repeated usrPackage Packages = 1;
+    repeated ViewPacakgeResponce Packages = 1;
     string            token = 2;
 }
 

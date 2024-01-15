@@ -9,6 +9,36 @@ service User {
     rpc UserSignupRequest(Signup) returns(SignupResponce);
     rpc UserSignupVerifyRequest(Verify)returns(VerifyResponce);
     rpc UserViewPackage(ViewPackage)returns(ViewPacakgeResponce);
+    rpc ForgetPassword(forgetPassword)returns(forgetPasswordResponce);
+    rpc ForgetPasswordVerify(forgetPasswordVerify)returns(forgetPasswordVerifyResponce);
+    rpc NewPassword(newpassword)returns(newpasswordresponce);
+}
+
+message newpasswordresponce{
+    string status = 1;
+}
+
+message newpassword{
+    string newpassword = 1;
+    string Id = 2;
+}
+
+message forgetPasswordVerifyResponce{
+    string status = 1;
+    string token = 2;
+}
+
+message forgetPasswordVerify{
+    string otp = 1;
+    string phone = 2;
+}
+
+message forgetPasswordResponce{
+    string Responce = 1;
+}
+
+message forgetPassword{
+    string phone =1;
 }
 
 message usrCategory{

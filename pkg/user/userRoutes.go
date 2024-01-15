@@ -34,7 +34,9 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.POST("/signup", UserHandler.UserSignup)
 		user.POST("/signup/verify", UserHandler.UserSignupVerify)
 		user.POST("/login", UserHandler.UserLogin)
-		user.POST("/password/forget",)
+		user.POST("/password/forget",UserHandler.ForgetPassword)
+		user.POST("/password/forget/verify",UserHandler.ForgetPasswordVerify)
+		user.POST("/password/forget/newpassword",UserHandler.NewPassword)
 		user.GET("/package/view",UserHandler.ViewPackage)
 	}
 }
@@ -66,4 +68,16 @@ func (c *User) UserSignupVerify(ctx *gin.Context) {
 
 func (c *User)ViewPackage(ctx *gin.Context){
 	handler.ViewPackage(ctx,c.client)
+}
+
+func (c *User)ForgetPassword(ctx *gin.Context){
+	handler.ForgetPassword(ctx,c.client)
+}
+
+func (c *User)ForgetPasswordVerify(ctx *gin.Context){
+	handler.ForgetPasswordVerify(ctx,c.client)
+}
+
+func (c *User)NewPassword(ctx *gin.Context){
+	handler.NewPassword(ctx,c.client)
 }

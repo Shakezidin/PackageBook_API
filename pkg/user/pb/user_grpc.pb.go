@@ -23,6 +23,9 @@ const (
 	User_UserSignupRequest_FullMethodName       = "/pb.User/UserSignupRequest"
 	User_UserSignupVerifyRequest_FullMethodName = "/pb.User/UserSignupVerifyRequest"
 	User_UserViewPackage_FullMethodName         = "/pb.User/UserViewPackage"
+	User_ForgetPassword_FullMethodName          = "/pb.User/ForgetPassword"
+	User_ForgetPasswordVerify_FullMethodName    = "/pb.User/ForgetPasswordVerify"
+	User_NewPassword_FullMethodName             = "/pb.User/NewPassword"
 )
 
 // UserClient is the client API for User service.
@@ -33,6 +36,9 @@ type UserClient interface {
 	UserSignupRequest(ctx context.Context, in *Signup, opts ...grpc.CallOption) (*SignupResponce, error)
 	UserSignupVerifyRequest(ctx context.Context, in *Verify, opts ...grpc.CallOption) (*VerifyResponce, error)
 	UserViewPackage(ctx context.Context, in *ViewPackage, opts ...grpc.CallOption) (*ViewPacakgeResponce, error)
+	ForgetPassword(ctx context.Context, in *ForgetPassword, opts ...grpc.CallOption) (*ForgetPasswordResponce, error)
+	ForgetPasswordVerify(ctx context.Context, in *ForgetPasswordVerify, opts ...grpc.CallOption) (*ForgetPasswordVerifyResponce, error)
+	NewPassword(ctx context.Context, in *Newpassword, opts ...grpc.CallOption) (*Newpasswordresponce, error)
 }
 
 type userClient struct {
@@ -79,6 +85,33 @@ func (c *userClient) UserViewPackage(ctx context.Context, in *ViewPackage, opts 
 	return out, nil
 }
 
+func (c *userClient) ForgetPassword(ctx context.Context, in *ForgetPassword, opts ...grpc.CallOption) (*ForgetPasswordResponce, error) {
+	out := new(ForgetPasswordResponce)
+	err := c.cc.Invoke(ctx, User_ForgetPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) ForgetPasswordVerify(ctx context.Context, in *ForgetPasswordVerify, opts ...grpc.CallOption) (*ForgetPasswordVerifyResponce, error) {
+	out := new(ForgetPasswordVerifyResponce)
+	err := c.cc.Invoke(ctx, User_ForgetPasswordVerify_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) NewPassword(ctx context.Context, in *Newpassword, opts ...grpc.CallOption) (*Newpasswordresponce, error) {
+	out := new(Newpasswordresponce)
+	err := c.cc.Invoke(ctx, User_NewPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -87,6 +120,9 @@ type UserServer interface {
 	UserSignupRequest(context.Context, *Signup) (*SignupResponce, error)
 	UserSignupVerifyRequest(context.Context, *Verify) (*VerifyResponce, error)
 	UserViewPackage(context.Context, *ViewPackage) (*ViewPacakgeResponce, error)
+	ForgetPassword(context.Context, *ForgetPassword) (*ForgetPasswordResponce, error)
+	ForgetPasswordVerify(context.Context, *ForgetPasswordVerify) (*ForgetPasswordVerifyResponce, error)
+	NewPassword(context.Context, *Newpassword) (*Newpasswordresponce, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -105,6 +141,15 @@ func (UnimplementedUserServer) UserSignupVerifyRequest(context.Context, *Verify)
 }
 func (UnimplementedUserServer) UserViewPackage(context.Context, *ViewPackage) (*ViewPacakgeResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewPackage not implemented")
+}
+func (UnimplementedUserServer) ForgetPassword(context.Context, *ForgetPassword) (*ForgetPasswordResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ForgetPassword not implemented")
+}
+func (UnimplementedUserServer) ForgetPasswordVerify(context.Context, *ForgetPasswordVerify) (*ForgetPasswordVerifyResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ForgetPasswordVerify not implemented")
+}
+func (UnimplementedUserServer) NewPassword(context.Context, *Newpassword) (*Newpasswordresponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NewPassword not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -191,6 +236,60 @@ func _User_UserViewPackage_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_ForgetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForgetPassword)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ForgetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_ForgetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ForgetPassword(ctx, req.(*ForgetPassword))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_ForgetPasswordVerify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForgetPasswordVerify)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ForgetPasswordVerify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_ForgetPasswordVerify_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ForgetPasswordVerify(ctx, req.(*ForgetPasswordVerify))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_NewPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Newpassword)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).NewPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_NewPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).NewPassword(ctx, req.(*Newpassword))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +312,18 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserViewPackage",
 			Handler:    _User_UserViewPackage_Handler,
+		},
+		{
+			MethodName: "ForgetPassword",
+			Handler:    _User_ForgetPassword_Handler,
+		},
+		{
+			MethodName: "ForgetPasswordVerify",
+			Handler:    _User_ForgetPasswordVerify_Handler,
+		},
+		{
+			MethodName: "NewPassword",
+			Handler:    _User_NewPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

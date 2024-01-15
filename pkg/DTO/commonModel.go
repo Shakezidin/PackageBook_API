@@ -16,10 +16,15 @@ type PasswordChange struct {
 }
 
 type ForgetPassword struct {
-	Email string `json:"email" validate:"required"`
+	Phone string `json:"phone" validate:"required"`
 }
 
 type NewChange struct {
 	NewPassword     string `json:"newpassword" validate:"required"`
 	ConfirmPassword string `json:"confirmpassword" validate:"required"`
+}
+
+type PswrdOtp struct {
+	OTP   string `json:"otp" validate:"required"`
+	Phone string `json:"phone" validate:"required"`
 }

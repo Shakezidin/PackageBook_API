@@ -45,7 +45,7 @@ func ForgetPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorForgetPassword(cont, &cpb.CoordinatorforgetPassword{
+	response, err := client.CoordinatorForgetPassword(cont, &cpb.ForgetPassword{
 		Phone: frgtpswrd.Phone,
 	})
 
@@ -95,7 +95,7 @@ func ForgetPasswordVerify(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorForgetPasswordVerify(cont, &cpb.CoordinatorforgetPasswordVerify{
+	response, err := client.CoordinatorForgetPasswordVerify(cont, &cpb.ForgetPasswordVerify{
 		Otp:   otp.OTP,
 		Phone: otp.Phone,
 	})
@@ -165,7 +165,7 @@ func NewPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorNewPassword(cont, &cpb.Coordinatornewpassword{
+	response, err := client.CoordinatorNewPassword(cont, &cpb.Newpassword{
 		Newpassword: newpassword.NewPassword,
 		Id:          userId,
 	})

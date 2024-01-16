@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminClient interface {
-	AdminLoginRequest(ctx context.Context, in *Login, opts ...grpc.CallOption) (*LoginResponce, error)
+	AdminLoginRequest(ctx context.Context, in *AdminLogin, opts ...grpc.CallOption) (*AdminLoginResponce, error)
 }
 
 type adminClient struct {
@@ -37,8 +37,8 @@ func NewAdminClient(cc grpc.ClientConnInterface) AdminClient {
 	return &adminClient{cc}
 }
 
-func (c *adminClient) AdminLoginRequest(ctx context.Context, in *Login, opts ...grpc.CallOption) (*LoginResponce, error) {
-	out := new(LoginResponce)
+func (c *adminClient) AdminLoginRequest(ctx context.Context, in *AdminLogin, opts ...grpc.CallOption) (*AdminLoginResponce, error) {
+	out := new(AdminLoginResponce)
 	err := c.cc.Invoke(ctx, Admin_AdminLoginRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (c *adminClient) AdminLoginRequest(ctx context.Context, in *Login, opts ...
 // All implementations must embed UnimplementedAdminServer
 // for forward compatibility
 type AdminServer interface {
-	AdminLoginRequest(context.Context, *Login) (*LoginResponce, error)
+	AdminLoginRequest(context.Context, *AdminLogin) (*AdminLoginResponce, error)
 	mustEmbedUnimplementedAdminServer()
 }
 
@@ -58,7 +58,7 @@ type AdminServer interface {
 type UnimplementedAdminServer struct {
 }
 
-func (UnimplementedAdminServer) AdminLoginRequest(context.Context, *Login) (*LoginResponce, error) {
+func (UnimplementedAdminServer) AdminLoginRequest(context.Context, *AdminLogin) (*AdminLoginResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminLoginRequest not implemented")
 }
 func (UnimplementedAdminServer) mustEmbedUnimplementedAdminServer() {}
@@ -75,7 +75,7 @@ func RegisterAdminServer(s grpc.ServiceRegistrar, srv AdminServer) {
 }
 
 func _Admin_AdminLoginRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Login)
+	in := new(AdminLogin)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func _Admin_AdminLoginRequest_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: Admin_AdminLoginRequest_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminServer).AdminLoginRequest(ctx, req.(*Login))
+		return srv.(AdminServer).AdminLoginRequest(ctx, req.(*AdminLogin))
 	}
 	return interceptor(ctx, in, info, handler)
 }

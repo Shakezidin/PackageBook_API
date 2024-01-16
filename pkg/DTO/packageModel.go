@@ -40,7 +40,7 @@ type Addpackage struct {
 type AddDestination struct {
 	DestinationName string `json:"destinationname" validate:"required"`
 	Description     string `json:"description" validate:"required"`
-	MinPrice        int    `json:"minPrice" validate:"required"`
+	MinPrice        int    `json:"minprice" validate:"required"`
 	Image           string `json:"image" validate:"required"`
 	MaxCapacity     int    `json:"maxcapacity" validate:"required"`
 }

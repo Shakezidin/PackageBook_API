@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Shakezidin/middleware"
@@ -45,7 +46,7 @@ func ForgetPassword(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.ForgetPassword(cont, &pb.ForgetPassword{
+	response, err := client.UserForgetPassword(cont, &pb.UserforgetPassword{
 		Phone: frgtpswrd.Phone,
 	})
 
@@ -95,7 +96,7 @@ func ForgetPasswordVerify(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.ForgetPasswordVerify(cont, &pb.ForgetPasswordVerify{
+	response, err := client.UserForgetPasswordVerify(cont, &pb.UserforgetPasswordVerify{
 		Otp:   otp.OTP,
 		Phone: otp.Phone,
 	})
@@ -146,8 +147,8 @@ func NewPassword(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	_,userId,err:=middleware.ValidateToken(ctx,"user")
-	if err!=nil{
+	_, userId, err := middleware.ValidateToken(ctx, "user")
+	if err != nil {
 		fmt.Println("tocken validation error")
 		ctx.JSON(200, gin.H{
 			"status": http.StatusAccepted,
@@ -165,9 +166,9 @@ func NewPassword(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.NewPassword(cont, &pb.Newpassword{
+	response, err := client.UserNewPassword(cont, &pb.Usernewpassword{
 		Newpassword: newpassword.NewPassword,
-		Id: userId,
+		Id:          userId,
 	})
 
 	if err != nil {
@@ -183,4 +184,51 @@ func NewPassword(ctx *gin.Context, client pb.UserClient) {
 		"status": http.StatusAccepted,
 		"data":   response,
 	})
+}
+
+func UpdateProfile(ctx *gin.Context, client pb.UserClient) {
+	var updateuser dto.User
+
+	if err := ctx.BindJSON(&updateuser); err != nil {
+		log.Printf("error binding JSON")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+	_, userId, err := middleware.ValidateToken(ctx, "user")
+	if err != nil {
+		fmt.Println("tocken validation error")
+		ctx.JSON(200, gin.H{
+			"status": http.StatusAccepted,
+			"data":   "tocken validation error",
+		})
+		return
+	}
+	userid, _ := strconv.Atoi(userId)
+	ctxt := context.Background()
+	response, err := client.UserProfileUpdate(ctxt, &pb.UserSignup{
+		Id:    int64(userid),
+		Name:  updateuser.Name,
+		Email: updateuser.Email,
+		Phone: updateuser.Phone,
+		Role: "user",
+	})
+
+	if err != nil {
+		log.Printf("error setting new password err: %v", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status": http.StatusAccepted,
+		"data":   response,
+	})
+
 }

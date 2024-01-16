@@ -38,6 +38,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.POST("/password/forget/verify",UserHandler.ForgetPasswordVerify)
 		user.POST("/password/forget/newpassword",UserHandler.NewPassword)
 		user.GET("/package/view",UserHandler.ViewPackage)
+		user.POST("/profile/update",UserHandler.UserAuthenticate,UserHandler.UpdateProfile)
 	}
 }
 
@@ -80,4 +81,8 @@ func (c *User)ForgetPasswordVerify(ctx *gin.Context){
 
 func (c *User)NewPassword(ctx *gin.Context){
 	handler.NewPassword(ctx,c.client)
+}
+
+func (c *User)UpdateProfile(ctx *gin.Context){
+	handler.UpdateProfile(ctx,c.client)
 }

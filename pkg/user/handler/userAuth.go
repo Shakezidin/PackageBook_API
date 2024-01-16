@@ -51,7 +51,7 @@ func UserSignupHandler(ctx *gin.Context, client pb.UserClient, role string) {
 		return
 	}
 
-	response, err := client.UserSignupRequest(cont, &pb.Signup{
+	response, err := client.UserSignupRequest(cont, &pb.UserSignup{
 		Name:     coordinator.Name,
 		Email:    coordinator.Email,
 		Phone:    coordinator.Phone,
@@ -89,7 +89,7 @@ func VerifySignup(ctx *gin.Context, client pb.UserClient) {
 	}
 	fmt.Println("hello")
 
-	response, err := client.UserSignupVerifyRequest(cont, &pb.Verify{
+	response, err := client.UserSignupVerifyRequest(cont, &pb.UserVerify{
 		OTP:   int32(req.OTP),
 		Email: req.Email,
 	})

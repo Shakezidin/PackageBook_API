@@ -36,7 +36,7 @@ func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
 	}
 
 	ctxt := context.Background()
-	response, err := client.AdminLoginRequest(ctxt, &pb.Login{
+	response, err := client.AdminLoginRequest(ctxt, &pb.AdminLogin{
 		Email:    login.Email,
 		Password: login.Password,
 		Role:     role,

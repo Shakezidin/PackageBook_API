@@ -51,11 +51,12 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorSignupRequest(cont, &cpb.CoordinatorSignup{
+	response, err := client.CoordinatorSignupRequest(cont, &cpb.Signup{
 		Name:     coordinator.Name,
 		Email:    coordinator.Email,
 		Phone:    coordinator.Phone,
 		Password: coordinator.Password,
+		Role:     "coordinator",
 	})
 
 	if err != nil {
@@ -87,7 +88,7 @@ func VerifySignup(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	response, err := client.CoordinatorSignupVerifyRequest(cont, &cpb.CoordinatorVerify{
+	response, err := client.CoordinatorSignupVerifyRequest(cont, &cpb.Verify{
 		OTP:   int32(req.OTP),
 		Email: req.Email,
 	})
@@ -133,7 +134,7 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 		})
 	}
 
-	response, err := client.CoordinatorLoginRequest(cont, &cpb.CoordinatorLogin{
+	response, err := client.CoordinatorLoginRequest(cont, &cpb.Login{
 		Email:    login.Email,
 		Password: login.Password,
 		Role:     role,

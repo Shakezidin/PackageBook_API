@@ -6,16 +6,16 @@ option go_package = ".";
 
 
 service Admin {
-    rpc AdminLoginRequest(Login) returns (LoginResponce);
+    rpc AdminLoginRequest(AdminLogin) returns (AdminLoginResponce);
 }
 
-message Login {
+message AdminLogin {
     string email = 1;
     string password = 2;
     string role = 3;
 }
 
-message LoginResponce{
+message AdminLoginResponce{
     string status = 1;
     string email = 2;
     string token = 3;

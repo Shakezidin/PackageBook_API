@@ -6,73 +6,77 @@ option go_package = ".";
 
 service User {
     rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
-    rpc UserSignupRequest(Signup) returns(SignupResponce);
-    rpc UserSignupVerifyRequest(Verify)returns(VerifyResponce);
-    rpc UserViewPackage(ViewPackage)returns(ViewPacakgeResponce);
-    rpc ForgetPassword(forgetPassword)returns(forgetPasswordResponce);
-    rpc ForgetPasswordVerify(forgetPasswordVerify)returns(forgetPasswordVerifyResponce);
-    rpc NewPassword(newpassword)returns(newpasswordresponce);
+    rpc UserSignupRequest(UserSignup) returns(UserResponce);
+    rpc UserSignupVerifyRequest(UserVerify)returns(UserResponce);
+    rpc UserViewPackage(UserView)returns(UserPackage);
+    rpc UserForgetPassword(UserforgetPassword)returns(UserResponce);
+    rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
+    rpc UserNewPassword(Usernewpassword)returns(UserResponce);
+    rpc UserProfileUpdate(UserSignup)returns(UserResponce);
 }
 
-message newpasswordresponce{
-    string status = 1;
-}
-
-message newpassword{
+message Usernewpassword{
     string newpassword = 1;
     string Id = 2;
 }
 
-message forgetPasswordVerifyResponce{
-    string status = 1;
-    string token = 2;
-}
-
-message forgetPasswordVerify{
+message UserforgetPasswordVerify{
     string otp = 1;
     string phone = 2;
 }
 
-message forgetPasswordResponce{
-    string Responce = 1;
-}
-
-message forgetPassword{
+message UserforgetPassword{
     string phone =1;
 }
 
-message usrCategory{
+message UserCategory{
     string categoryName = 1;
 }
 
-message usrDestinations{
-    string DestinationName = 1;
-    string Description = 2;
-    int64 PackageID = 3;
-    int64 MinPrice = 4;
-    int64 MaxCapacity = 5;
-    string Image = 6;
-    int32 DestinationId = 7;
+message UserActivity{
+    int64  activityId = 1;
+    string activityname = 2;
+    string description = 3;
+    string Location = 4;
+    string ActivityType = 5;
+    int64  Amount = 6;
+    string date = 7;
+    string time = 8;
+    int64  destinationId = 9;
 }
 
-message ViewPacakgeResponce{
-    string name = 1;
-    string startlocation = 2;
-    string endlocation = 3;
-    string startdatetime = 4;
-    string enddatetime = 5;
-    int32  price = 6;
-    string image = 7;
-    int32  destinationCount = 8;
-    string destination = 9;
-    int64  PackageId = 10;
-    string Description = 11;
-    usrCategory category = 12;
-    repeated usrDestinations Destinations = 13;
+message UserDestination{
+    int64  destinationId = 1;
+    string DestinationName = 2;
+    string Description = 3;
+    int64  minprice = 4;
+    int64  maxCapacity = 5;
+    string image = 6;
+    repeated UserActivity activity = 7;
+    int64  PackageID = 8;
 }
 
-message ViewPackage{
-    int64 packageId = 1;
+message UserPackage{
+    int64  PackageId = 1;
+    string packagename = 2;
+    int64  CoorinatorId = 3;
+    string startlocation = 4;
+    string endlocation = 5;
+    string startdatetime = 6;
+    string enddatetime = 7;
+    int64  price = 8;
+    string image = 9;
+    int64  destinationCount = 10;
+    string destination = 11;
+    string Description = 12;
+    int64  maxCapacity = 13;
+    int64  categoryId = 14;  
+    UserCategory category = 15;
+    repeated UserDestination Destinations = 16;
+}
+
+message UserView{
+    int64 Id = 1;
 }
 
 message UserLogin{
@@ -82,29 +86,25 @@ message UserLogin{
 }
 
 message UserLoginResponce{
-    repeated ViewPacakgeResponce Packages = 1;
+    repeated UserPackage Packages = 1;
     string            token = 2;
 }
 
-message Signup{
+message UserSignup{
     string name =1;
     string email = 2;
     string phone = 3;
     string password = 4;
     string role = 5;
+    int64  Id = 6;
 }
 
-message SignupResponce{
+message UserResponce{
     string status = 1;
     string message = 2;
 }
 
-message Verify{
+message UserVerify{
     int32 OTP =1;
     string email = 2;
-}
-
-message VerifyResponce{
-    string status = 1;
-    string message = 2;
 }

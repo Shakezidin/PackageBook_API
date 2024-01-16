@@ -25,8 +25,8 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 	}
 
 	var ctxt = context.Background()
-	response, err := client.UserViewPackage(ctxt, &pb.ViewPackage{
-		PackageId: int64(packageId),
+	response, err := client.UserViewPackage(ctxt, &pb.UserView{
+		Id: int64(packageId),
 	})
 	if err != nil {
 		log.Printf("activity fetching  error", err.Error())

@@ -1,0 +1,110 @@
+syntax ="proto3";
+
+package pb;
+
+option go_package = ".";
+
+service User {
+    rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
+    rpc UserSignupRequest(UserSignup) returns(UserResponce);
+    rpc UserSignupVerifyRequest(UserVerify)returns(UserResponce);
+    rpc UserViewPackage(UserView)returns(UserPackage);
+    rpc UserForgetPassword(UserforgetPassword)returns(UserResponce);
+    rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
+    rpc UserNewPassword(Usernewpassword)returns(UserResponce);
+    rpc UserProfileUpdate(UserSignup)returns(UserResponce);
+}
+
+message Usernewpassword{
+    string newpassword = 1;
+    string Id = 2;
+}
+
+message UserforgetPasswordVerify{
+    string otp = 1;
+    string phone = 2;
+}
+
+message UserforgetPassword{
+    string phone =1;
+}
+
+message UserCategory{
+    string categoryName = 1;
+}
+
+message UserActivity{
+    int64  activityId = 1;
+    string activityname = 2;
+    string description = 3;
+    string Location = 4;
+    string ActivityType = 5;
+    int64  Amount = 6;
+    string date = 7;
+    string time = 8;
+    int64  destinationId = 9;
+}
+
+message UserDestination{
+    int64  destinationId = 1;
+    string DestinationName = 2;
+    string Description = 3;
+    int64  minprice = 4;
+    int64  maxCapacity = 5;
+    string image = 6;
+    repeated UserActivity activity = 7;
+    int64  PackageID = 8;
+}
+
+message UserPackage{
+    int64  PackageId = 1;
+    string packagename = 2;
+    int64  CoorinatorId = 3;
+    string startlocation = 4;
+    string endlocation = 5;
+    string startdatetime = 6;
+    string enddatetime = 7;
+    int64  price = 8;
+    string image = 9;
+    int64  destinationCount = 10;
+    string destination = 11;
+    string Description = 12;
+    int64  maxCapacity = 13;
+    int64  categoryId = 14;  
+    UserCategory category = 15;
+    repeated UserDestination Destinations = 16;
+}
+
+message UserView{
+    int64 Id = 1;
+}
+
+message UserLogin{
+    string email = 1;
+    string password = 2;
+    string role = 3;
+}
+
+message UserLoginResponce{
+    repeated UserPackage Packages = 1;
+    string            token = 2;
+}
+
+message UserSignup{
+    string name =1;
+    string email = 2;
+    string phone = 3;
+    string password = 4;
+    string role = 5;
+    int64  Id = 6;
+}
+
+message UserResponce{
+    string status = 1;
+    string message = 2;
+}
+
+message UserVerify{
+    int32 OTP =1;
+    string email = 2;
+}

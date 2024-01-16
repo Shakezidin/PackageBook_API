@@ -1,14 +1,19 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 type Configure struct {
 	APIPORT            string `mapstructure:"APIPORT"`
-	ADMINPORT          string `mapstructure:"ADMINPORT"`
+	ADMINPORT          string `mapstructure:"GRPCADMINPORT"`
 	BSERVICEPORT       string `mapstructure:"BSERVICEPORT"`
 	SECRETKEY          string `mapstructure:"SECRETKEY"`
 	REDISHOST          string `mapstructure:"REDISHOST"`
 	GRPCCORDINATORPORT string `mapstructure:"GRPCCORDINATORPORT"`
+	GRPCUSERPORT       string `mapstructure:"GRPCUSERPORT"`
 }
 
 func LoadConfigure() (*Configure, error) {
@@ -23,5 +28,6 @@ func LoadConfigure() (*Configure, error) {
 		return &Configure{}, nil
 	}
 
+	fmt.Println(cfg)
 	return &cfg, nil
 }

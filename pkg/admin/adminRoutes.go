@@ -36,7 +36,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 }
 
 func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
-	email, err := middleware.ValidateToken(ctx, *a.cfg, "admin")
+	email, _,err := middleware.ValidateToken(ctx,"admin")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error":  err.Error(),

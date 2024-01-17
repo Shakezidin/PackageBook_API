@@ -6,7 +6,27 @@ option go_package = ".";
 
 
 service Admin {
-    rpc AdminLoginRequest(AdminLogin) returns (AdminLoginResponce);
+    rpc AdminLoginRequest(AdminLogin) returns (AdminResponce);
+    rpc AdminAddCategory(AdminCategory)returns(AdminResponce);
+    rpc AdminViewPackages(AdminView)returns(AdminPackages);
+    rpc AdminViewpackage(AdminView)returns(AdminPackage);
+    rpc AdminActivePackage(AdminView)returns(AdminPackages);
+    rpc AdminNotActivePackage(AdminView)returns(AdminPackages);
+    rpc AdminPacakgeStatus(AdminView)returns(AdminResponce);
+}
+
+message AdminView{
+    int64 Id = 1; 
+}
+
+message AdminResponce{
+    string status = 1;
+    string message = 2;
+}
+
+message AdminCategory{
+    int64 categoryid = 1;
+    string category = 2;
 }
 
 message AdminLogin {
@@ -15,8 +35,48 @@ message AdminLogin {
     string role = 3;
 }
 
-message AdminLoginResponce{
-    string status = 1;
-    string email = 2;
-    string token = 3;
+message AdminActivity{
+    int64  activityId = 1;
+    string activityname = 2;
+    string description = 3;
+    string Location = 4;
+    string ActivityType = 5;
+    int64  Amount = 6;
+    string date = 7;
+    string time = 8;
+    int64  destinationId = 9;
+}
+
+message AdminDestination{
+    int64   destinationId = 1;
+    string  DestinationName = 2;
+    string  Description = 3;
+    int64   minprice = 4;
+    int64   maxCapacity = 5;
+    string  image = 6;
+    repeated AdminActivity activity = 7;
+    int64   PackageID = 8;
+}
+
+message AdminPackage{
+    int64  PackageId = 1;
+    string packagename = 2;
+    int64  CoorinatorId = 3;
+    string startlocation = 4;
+    string endlocation = 5;
+    string startdate = 6;
+    string enddate = 7;
+    int64  price = 8;
+    string image = 9;
+    int64  destinationCount = 10;
+    string destination = 11;
+    string Description = 12;
+    int64  maxCapacity = 13;
+    int64  categoryId = 14;  
+    AdminCategory category = 15;
+    repeated AdminDestination Destinations = 16;
+}
+
+message AdminPackages{
+    repeated AdminPackage packages = 1;
 }

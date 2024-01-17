@@ -32,11 +32,35 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 	admin := apiVersion.Group("/admin")
 	{
 		admin.POST("/login", adminHandler.AdminLogin)
+
+		admin.POST("/category/add", adminHandler.AdminAuthenticate, adminHandler.AddCategory)
+		admin.GET("/catagory/view", adminHandler.AdminAuthenticate, adminHandler.ViewCatagory)
+
+		admin.GET("/pacakages/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackages)
+		admin.GET("/pacakage/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackage)
+		admin.GET("/package/status", adminHandler.AdminAuthenticate, adminHandler.PackageStatus)
+		admin.GET("/packages/approved", adminHandler.AdminAuthenticate, adminHandler.ViewApprovedPackages)
+		admin.GET("/packages/pending", adminHandler.AdminAuthenticate, adminHandler.ViewPendingPackages)
+
+		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestination)
+		admin.GET("/activity/view", adminHandler.AdminAuthenticate, adminHandler.ViewActivity)
+
+		admin.GET("/users/view", adminHandler.AdminAuthenticate, adminHandler.ViewUsers)
+		// admin.GET("/user/view",adminHandler.AdminAuthenticate,adminHandler.ViewUser)
+		// admin.GET("/user/block",adminHandler.AdminAuthenticate,adminHandler.BlockUser)
+		// admin.GET("/user/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockedUsers)
+		// admin.GET("/user/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedUsers)
+
+		admin.GET("coordinator/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.GET("/coordinator/view",adminHandler.AdminAuthenticate,adminHandler.ViewCoordinator)
+		// admin.GET("/coordinator/block",adminHandler.AdminAuthenticate,adminHandler.BlockCoordinator)
+		// admin.GET("/coordinator/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockCoordinator)
+		// admin.GET("/coordinator/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedCoordinator)
 	}
 }
 
 func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
-	email, _,err := middleware.ValidateToken(ctx,"admin")
+	email, _, err := middleware.ValidateToken(ctx, "admin")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error":  err.Error(),
@@ -51,3 +75,49 @@ func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
 func (a *Admin) AdminLogin(ctx *gin.Context) {
 	handler.AdminLoginHandler(ctx, a.client, "admin")
 }
+
+func (a *Admin) AddCategory(ctx *gin.Context) {
+	handler.AddCategory(ctx, a.client)
+}
+
+func (a *Admin) ViewPackages(ctx *gin.Context) {
+	handler.ViewPackages(ctx, a.client)
+}
+
+func (a *Admin) ViewPackage(ctx *gin.Context) {
+	handler.ViewPackage(ctx, a.client)
+}
+
+func (a *Admin) PackageStatus(ctx *gin.Context) {
+	handler.PackageStatus(ctx, a.client)
+}
+
+func (a *Admin) ViewApprovedPackages(ctx *gin.Context) {
+	// handler.ViewApprovedPackages(ctx, a.client)
+}
+
+func (a *Admin) ViewPendingPackages(ctx *gin.Context) {
+	// handler.ViewPendingPackages(ctx, a.client)
+}
+
+func (a *Admin) ViewDestination(ctx *gin.Context) {
+	// handler.ViewDestination(ctx, a.client)
+}
+
+func (a *Admin) ViewCatagory(ctx *gin.Context) {
+	// handler.ViewCatagory(ctx, a.client)
+}
+
+
+func (a *Admin) ViewActivity(ctx *gin.Context) {
+	// handler.ViewActivity(ctx, a.client)
+}
+
+func (a *Admin) ViewUsers(ctx *gin.Context) {
+	// handler.ViewUser(ctx, a.client)
+}
+
+func (a *Admin) ViewCoordinators(ctx *gin.Context) {
+	// handler.ViewCoordinators(ctx, a.client)
+}
+

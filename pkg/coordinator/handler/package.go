@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Shakezidin/middleware"
 	dto "github.com/Shakezidin/pkg/DTO"
@@ -67,13 +68,34 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	id, _ := strconv.Atoi(Id)
 
+	startdate, err := time.Parse("2006-01-02", pkg.StartDate)
+	enddate, err := time.Parse("2006-01-02", pkg.EndDate)
+	if err != nil {
+		log.Printf("date fromat error")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	if !enddate.Add(24 * time.Hour).After(startdate) {
+		log.Printf("date fromat error")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
 	var ctxt = context.Background()
 	response, err := client.CoordinatorAddPackage(ctxt, &cpb.Package{
 		CoorinatorId:     int64(id),
 		Packagename:      pkg.Name,
-		Startdatetime:    pkg.StartDateTime,
+		Startdate:        pkg.StartDate,
 		Startlocation:    pkg.StartLocation,
-		Enddatetime:      pkg.EndDateTime,
+		Enddate:          pkg.EndDate,
 		Endlocation:      pkg.EndLocation,
 		Price:            int64(pkg.Price),
 		Image:            pkg.Image,
@@ -135,6 +157,3 @@ func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 }
-
-
-

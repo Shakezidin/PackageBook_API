@@ -32,6 +32,7 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
 		})
+		return
 	}
 
 	ctxt := context.Background()
@@ -51,6 +52,28 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("%v added success", category.Category),
+		"data":    response,
+	})
+
+}
+
+func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
+
+	ctxt := context.Background()
+	response, err := client.AdminViewCategories(ctxt, &pb.AdminView{})
+
+	if err != nil {
+		log.Printf("error while viewing category , err: %v", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("catagories fetched success"),
 		"data":    response,
 	})
 

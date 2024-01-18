@@ -132,6 +132,7 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
 		})
+		return
 	}
 
 	response, err := client.CoordinatorLoginRequest(cont, &cpb.Login{

@@ -33,7 +33,9 @@ func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
 		})
+		return
 	}
+	fmt.Println(login)
 
 	ctxt := context.Background()
 	response, err := client.AdminLoginRequest(ctxt, &pb.AdminLogin{

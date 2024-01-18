@@ -12,8 +12,11 @@ import (
 )
 
 func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
+	status := ctx.GetHeader("status")
 	var ctxt = context.Background()
-	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{})
+	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{
+		Status: status,
+	})
 
 	if err != nil {
 		log.Printf("package fetching  error", err.Error())
@@ -38,7 +41,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 		fmt.Println("categoryID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"error":  "pacakge id missing",
 			"msg":    "error",
 		})
 		return

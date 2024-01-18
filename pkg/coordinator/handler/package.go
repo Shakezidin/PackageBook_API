@@ -18,6 +18,7 @@ import (
 func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var pkg dto.Addpackage
 
+	destination := ctx.GetHeader("destination")
 	categoryIdStr := ctx.GetHeader("id")
 	categoryId, err := strconv.Atoi(categoryIdStr)
 	if err != nil {
@@ -50,6 +51,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		})
 		return
 	}
+	pkg.Destination = destination
 
 	validate := validator.New()
 	err = validate.Struct(pkg)

@@ -67,5 +67,5 @@ type AddPromotion struct {
 }
 
 type AddCategory struct {
-	Category string `json:"category" validate:"required"`
+	Category string `json:"catagory" validate:"required"`
 }

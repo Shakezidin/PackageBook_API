@@ -53,6 +53,7 @@ message forgetPassword{
 
 message View{
     int64 Id = 1;
+    bool status = 2;
 }
 
 message Login{

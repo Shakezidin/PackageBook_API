@@ -10,13 +10,19 @@ service Admin {
     rpc AdminAddCategory(AdminCategory)returns(AdminResponce);
     rpc AdminViewPackages(AdminView)returns(AdminPackages);
     rpc AdminViewpackage(AdminView)returns(AdminPackage);
-    rpc AdminActivePackage(AdminView)returns(AdminPackages);
-    rpc AdminNotActivePackage(AdminView)returns(AdminPackages);
     rpc AdminPacakgeStatus(AdminView)returns(AdminResponce);
+    rpc AdminViewCategories(AdminView)returns(AdminCatagories);
+    rpc AdminViewDestination(AdminView)returns(AdminDestination);
+    rpc AdminViewActivity(AdminView)returns(AdminActivity);
 }
 
 message AdminView{
     int64 Id = 1; 
+    string status = 2;
+}
+
+message AdminCatagories{
+    repeated AdminCategory catagory = 1;
 }
 
 message AdminResponce{

@@ -34,15 +34,16 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/signup", CoordinatorHandler.CoordinatorSignup)
 		coordinator.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
-		coordinator.POST("/password/forget",CoordinatorHandler.ForgetPassword)
-		coordinator.POST("/password/forget/verify",CoordinatorHandler.ForgetPasswordVerify)
-		coordinator.POST("/password/forget/newpassword",CoordinatorHandler.NewPassword)
+		coordinator.POST("/password/forget", CoordinatorHandler.ForgetPassword)
+		coordinator.POST("/password/forget/verify", CoordinatorHandler.ForgetPasswordVerify)
+		coordinator.POST("/password/forget/newpassword", CoordinatorHandler.NewPassword)
+		coordinator.GET("/location/suggest", CoordinatorHandler.CoordinatorLocations)
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
-		coordinator.GET("/package/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewPackage)
+		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
 		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAddDestination)
-		coordinator.GET("/destination/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewDestination)
+		coordinator.GET("/destination/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDestination)
 		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAddActivity)
-		coordinator.GET("/activity/view",CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.ViewActivity)
+		coordinator.GET("/activity/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewActivity)
 	}
 }
 
@@ -83,26 +84,30 @@ func (c *Coordinator) CoordinatorAddActivity(ctx *gin.Context) {
 	handler.AddActivity(ctx, c.client)
 }
 
-func (c *Coordinator)ViewPackage(ctx *gin.Context){
-	handler.ViewPackage(ctx,c.client)
+func (c *Coordinator) ViewPackage(ctx *gin.Context) {
+	handler.ViewPackage(ctx, c.client)
 }
 
-func (c *Coordinator)ViewDestination(ctx *gin.Context){
-	handler.ViewDestination(ctx,c.client)
+func (c *Coordinator) ViewDestination(ctx *gin.Context) {
+	handler.ViewDestination(ctx, c.client)
 }
 
-func (c *Coordinator)ViewActivity(ctx *gin.Context){
-	handler.ViewActivity(ctx,c.client)
+func (c *Coordinator) ViewActivity(ctx *gin.Context) {
+	handler.ViewActivity(ctx, c.client)
 }
 
-func (c *Coordinator)ForgetPassword(ctx *gin.Context){
-	handler.ForgetPassword(ctx,c.client)
+func (c *Coordinator) ForgetPassword(ctx *gin.Context) {
+	handler.ForgetPassword(ctx, c.client)
 }
 
-func (c *Coordinator)ForgetPasswordVerify(ctx *gin.Context){
-	handler.ForgetPasswordVerify(ctx,c.client)
+func (c *Coordinator) ForgetPasswordVerify(ctx *gin.Context) {
+	handler.ForgetPasswordVerify(ctx, c.client)
 }
 
-func (c *Coordinator)NewPassword(ctx *gin.Context){
-	handler.NewPassword(ctx,c.client)
+func (c *Coordinator) NewPassword(ctx *gin.Context) {
+	handler.NewPassword(ctx, c.client)
+}
+
+func (c *Coordinator) CoordinatorLocations(ctx *gin.Context) {
+	handler.SuggestLocation(ctx)
 }

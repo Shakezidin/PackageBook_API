@@ -28,8 +28,8 @@ type Addpackage struct {
 	Description      string `json:"description"`
 	StartLocation    string `json:"startlocation" validate:"required"`
 	EndLocation      string `json:"endlocation" validate:"required"`
-	StartDateTime    string `json:"startdatetime" validate:"required"`
-	EndDateTime      string `json:"enddatetiime" validate:"required"`
+	StartDate        string `json:"startdate" validate:"required"`
+	EndDate          string `json:"enddate" validate:"required"`
 	Price            int    `json:"price" validate:"required"`
 	Image            string `json:"image" validate:"required"`
 	DestinationCount int    `json:"destinationcount" validate:"required"`
@@ -64,4 +64,8 @@ type AddPromotion struct {
 	EndDate        string `json:"enddate" validate:"required"`
 	Image          string `json:"image" validate:"required"`
 	PromotionLevel string `josn:"promotionlevel" validate:"required"`
+}
+
+type AddCategory struct {
+	Category string `json:"catagory" validate:"required"`
 }

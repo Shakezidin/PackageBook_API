@@ -53,6 +53,7 @@ message forgetPassword{
 
 message View{
     int64 Id = 1;
+    bool status = 2;
 }
 
 message Login{
@@ -95,8 +96,8 @@ message Package{
     int64  CoorinatorId = 3;
     string startlocation = 4;
     string endlocation = 5;
-    string startdatetime = 6;
-    string enddatetime = 7;
+    string startdate = 6;
+    string enddate = 7;
     int64  price = 8;
     string image = 9;
     int64  destinationCount = 10;

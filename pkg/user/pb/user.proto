@@ -79,6 +79,7 @@ message UserPackage{
 
 message UserView{
     int64 Id = 1;
+    bool status = 2;
 }
 
 message UserLogin{

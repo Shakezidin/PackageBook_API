@@ -94,5 +94,5 @@ func (c *User) ViewDestination(ctx *gin.Context) {
 }
 
 func (c *User) ViewActivity(ctx *gin.Context) {
-	// handler.ViewActivity(ctx, c.client)
+	handler.ViewActivity(ctx, c.client)
 }

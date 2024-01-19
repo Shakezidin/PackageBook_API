@@ -14,6 +14,7 @@ service User {
     rpc UserNewPassword(Usernewpassword)returns(UserResponce);
     rpc UserProfileUpdate(UserSignup)returns(UserResponce);
     rpc UserViewDestination(UserView)returns(UserDestination);
+    rpc UserViewActivity(UserView)returns(UserActivity);
 }
 
 message Usernewpassword{

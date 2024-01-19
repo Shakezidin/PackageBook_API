@@ -27,6 +27,7 @@ const (
 	User_UserForgetPasswordVerify_FullMethodName = "/pb.User/UserForgetPasswordVerify"
 	User_UserNewPassword_FullMethodName          = "/pb.User/UserNewPassword"
 	User_UserProfileUpdate_FullMethodName        = "/pb.User/UserProfileUpdate"
+	User_UserViewDestination_FullMethodName      = "/pb.User/UserViewDestination"
 )
 
 // UserClient is the client API for User service.
@@ -41,6 +42,7 @@ type UserClient interface {
 	UserForgetPasswordVerify(ctx context.Context, in *UserforgetPasswordVerify, opts ...grpc.CallOption) (*UserResponce, error)
 	UserNewPassword(ctx context.Context, in *Usernewpassword, opts ...grpc.CallOption) (*UserResponce, error)
 	UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
+	UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error)
 }
 
 type userClient struct {
@@ -123,6 +125,15 @@ func (c *userClient) UserProfileUpdate(ctx context.Context, in *UserSignup, opts
 	return out, nil
 }
 
+func (c *userClient) UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error) {
+	out := new(UserDestination)
+	err := c.cc.Invoke(ctx, User_UserViewDestination_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -135,6 +146,7 @@ type UserServer interface {
 	UserForgetPasswordVerify(context.Context, *UserforgetPasswordVerify) (*UserResponce, error)
 	UserNewPassword(context.Context, *Usernewpassword) (*UserResponce, error)
 	UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error)
+	UserViewDestination(context.Context, *UserView) (*UserDestination, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -165,6 +177,9 @@ func (UnimplementedUserServer) UserNewPassword(context.Context, *Usernewpassword
 }
 func (UnimplementedUserServer) UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserProfileUpdate not implemented")
+}
+func (UnimplementedUserServer) UserViewDestination(context.Context, *UserView) (*UserDestination, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewDestination not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -323,6 +338,24 @@ func _User_UserProfileUpdate_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserViewDestination_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewDestination(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewDestination_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewDestination(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -361,6 +394,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserProfileUpdate",
 			Handler:    _User_UserProfileUpdate_Handler,
+		},
+		{
+			MethodName: "UserViewDestination",
+			Handler:    _User_UserViewDestination_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

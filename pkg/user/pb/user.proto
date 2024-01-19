@@ -13,6 +13,7 @@ service User {
     rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
     rpc UserNewPassword(Usernewpassword)returns(UserResponce);
     rpc UserProfileUpdate(UserSignup)returns(UserResponce);
+    rpc UserViewDestination(UserView)returns(UserDestination);
 }
 
 message Usernewpassword{

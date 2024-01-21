@@ -17,6 +17,7 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{
 		Status: status,
 	})
+
 	if err != nil {
 		log.Printf("package fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -27,7 +28,7 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
+		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
@@ -61,7 +62,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
+		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
@@ -95,7 +96,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
+		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("package updated succesfully"),
 		"data":    response,
 	})

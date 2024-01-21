@@ -17,6 +17,11 @@ service Coordinator {
     rpc CoordinatorForgetPassword(forgetPassword)returns(Responce);
     rpc CoordinatorForgetPasswordVerify(forgetPasswordVerify)returns(Responce);
     rpc CoordinatorNewPassword(newpassword)returns(Responce);
+    rpc ViewCatagories(View)returns(Catagories);
+}
+
+message Catagories{
+    repeated Category Catagories = 1;
 }
 
 message Verify{
@@ -110,7 +115,8 @@ message Package{
 }
 
 message Category{
-    string categoryName = 1;
+    int64 CatagoryId = 1;
+    string categoryName = 2;
 }
 
 message LoginResponce{

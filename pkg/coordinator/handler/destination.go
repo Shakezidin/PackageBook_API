@@ -59,9 +59,7 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 		DestinationName: destination.DestinationName,
 		Description:     destination.Description,
 		PackageID:       int64(packageId),
-		Minprice:        int64(destination.MinPrice),
 		Image:           destination.Image,
-		MaxCapacity:     int64(destination.MaxCapacity),
 	})
 
 	if err != nil {

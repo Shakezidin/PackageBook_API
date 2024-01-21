@@ -28,7 +28,7 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
+		"status":  http.StatusOK,
 		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
@@ -62,7 +62,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
+		"status":  http.StatusOK,
 		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
@@ -96,7 +96,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
+		"status":  http.StatusOK,
 		"message": fmt.Sprintf("package updated succesfully"),
 		"data":    response,
 	})

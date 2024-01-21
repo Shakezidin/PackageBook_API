@@ -38,9 +38,11 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.POST("/password/forget/verify", UserHandler.ForgetPasswordVerify)
 		user.POST("/password/forget/newpassword", UserHandler.NewPassword)
 		user.POST("/profile/update", UserHandler.UserAuthenticate, UserHandler.UpdateProfile)
+		user.GET("/catagories/view",UserHandler.ViewCatagories)
 		user.GET("/package/view", UserHandler.ViewPackage)
 		user.GET("/destination/view", UserHandler.ViewDestination)
 		user.GET("/activity/view", UserHandler.ViewActivity)
+		user.GET("/package/search",UserHandler.SearchPackage)
 	}
 }
 
@@ -95,4 +97,12 @@ func (c *User) ViewDestination(ctx *gin.Context) {
 
 func (c *User) ViewActivity(ctx *gin.Context) {
 	handler.ViewActivity(ctx, c.client)
+}
+
+func (c *User)ViewCatagories(ctx *gin.Context){
+	handler.ViewCatagories(ctx,c.client)
+}
+
+func (c *User)SearchPackage(ctx *gin.Context){
+	handler.SearchPackage(ctx,c.client)
 }

@@ -37,6 +37,7 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/password/forget", CoordinatorHandler.ForgetPassword)
 		coordinator.POST("/password/forget/verify", CoordinatorHandler.ForgetPasswordVerify)
 		coordinator.POST("/password/forget/newpassword", CoordinatorHandler.NewPassword)
+		coordinator.GET("/catagory/view",CoordinatorHandler.CoordinatorViewCatagory)
 		coordinator.GET("/location/suggest", CoordinatorHandler.CoordinatorLocations)
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
@@ -110,4 +111,8 @@ func (c *Coordinator) NewPassword(ctx *gin.Context) {
 
 func (c *Coordinator) CoordinatorLocations(ctx *gin.Context) {
 	handler.SuggestLocation(ctx)
+}
+
+func(c *Coordinator)CoordinatorViewCatagory(ctx *gin.Context){
+	handler.CoordinatorViewCatagory(ctx,c.client)
 }

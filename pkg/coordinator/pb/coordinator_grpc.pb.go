@@ -31,6 +31,7 @@ const (
 	Coordinator_CoordinatorForgetPassword_FullMethodName       = "/pb.Coordinator/CoordinatorForgetPassword"
 	Coordinator_CoordinatorForgetPasswordVerify_FullMethodName = "/pb.Coordinator/CoordinatorForgetPasswordVerify"
 	Coordinator_CoordinatorNewPassword_FullMethodName          = "/pb.Coordinator/CoordinatorNewPassword"
+	Coordinator_ViewCatagories_FullMethodName                  = "/pb.Coordinator/ViewCatagories"
 )
 
 // CoordinatorClient is the client API for Coordinator service.
@@ -49,6 +50,7 @@ type CoordinatorClient interface {
 	CoordinatorForgetPassword(ctx context.Context, in *ForgetPassword, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorForgetPasswordVerify(ctx context.Context, in *ForgetPasswordVerify, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorNewPassword(ctx context.Context, in *Newpassword, opts ...grpc.CallOption) (*Responce, error)
+	ViewCatagories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error)
 }
 
 type coordinatorClient struct {
@@ -167,6 +169,15 @@ func (c *coordinatorClient) CoordinatorNewPassword(ctx context.Context, in *Newp
 	return out, nil
 }
 
+func (c *coordinatorClient) ViewCatagories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error) {
+	out := new(Catagories)
+	err := c.cc.Invoke(ctx, Coordinator_ViewCatagories_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CoordinatorServer is the server API for Coordinator service.
 // All implementations must embed UnimplementedCoordinatorServer
 // for forward compatibility
@@ -183,6 +194,7 @@ type CoordinatorServer interface {
 	CoordinatorForgetPassword(context.Context, *ForgetPassword) (*Responce, error)
 	CoordinatorForgetPasswordVerify(context.Context, *ForgetPasswordVerify) (*Responce, error)
 	CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error)
+	ViewCatagories(context.Context, *View) (*Catagories, error)
 	mustEmbedUnimplementedCoordinatorServer()
 }
 
@@ -225,6 +237,9 @@ func (UnimplementedCoordinatorServer) CoordinatorForgetPasswordVerify(context.Co
 }
 func (UnimplementedCoordinatorServer) CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CoordinatorNewPassword not implemented")
+}
+func (UnimplementedCoordinatorServer) ViewCatagories(context.Context, *View) (*Catagories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewCatagories not implemented")
 }
 func (UnimplementedCoordinatorServer) mustEmbedUnimplementedCoordinatorServer() {}
 
@@ -455,6 +470,24 @@ func _Coordinator_CoordinatorNewPassword_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Coordinator_ViewCatagories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(View)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoordinatorServer).ViewCatagories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Coordinator_ViewCatagories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoordinatorServer).ViewCatagories(ctx, req.(*View))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Coordinator_ServiceDesc is the grpc.ServiceDesc for Coordinator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -509,6 +542,10 @@ var Coordinator_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CoordinatorNewPassword",
 			Handler:    _Coordinator_CoordinatorNewPassword_Handler,
+		},
+		{
+			MethodName: "ViewCatagories",
+			Handler:    _Coordinator_ViewCatagories_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

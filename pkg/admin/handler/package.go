@@ -17,7 +17,6 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{
 		Status: status,
 	})
-
 	if err != nil {
 		log.Printf("package fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

@@ -18,6 +18,8 @@ import (
 func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var pkg dto.Addpackage
 
+	destination := ctx.GetHeader("destination")
+	startlocation:=ctx.GetHeader("startlocation")
 	categoryIdStr := ctx.GetHeader("id")
 	categoryId, err := strconv.Atoi(categoryIdStr)
 	if err != nil {
@@ -50,6 +52,8 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		})
 		return
 	}
+	pkg.Destination = destination
+	pkg.StartLocation=startlocation
 
 	validate := validator.New()
 	err = validate.Struct(pkg)
@@ -68,8 +72,8 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	id, _ := strconv.Atoi(Id)
 
-	startdate, err := time.Parse("2006-01-02", pkg.StartDate)
-	enddate, err := time.Parse("2006-01-02", pkg.EndDate)
+	startdate, err := time.Parse("02-01-2006", pkg.StartDate)
+	enddate, err := time.Parse("02-01-2006", pkg.EndDate)
 	if err != nil {
 		log.Printf("date fromat error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -96,7 +100,6 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		Startdate:        pkg.StartDate,
 		Startlocation:    pkg.StartLocation,
 		Enddate:          pkg.EndDate,
-		Endlocation:      pkg.EndLocation,
 		Price:            int64(pkg.Price),
 		Image:            pkg.Image,
 		DestinationCount: int64(pkg.DestinationCount),
@@ -156,4 +159,24 @@ func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		"data":    response,
 	})
 
+}
+
+func CoordinatorViewCatagory(ctx *gin.Context,client cpb.CoordinatorClient){
+	var ctxt = context.Background()
+	response, err := client.ViewCatagories(ctxt, &cpb.View{})
+
+	if err != nil {
+		log.Printf("catagories fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("catagories fetched succesfully"),
+		"data":    response,
+	})
 }

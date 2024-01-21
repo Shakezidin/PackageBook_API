@@ -14,6 +14,29 @@ service User {
     rpc UserNewPassword(Usernewpassword)returns(UserResponce);
     rpc UserProfileUpdate(UserSignup)returns(UserResponce);
     rpc UserViewDestination(UserView)returns(UserDestination);
+    rpc UserViewActivity(UserView)returns(UserActivity);
+    rpc UserViewCatagories(UserView)returns(UserCategories);
+    rpc UserSearchPacakge(UserSearch)returns(UserPacakges);
+}
+
+message UserPacakges{
+    repeated UserPackage packages = 1;
+}
+
+message UserSearch{
+    int64 catagoryId = 1;
+    int64 travelercount = 2;
+    string pickup_place = 3;
+    string finaldestination = 4;
+    string date = 5;
+    int64 page = 6;
+    string enddate = 7;
+    int64 maxDestination = 8;
+    repeated string destination = 9;
+}
+
+message UserCategories{
+    repeated UserCategory catagory = 1;
 }
 
 message Usernewpassword{
@@ -31,7 +54,8 @@ message UserforgetPassword{
 }
 
 message UserCategory{
-    string categoryName = 1;
+    int64 categoryId =1;
+    string categoryName = 2;
 }
 
 message UserActivity{
@@ -63,8 +87,8 @@ message UserPackage{
     int64  CoorinatorId = 3;
     string startlocation = 4;
     string endlocation = 5;
-    string startdatetime = 6;
-    string enddatetime = 7;
+    string startdate = 6;
+    string enddate = 7;
     int64  price = 8;
     string image = 9;
     int64  destinationCount = 10;
@@ -78,6 +102,7 @@ message UserPackage{
 
 message UserView{
     int64 Id = 1;
+    bool status = 2;
 }
 
 message UserLogin{

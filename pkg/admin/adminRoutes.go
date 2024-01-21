@@ -34,13 +34,13 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		admin.POST("/login", adminHandler.AdminLogin)
 
 		admin.POST("/category/add", adminHandler.AdminAuthenticate, adminHandler.AddCategory)
-		admin.GET("/catagory/view", adminHandler.AdminAuthenticate, adminHandler.ViewCatagory)
+		admin.GET("/catagory/view", adminHandler.AdminAuthenticate, adminHandler.ViewCatagories)
 
 		admin.GET("/pacakages/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackages)
 		admin.GET("/pacakage/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackage)
 		admin.GET("/package/status", adminHandler.AdminAuthenticate, adminHandler.PackageStatus)
-		admin.GET("/packages/approved", adminHandler.AdminAuthenticate, adminHandler.ViewApprovedPackages)
-		admin.GET("/packages/pending", adminHandler.AdminAuthenticate, adminHandler.ViewPendingPackages)
+
+		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestinations)
 
 		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestination)
 		admin.GET("/activity/view", adminHandler.AdminAuthenticate, adminHandler.ViewActivity)
@@ -56,6 +56,21 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		// admin.GET("/coordinator/block",adminHandler.AdminAuthenticate,adminHandler.BlockCoordinator)
 		// admin.GET("/coordinator/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockCoordinator)
 		// admin.GET("/coordinator/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedCoordinator)
+
+		// admin.GET("bookings/view",adminHandler.AdminAuthenticate,adminHandler.ViewBookings)
+		// admin.GET("booking/view",adminHandler.AdminAuthenticate,adminHandler.ViewBooking)
+
+		// admin.GET("/banners", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.GET("/banner/details", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.GET("/banner/activate", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.DELETE("/banner/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+
+		// admin.GET("/coupons/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.POST("/coupon/add", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.GET("/coupon/block", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.GET("/coupon/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.PATCH("/coupon/update", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
+		// admin.DELETE("/coupon/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 	}
 }
 
@@ -80,6 +95,10 @@ func (a *Admin) AddCategory(ctx *gin.Context) {
 	handler.AddCategory(ctx, a.client)
 }
 
+func (a *Admin) ViewCatagories(ctx *gin.Context) {
+	handler.ViewCatagories(ctx, a.client)
+}
+
 func (a *Admin) ViewPackages(ctx *gin.Context) {
 	handler.ViewPackages(ctx, a.client)
 }
@@ -92,22 +111,16 @@ func (a *Admin) PackageStatus(ctx *gin.Context) {
 	handler.PackageStatus(ctx, a.client)
 }
 
-func (a *Admin) ViewApprovedPackages(ctx *gin.Context) {
-	// handler.ViewApprovedPackages(ctx, a.client)
+func (a *Admin) ViewDestinations(ctx *gin.Context) {
+	handler.ViewDestinations(ctx, a.client)
 }
 
-func (a *Admin) ViewPendingPackages(ctx *gin.Context) {
-	// handler.ViewPendingPackages(ctx, a.client)
-}
+func (a *Admin) ViewActivity(ctx *gin.Context) {
+	handler.ViewActivity(ctx, a.client)
 
 func (a *Admin) ViewDestination(ctx *gin.Context) {
 	// handler.ViewDestination(ctx, a.client)
 }
-
-func (a *Admin) ViewCatagory(ctx *gin.Context) {
-	// handler.ViewCatagory(ctx, a.client)
-}
-
 
 func (a *Admin) ViewActivity(ctx *gin.Context) {
 	// handler.ViewActivity(ctx, a.client)
@@ -120,4 +133,3 @@ func (a *Admin) ViewUsers(ctx *gin.Context) {
 func (a *Admin) ViewCoordinators(ctx *gin.Context) {
 	// handler.ViewCoordinators(ctx, a.client)
 }
-

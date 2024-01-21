@@ -134,12 +134,13 @@ func UserLoginHandler(ctx *gin.Context, client pb.UserClient, role string) {
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
 		})
+		return
 	}
 
 	response, err := client.UserLoginRequest(cont, &pb.UserLogin{
 		Email:    login.Email,
 		Password: login.Password,
-		Role:     role,		
+		Role:     role,
 	})
 
 	if err != nil {

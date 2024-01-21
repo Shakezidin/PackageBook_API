@@ -43,3 +43,23 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 		"data":    response,
 	})
 }
+
+func ViewCatagories(ctx *gin.Context,client pb.UserClient){
+	var ctxt = context.Background()
+	response, err := client.UserViewCatagories(ctxt, &pb.UserView{})
+
+	if err != nil {
+		log.Printf("catagories fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("catagories fetched succesfully"),
+		"data":    response,
+	})
+}

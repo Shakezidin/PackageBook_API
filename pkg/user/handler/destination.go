@@ -44,3 +44,38 @@ func ViewDestination(ctx *gin.Context, client pb.UserClient) {
 		"data":    response,
 	})
 }
+
+func ViewActivity(ctx *gin.Context, client pb.UserClient) {
+	activityIdStr := ctx.GetHeader("id")
+	activityId, err := strconv.Atoi(activityIdStr)
+
+	if err != nil {
+		fmt.Println("destination missing")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	var ctxt = context.Background()
+	response, err := client.UserViewActivity(ctxt, &pb.UserView{
+		Id: int64(activityId),
+	})
+
+	if err != nil {
+		log.Printf("activity fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("activity fetched succesfully"),
+		"data":    response,
+	})
+}

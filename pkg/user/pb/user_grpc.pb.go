@@ -28,6 +28,9 @@ const (
 	User_UserNewPassword_FullMethodName          = "/pb.User/UserNewPassword"
 	User_UserProfileUpdate_FullMethodName        = "/pb.User/UserProfileUpdate"
 	User_UserViewDestination_FullMethodName      = "/pb.User/UserViewDestination"
+	User_UserViewActivity_FullMethodName         = "/pb.User/UserViewActivity"
+	User_UserViewCatagories_FullMethodName       = "/pb.User/UserViewCatagories"
+	User_UserSearchPacakge_FullMethodName        = "/pb.User/UserSearchPacakge"
 )
 
 // UserClient is the client API for User service.
@@ -43,6 +46,9 @@ type UserClient interface {
 	UserNewPassword(ctx context.Context, in *Usernewpassword, opts ...grpc.CallOption) (*UserResponce, error)
 	UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
 	UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error)
+	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
+	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
+	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPacakges, error)
 }
 
 type userClient struct {
@@ -134,6 +140,33 @@ func (c *userClient) UserViewDestination(ctx context.Context, in *UserView, opts
 	return out, nil
 }
 
+func (c *userClient) UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error) {
+	out := new(UserActivity)
+	err := c.cc.Invoke(ctx, User_UserViewActivity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error) {
+	out := new(UserCategories)
+	err := c.cc.Invoke(ctx, User_UserViewCatagories_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPacakges, error) {
+	out := new(UserPacakges)
+	err := c.cc.Invoke(ctx, User_UserSearchPacakge_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -147,6 +180,9 @@ type UserServer interface {
 	UserNewPassword(context.Context, *Usernewpassword) (*UserResponce, error)
 	UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error)
 	UserViewDestination(context.Context, *UserView) (*UserDestination, error)
+	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
+	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
+	UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -180,6 +216,15 @@ func (UnimplementedUserServer) UserProfileUpdate(context.Context, *UserSignup) (
 }
 func (UnimplementedUserServer) UserViewDestination(context.Context, *UserView) (*UserDestination, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewDestination not implemented")
+}
+func (UnimplementedUserServer) UserViewActivity(context.Context, *UserView) (*UserActivity, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewActivity not implemented")
+}
+func (UnimplementedUserServer) UserViewCatagories(context.Context, *UserView) (*UserCategories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewCatagories not implemented")
+}
+func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPacakge not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -356,6 +401,60 @@ func _User_UserViewDestination_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserViewActivity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewActivity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewActivity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewActivity(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserViewCatagories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewCatagories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewCatagories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewCatagories(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserSearchPacakge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserSearch)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserSearchPacakge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserSearchPacakge_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserSearchPacakge(ctx, req.(*UserSearch))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -398,6 +497,18 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserViewDestination",
 			Handler:    _User_UserViewDestination_Handler,
+		},
+		{
+			MethodName: "UserViewActivity",
+			Handler:    _User_UserViewActivity_Handler,
+		},
+		{
+			MethodName: "UserViewCatagories",
+			Handler:    _User_UserViewCatagories_Handler,
+		},
+		{
+			MethodName: "UserSearchPacakge",
+			Handler:    _User_UserSearchPacakge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

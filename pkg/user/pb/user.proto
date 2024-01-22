@@ -17,6 +17,24 @@ service User {
     rpc UserViewActivity(UserView)returns(UserActivity);
     rpc UserViewCatagories(UserView)returns(UserCategories);
     rpc UserSearchPacakge(UserSearch)returns(UserPacakges);
+    rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
+}
+
+message UserTravellerResponse {
+    string booking_reference = 1;
+}
+
+message UserTravellerDetails {
+    string name = 1;
+    string age = 2;
+    string gender = 3;
+    repeated string activityId = 4;
+}
+  
+message UserTravellerRequest {
+    repeated UserTravellerDetails traveller_details = 1;
+    string UserId = 2;
+    string packageId = 3;
 }
 
 message UserPacakges{

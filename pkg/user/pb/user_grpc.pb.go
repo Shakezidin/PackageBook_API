@@ -31,6 +31,7 @@ const (
 	User_UserViewActivity_FullMethodName         = "/pb.User/UserViewActivity"
 	User_UserViewCatagories_FullMethodName       = "/pb.User/UserViewCatagories"
 	User_UserSearchPacakge_FullMethodName        = "/pb.User/UserSearchPacakge"
+	User_UserTravellerDetails_FullMethodName     = "/pb.User/UserTravellerDetails"
 )
 
 // UserClient is the client API for User service.
@@ -49,6 +50,7 @@ type UserClient interface {
 	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
 	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
 	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPacakges, error)
+	UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error)
 }
 
 type userClient struct {
@@ -167,6 +169,15 @@ func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts
 	return out, nil
 }
 
+func (c *userClient) UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error) {
+	out := new(UserTravellerResponse)
+	err := c.cc.Invoke(ctx, User_UserTravellerDetails_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -183,6 +194,7 @@ type UserServer interface {
 	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
 	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
 	UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error)
+	UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -225,6 +237,9 @@ func (UnimplementedUserServer) UserViewCatagories(context.Context, *UserView) (*
 }
 func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPacakge not implemented")
+}
+func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserTravellerDetails not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -455,6 +470,24 @@ func _User_UserSearchPacakge_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserTravellerDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserTravellerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserTravellerDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserTravellerDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserTravellerDetails(ctx, req.(*UserTravellerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -509,6 +542,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserSearchPacakge",
 			Handler:    _User_UserSearchPacakge_Handler,
+		},
+		{
+			MethodName: "UserTravellerDetails",
+			Handler:    _User_UserTravellerDetails_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

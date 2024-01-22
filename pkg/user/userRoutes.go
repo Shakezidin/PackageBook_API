@@ -43,6 +43,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/destination/view", UserHandler.ViewDestination)
 		user.GET("/activity/view", UserHandler.ViewActivity)
 		user.GET("/package/search",UserHandler.SearchPackage)
+		user.GET("/activity/select",UserHandler.SelectActivity)
 	}
 }
 
@@ -105,4 +106,8 @@ func (c *User)ViewCatagories(ctx *gin.Context){
 
 func (c *User)SearchPackage(ctx *gin.Context){
 	handler.SearchPackage(ctx,c.client)
+}
+
+func (c *User)SelectActivity(ctx *gin.Context){
+	handler.AddTraveller(ctx,c.client)
 }

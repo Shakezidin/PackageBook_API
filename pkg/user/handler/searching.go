@@ -38,7 +38,6 @@ func SearchPackage(ctx *gin.Context, client pb.UserClient) {
 	maxDestination := ctx.DefaultQuery("maxdestination", "3")
 	maxStops, _ := strconv.Atoi(maxDestination)
 	var destinations = ctx.QueryArray("destination")
-	fmt.Println(destinations)
 
 	catagoryId, _ := strconv.Atoi(catagoryIdStr)
 	traveler_count, _ := strconv.Atoi(traveler_countStr)

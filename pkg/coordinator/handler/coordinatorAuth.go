@@ -14,8 +14,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// var validate = validator.New()
-
 func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
@@ -34,7 +32,7 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	//? Validating struct
 	validate := validator.New()
-	validate.RegisterValidation("emailcst", utility.EmailValidation)
+	validate.RegisterValidation("email", utility.EmailValidation)
 	validate.RegisterValidation("phone", utility.PhoneNumberValidation)
 	validate.RegisterValidation("alphaspace", utility.AlphaSpace)
 	err := validate.Struct(coordinator)

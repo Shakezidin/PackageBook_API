@@ -15,7 +15,7 @@ func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
 	activityIdStr := ctx.GetHeader("id")
 	activityId, err := strconv.Atoi(activityIdStr)
 	if err != nil {
-		fmt.Println("destinationID missing")
+		fmt.Println("activityID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -30,7 +30,7 @@ func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
+		log.Printf("error while fetching activity", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),

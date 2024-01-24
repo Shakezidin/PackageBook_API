@@ -1,9 +1,13 @@
 package handler
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/Shakezidin/middleware"
 	pb "github.com/Shakezidin/pkg/user/pb"
@@ -18,7 +22,7 @@ type TravellerDetail struct {
 }
 
 type TravellerDetails struct {
-	Travellers []map[string]string `json:"travellers"`
+	Travellers []TravellerDetail `json:"travellers"`
 }
 
 func extractUserID(ctx *gin.Context) (string, error) {
@@ -32,7 +36,7 @@ func extractUserID(ctx *gin.Context) (string, error) {
 func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	pkgId := ctx.GetHeader("packageId")
 	if pkgId == "" {
-		log.Println("pacakge id required")
+		log.Println("package id required")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error":  "package id missing",
 			"status": http.StatusBadRequest,
@@ -61,11 +65,11 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	}
 
 	for _, travellerMap := range travellerDetails.Travellers {
-		activityIDs := []string{travellerMap["id"]}
+		activityIDs := travellerMap.ActivityId
 		td = append(td, &pb.UserTravellerDetails{
-			Name:       travellerMap["name"],
-			Age:        travellerMap["age"],
-			Gender:     travellerMap["gender"],
+			Name:       travellerMap.Name,
+			Age:        travellerMap.Age,
+			Gender:     travellerMap.Gender,
 			ActivityId: activityIDs,
 		})
 	}
@@ -88,6 +92,53 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"status":  http.StatusAccepted,
 		"message": "successful in retrieving search details",
+		"data":    response,
+	})
+}
+
+func OfflinePayment(ctx *gin.Context, client pb.UserClient) {
+	refId := ctx.GetHeader("refid")
+	if refId == "" {
+		log.Println("reference id is empty")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("reference id or booking id is empty"),
+		})
+		return
+	}
+	timeout := time.Second * 1000
+	cont, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+
+	email, userId, err := middleware.ValidateToken(ctx, "user")
+	if err != nil {
+		log.Println("user id not present in jwt token, please login again")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("email id not present in jwt token, please login again"),
+		})
+		return
+	}
+
+	userID, _ := strconv.Atoi(userId)
+
+	response, err := client.UserOfflineBooking(cont, &pb.UserBooking{
+		RefId:  refId,
+		UserId: int64(userID),
+	})
+
+	if err != nil {
+		log.Printf("unable to do payment for %v err: %v", email, err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("%v offline booking success", email),
 		"data":    response,
 	})
 }

@@ -19,6 +19,7 @@ service Admin {
 message AdminView{
     int64 Id = 1; 
     string status = 2;
+    int64 page = 3;
 }
 
 message AdminCatagories{
@@ -28,6 +29,7 @@ message AdminCatagories{
 message AdminResponce{
     string status = 1;
     string message = 2;
+    int64 Id = 3;
 }
 
 message AdminCategory{
@@ -69,7 +71,7 @@ message AdminPackage{
     string packagename = 2;
     int64  CoorinatorId = 3;
     string startlocation = 4;
-    string endlocation = 5;
+    int64  availableSpace = 5;
     string startdate = 6;
     string enddate = 7;
     int64  price = 8;
@@ -82,6 +84,7 @@ message AdminPackage{
     AdminCategory category = 15;
     repeated AdminDestination Destinations = 16;
 }
+
 
 message AdminPackages{
     repeated AdminPackage packages = 1;

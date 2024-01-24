@@ -44,7 +44,7 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 	})
 }
 
-func ViewCatagories(ctx *gin.Context,client pb.UserClient){
+func ViewCatagories(ctx *gin.Context, client pb.UserClient) {
 	var ctxt = context.Background()
 	response, err := client.UserViewCatagories(ctxt, &pb.UserView{})
 
@@ -60,6 +60,31 @@ func ViewCatagories(ctx *gin.Context,client pb.UserClient){
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("catagories fetched succesfully"),
+		"data":    response,
+	})
+}
+
+func ViewPackages(ctx *gin.Context, client pb.UserClient) {
+	page := ctx.DefaultQuery("page", "1")
+	pageInt, _ := strconv.Atoi(page)
+	var ctxt = context.Background()
+	response, err := client.UserViewPackages(ctxt, &pb.UserView{
+		Status: true,
+		Page:   int64(pageInt),
+	})
+
+	if err != nil {
+		log.Printf("packages fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})
 }

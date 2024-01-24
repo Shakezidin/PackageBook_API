@@ -34,16 +34,21 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/signup", CoordinatorHandler.CoordinatorSignup)
 		coordinator.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
+
 		coordinator.POST("/password/forget", CoordinatorHandler.ForgetPassword)
 		coordinator.POST("/password/forget/verify", CoordinatorHandler.ForgetPasswordVerify)
 		coordinator.POST("/password/forget/newpassword", CoordinatorHandler.NewPassword)
+
 		coordinator.GET("/catagory/view",CoordinatorHandler.CoordinatorViewCatagory)
 		coordinator.GET("/location/suggest", CoordinatorHandler.CoordinatorLocations)
+
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
-		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAddDestination)
+
+		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.CoordinatorAddDestination)
 		coordinator.GET("/destination/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDestination)
-		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAddActivity)
+		
+		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.CoordinatorAddActivity)
 		coordinator.GET("/activity/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewActivity)
 	}
 }

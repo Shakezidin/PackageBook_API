@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ViewDestinations(ctx *gin.Context, client pb.AdminClient) {
+func ViewDestination(ctx *gin.Context, client pb.AdminClient) {
 	destinationIdStr := ctx.GetHeader("id")
 	destinationId, err := strconv.Atoi(destinationIdStr)
 	if err != nil {
@@ -30,7 +30,7 @@ func ViewDestinations(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
+		log.Printf("error while fetching destination", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -40,7 +40,7 @@ func ViewDestinations(ctx *gin.Context, client pb.AdminClient) {
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("package updated succesfully"),
+		"message": fmt.Sprintf("destination fetched succesfully"),
 		"data":    response,
 	})
 }

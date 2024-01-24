@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	dto "github.com/Shakezidin/pkg/DTO"
 	pb "github.com/Shakezidin/pkg/admin/pb"
@@ -58,12 +59,16 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 }
 
 func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
 
 	ctxt := context.Background()
-	response, err := client.AdminViewCategories(ctxt, &pb.AdminView{})
+	response, err := client.AdminViewCategories(ctxt, &pb.AdminView{
+		Page: int64(page),
+	})
 
 	if err != nil {
-		log.Printf("error while viewing category , err: %v", err.Error())
+		log.Printf("error while fetching categories , err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),

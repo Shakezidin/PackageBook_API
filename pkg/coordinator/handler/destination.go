@@ -21,11 +21,11 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("packageId missing")
+		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
-			"msg":    "error",
+			"msg":    "packageID missing",
 		})
 		return
 	}
@@ -35,7 +35,7 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
-			"msg":    "error",
+			"msg":    "error binding JSON",
 		})
 		return
 	}

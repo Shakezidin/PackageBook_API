@@ -8,9 +8,9 @@ import (
 	"strconv"
 
 	dto "github.com/Shakezidin/pkg/DTO"
+	cpb "github.com/Shakezidin/pkg/coordinator/pb"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	cpb "github.com/Shakezidin/pkg/coordinator/pb"
 )
 
 func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
@@ -54,7 +54,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorAddActivity(ctxt, &cpb.Activity{
-		DestinationId: int64(destinationId),
 		Activityname:  activity.ActivityName,
 		Description:   activity.Description,
 		Location:      activity.Location,
@@ -62,6 +61,7 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 		Amount:        int64(activity.Price),
 		Date:          activity.Date,
 		Time:          activity.Time,
+		DestinationId: int64(destinationId),
 	})
 
 	if err != nil {
@@ -74,9 +74,8 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v activity created succesfully", activity.ActivityName),
-		"data":    response,
+		"status": http.StatusAccepted,
+		"data":   response,
 	})
 }
 
@@ -85,7 +84,7 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	packageId, err := strconv.Atoi(packageIdStr)
 
 	if err != nil {
-		fmt.Println("destination missing")
+		fmt.Println("activity ID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -100,7 +99,7 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("activity fetching  error", err.Error())
+		log.Printf("error while fetching activity", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),

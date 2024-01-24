@@ -32,6 +32,7 @@ message Verify{
 message Responce{
     string status = 1;
     string message = 2;
+    int64 Id = 4;
 }
 
 message Signup{
@@ -100,7 +101,7 @@ message Package{
     string packagename = 2;
     int64  CoorinatorId = 3;
     string startlocation = 4;
-    string endlocation = 5;
+    int64  availableSpace = 5;
     string startdate = 6;
     string enddate = 7;
     int64  price = 8;
@@ -120,6 +121,5 @@ message Category{
 }
 
 message LoginResponce{
-    repeated Package Packages = 1;
-    string            token = 2;
+    string            token = 1;
 }

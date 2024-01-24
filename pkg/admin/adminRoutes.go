@@ -40,7 +40,7 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		admin.GET("/pacakage/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackage)
 		admin.GET("/package/status", adminHandler.AdminAuthenticate, adminHandler.PackageStatus)
 
-		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestinations)
+		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestination)
 		admin.GET("/activity/view", adminHandler.AdminAuthenticate, adminHandler.ViewActivity)
 
 		admin.GET("/users/view", adminHandler.AdminAuthenticate, adminHandler.ViewUsers)
@@ -109,8 +109,8 @@ func (a *Admin) PackageStatus(ctx *gin.Context) {
 	handler.PackageStatus(ctx, a.client)
 }
 
-func (a *Admin) ViewDestinations(ctx *gin.Context) {
-	handler.ViewDestinations(ctx, a.client)
+func (a *Admin) ViewDestination(ctx *gin.Context) {
+	handler.ViewDestination(ctx, a.client)
 }
 
 func (a *Admin) ViewActivity(ctx *gin.Context) {

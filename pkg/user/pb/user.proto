@@ -18,10 +18,26 @@ service User {
     rpc UserViewCatagories(UserView)returns(UserCategories);
     rpc UserSearchPacakge(UserSearch)returns(UserPacakges);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
+    rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
+    rpc UserViewPackages (UserView)returns(UserPacakges);
+}
+
+message UserBookingResponce{
+    string status = 1;
+    string booking_Id = 2;
+}
+
+message UserBooking{
+    string refId = 1;
+    int64 userId = 2;
 }
 
 message UserTravellerResponse {
-    string booking_reference = 1;
+    string status = 1;
+    int64 package_price = 2;
+    int64 activityTotalPrice = 3;
+    int64 totalPrice = 4;
+    string refId = 5;
 }
 
 message UserTravellerDetails {
@@ -104,7 +120,7 @@ message UserPackage{
     string packagename = 2;
     int64  CoorinatorId = 3;
     string startlocation = 4;
-    string endlocation = 5;
+    int64  availableSpace = 5;
     string startdate = 6;
     string enddate = 7;
     int64  price = 8;
@@ -118,9 +134,11 @@ message UserPackage{
     repeated UserDestination Destinations = 16;
 }
 
+
 message UserView{
     int64 Id = 1;
     bool status = 2;
+    int64 page = 3;
 }
 
 message UserLogin{
@@ -130,8 +148,7 @@ message UserLogin{
 }
 
 message UserLoginResponce{
-    repeated UserPackage Packages = 1;
-    string            token = 2;
+    string token = 1;
 }
 
 message UserSignup{

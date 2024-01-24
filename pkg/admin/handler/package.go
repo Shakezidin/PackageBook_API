@@ -12,14 +12,17 @@ import (
 )
 
 func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
 	status := ctx.GetHeader("status")
 	var ctxt = context.Background()
 	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{
 		Status: status,
+		Page:   int64(page),
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
+		log.Printf("error while fetching packages", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -38,10 +41,10 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("categoryID missing")
+		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  "pacakge id missing",
+			"error":  "package id missing",
 			"msg":    "error",
 		})
 		return
@@ -53,7 +56,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
+		log.Printf("error while fetching package", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -63,7 +66,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusOK,
-		"message": fmt.Sprintf("packages fetched succesfully"),
+		"message": "package fetched succesfully",
 		"data":    response,
 	})
 }
@@ -72,7 +75,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("pacakgeID missing")
+		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -87,7 +90,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
+		log.Printf("error while updating package status", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -97,7 +100,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusOK,
-		"message": fmt.Sprintf("package updated succesfully"),
+		"message": fmt.Sprintf("package status updated succesfully"),
 		"data":    response,
 	})
 }

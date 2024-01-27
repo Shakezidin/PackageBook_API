@@ -60,6 +60,7 @@ message forgetPassword{
 message View{
     int64 Id = 1;
     bool status = 2;
+    int64 page = 3;
 }
 
 message Login{

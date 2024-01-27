@@ -91,7 +91,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"status":  http.StatusAccepted,
-		"message": "successful in retrieving search details",
+		"message": "user details saved successfully",
 		"data":    response,
 	})
 }
@@ -102,7 +102,7 @@ func OfflinePayment(ctx *gin.Context, client pb.UserClient) {
 		log.Println("reference id is empty")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  errors.New("reference id or booking id is empty"),
+			"error":  errors.New("reference id is empty"),
 		})
 		return
 	}

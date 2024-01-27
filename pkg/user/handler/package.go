@@ -15,7 +15,7 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("package id missing")
+		fmt.Println("package ID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -45,8 +45,12 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 }
 
 func ViewCatagories(ctx *gin.Context, client pb.UserClient) {
+	page := ctx.DefaultQuery("page", "1")
+	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
-	response, err := client.UserViewCatagories(ctxt, &pb.UserView{})
+	response, err := client.UserViewCatagories(ctxt, &pb.UserView{
+		Page: int64(pageInt),
+	})
 
 	if err != nil {
 		log.Printf("catagories fetching  error", err.Error())
@@ -71,6 +75,57 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	response, err := client.UserViewPackages(ctxt, &pb.UserView{
 		Status: true,
 		Page:   int64(pageInt),
+	})
+
+	if err != nil {
+		log.Printf("packages fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("packages fetched succesfully"),
+		"data":    response,
+	})
+}
+
+type Filter struct {
+	DepartureTime string  `json:"depparturetime"`
+	MinPrice      float64 `json:"minprice" validate:"min=5"`
+	MaxPrice      float64 `json:"maxprice" validate:"max=10000"`
+	Orderby       string  `json:"orderby"`
+	CategoryId    string  `json:"categoryid"`
+}
+
+func PackageFilter(ctx *gin.Context, client pb.UserClient) {
+	var filter Filter
+
+	if err := ctx.BindJSON(&filter); err != nil {
+		log.Printf("error binding JSON")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "error",
+		})
+		return
+	}
+
+	categoryId, _ := strconv.Atoi(filter.CategoryId)
+	page := ctx.DefaultQuery("page", "1")
+	pageInt, _ := strconv.Atoi(page)
+	var ctxt = context.Background()
+	response, err := client.UserFilterPackage(ctxt, &pb.UserFilter{
+		Status:       true,
+		Page:         int64(pageInt),
+		Departurtime: filter.DepartureTime,
+		MinPrice:     int64(filter.MinPrice),
+		MaxPrice:     int64(filter.MaxPrice),
+		OrderBy:      filter.Orderby,
+		CategoryId:   int64(categoryId),
 	})
 
 	if err != nil {

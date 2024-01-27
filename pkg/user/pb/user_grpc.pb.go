@@ -34,6 +34,8 @@ const (
 	User_UserTravellerDetails_FullMethodName     = "/pb.User/UserTravellerDetails"
 	User_UserOfflineBooking_FullMethodName       = "/pb.User/UserOfflineBooking"
 	User_UserViewPackages_FullMethodName         = "/pb.User/UserViewPackages"
+	User_UserOnlinePayment_FullMethodName        = "/pb.User/UserOnlinePayment"
+	User_UserFilterPackage_FullMethodName        = "/pb.User/UserFilterPackage"
 )
 
 // UserClient is the client API for User service.
@@ -51,10 +53,12 @@ type UserClient interface {
 	UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error)
 	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
 	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
-	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPacakges, error)
+	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error)
 	UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error)
 	UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponce, error)
-	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPacakges, error)
+	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error)
+	UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error)
+	UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error)
 }
 
 type userClient struct {
@@ -164,8 +168,8 @@ func (c *userClient) UserViewCatagories(ctx context.Context, in *UserView, opts 
 	return out, nil
 }
 
-func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPacakges, error) {
-	out := new(UserPacakges)
+func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error) {
+	out := new(UserPackages)
 	err := c.cc.Invoke(ctx, User_UserSearchPacakge_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -191,9 +195,27 @@ func (c *userClient) UserOfflineBooking(ctx context.Context, in *UserBooking, op
 	return out, nil
 }
 
-func (c *userClient) UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPacakges, error) {
-	out := new(UserPacakges)
+func (c *userClient) UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error) {
+	out := new(UserPackages)
 	err := c.cc.Invoke(ctx, User_UserViewPackages_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error) {
+	out := new(UserOnlinePaymentResponse)
+	err := c.cc.Invoke(ctx, User_UserOnlinePayment_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error) {
+	out := new(UserPackages)
+	err := c.cc.Invoke(ctx, User_UserFilterPackage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -215,10 +237,12 @@ type UserServer interface {
 	UserViewDestination(context.Context, *UserView) (*UserDestination, error)
 	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
 	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
-	UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error)
+	UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error)
 	UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error)
 	UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error)
-	UserViewPackages(context.Context, *UserView) (*UserPacakges, error)
+	UserViewPackages(context.Context, *UserView) (*UserPackages, error)
+	UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error)
+	UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -259,7 +283,7 @@ func (UnimplementedUserServer) UserViewActivity(context.Context, *UserView) (*Us
 func (UnimplementedUserServer) UserViewCatagories(context.Context, *UserView) (*UserCategories, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewCatagories not implemented")
 }
-func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPacakges, error) {
+func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPacakge not implemented")
 }
 func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error) {
@@ -268,8 +292,14 @@ func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravel
 func (UnimplementedUserServer) UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserOfflineBooking not implemented")
 }
-func (UnimplementedUserServer) UserViewPackages(context.Context, *UserView) (*UserPacakges, error) {
+func (UnimplementedUserServer) UserViewPackages(context.Context, *UserView) (*UserPackages, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewPackages not implemented")
+}
+func (UnimplementedUserServer) UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserOnlinePayment not implemented")
+}
+func (UnimplementedUserServer) UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFilterPackage not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -554,6 +584,42 @@ func _User_UserViewPackages_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserOnlinePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserBooking)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserOnlinePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserOnlinePayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserOnlinePayment(ctx, req.(*UserBooking))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserFilterPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFilter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserFilterPackage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserFilterPackage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserFilterPackage(ctx, req.(*UserFilter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -620,6 +686,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserViewPackages",
 			Handler:    _User_UserViewPackages_Handler,
+		},
+		{
+			MethodName: "UserOnlinePayment",
+			Handler:    _User_UserOnlinePayment_Handler,
+		},
+		{
+			MethodName: "UserFilterPackage",
+			Handler:    _User_UserFilterPackage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

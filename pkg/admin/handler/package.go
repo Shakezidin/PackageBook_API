@@ -20,7 +20,6 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 		Status: status,
 		Page:   int64(page),
 	})
-
 	if err != nil {
 		log.Printf("error while fetching packages", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

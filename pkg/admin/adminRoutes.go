@@ -117,6 +117,14 @@ func (a *Admin) ViewActivity(ctx *gin.Context) {
 	handler.ViewActivity(ctx, a.client)
 }
 
+func (a *Admin) ViewDestination(ctx *gin.Context) {
+	// handler.ViewDestination(ctx, a.client)
+}
+
+func (a *Admin) ViewActivity(ctx *gin.Context) {
+	// handler.ViewActivity(ctx, a.client)
+}
+
 func (a *Admin) ViewUsers(ctx *gin.Context) {
 	// handler.ViewUser(ctx, a.client)
 }

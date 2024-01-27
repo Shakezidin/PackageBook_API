@@ -12,10 +12,9 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
-	var login dto.Login
-
-	if err := ctx.BindJSON(&login); err != nil {
+func AddCategory(ctx *gin.Context, client pb.AdminClient) {
+	var category dto.AddCategory
+	if err := ctx.BindJSON(&category); err != nil {
 		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -26,26 +25,22 @@ func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
 
 	validate := validator.New()
 
-	err := validate.Struct(login)
+	err := validate.Struct(category)
 	if err != nil {
 		log.Printf("Validation error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
 		})
-		return
 	}
 
-
 	ctxt := context.Background()
-	response, err := client.AdminLoginRequest(ctxt, &pb.AdminLogin{
-		Email:    login.Email,
-		Password: login.Password,
-		Role:     role,
+	response, err := client.AdminAddCategory(ctxt, &pb.AdminCategory{
+		Category: category.Category,
 	})
 
 	if err != nil {
-		log.Printf("error logging in user %v err: %v", login.Email, err.Error())
+		log.Printf("error while adding category %v err: %v", category.Category, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -55,7 +50,7 @@ func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v logged in succesfully", login.Email),
+		"message": fmt.Sprintf("%v added success", category.Category),
 		"data":    response,
 	})
 

@@ -17,11 +17,22 @@ service User {
     rpc UserViewActivity(UserView)returns(UserActivity);
     rpc UserViewCatagories(UserView)returns(UserCategories);
     rpc UserSearchPacakge(UserSearch)returns(UserPackages);
+    rpc UserFilterPackage(UserFilter)returns(UserPackages);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
     rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
     rpc UserViewPackages (UserView)returns(UserPackages);
     rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
-    rpc UserFilterPackage(UserFilter)returns(UserPackages);
+    rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponce);
+}
+
+message UserPaymentConfirmedRequest{
+    string email = 1;
+    string ReferenceID = 2;
+    string PaymentId = 3;
+    string UserID = 4;
+    string OrderID = 5;
+    string signature = 6;
+    string total = 7;
 }
 
 message UserFilter {
@@ -40,7 +51,7 @@ message UserOnlinePaymentResponse {
     string booking_reference = 3;
     string email = 4;
     string order_id = 5;
-  }
+}
 
 message UserBookingResponce{
     string status = 1;
@@ -50,6 +61,7 @@ message UserBookingResponce{
 message UserBooking{
     string refId = 1;
     int64 userId = 2;
+    string Typ = 3;
 }
 
 message UserTravellerResponse {
@@ -57,7 +69,8 @@ message UserTravellerResponse {
     int64 package_price = 2;
     int64 activityTotalPrice = 3;
     int64 totalPrice = 4;
-    string refId = 5;
+    int64 advanceAmount = 5;
+    string refId = 6;
 }
 
 message UserTravellerDetails {

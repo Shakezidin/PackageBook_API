@@ -49,9 +49,11 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/activity/view", UserHandler.ViewActivity)
 
 		user.POST("/traveller/add", UserHandler.UserAuthenticate, UserHandler.AddTraveller)
-		user.GET("/booking/offline", UserHandler.UserAuthenticate, UserHandler.OfflinePayment)
+		user.GET("/booking/payment/advance", UserHandler.AdvancePayment)
 
-		user.GET("/booking/online/payment", UserHandler.OnlinePayment)
+		user.GET("/booking/payment/full", UserHandler.OnlinePayment)
+		user.GET("/payment/success", UserHandler.PaymentSuccess)
+		user.GET("/success/render", UserHandler.PaymentSuccessPage)
 	}
 }
 
@@ -124,8 +126,8 @@ func (c *User) AddTraveller(ctx *gin.Context) {
 	handler.AddTraveller(ctx, c.client)
 }
 
-func (c *User) OfflinePayment(ctx *gin.Context) {
-	handler.OfflinePayment(ctx, c.client)
+func (c *User) AdvancePayment(ctx *gin.Context) {
+	handler.OnlinePayment(ctx, c.client, "advance")
 }
 
 func (c *User) ViewPackages(ctx *gin.Context) {
@@ -133,5 +135,13 @@ func (c *User) ViewPackages(ctx *gin.Context) {
 }
 
 func (c *User) OnlinePayment(ctx *gin.Context) {
-	handler.OnlinePayment(ctx, c.client)
+	handler.OnlinePayment(ctx, c.client, "full")
+}
+
+func (c *User) PaymentSuccess(ctx *gin.Context) {
+	handler.PaymentSuccess(ctx, c.client)
+}
+
+func (c *User) PaymentSuccessPage(ctx *gin.Context) {
+	handler.PaymentSuccessPage(ctx, c.client)
 }

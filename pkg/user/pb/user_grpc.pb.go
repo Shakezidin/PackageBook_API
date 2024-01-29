@@ -31,11 +31,12 @@ const (
 	User_UserViewActivity_FullMethodName         = "/pb.User/UserViewActivity"
 	User_UserViewCatagories_FullMethodName       = "/pb.User/UserViewCatagories"
 	User_UserSearchPacakge_FullMethodName        = "/pb.User/UserSearchPacakge"
+	User_UserFilterPackage_FullMethodName        = "/pb.User/UserFilterPackage"
 	User_UserTravellerDetails_FullMethodName     = "/pb.User/UserTravellerDetails"
 	User_UserOfflineBooking_FullMethodName       = "/pb.User/UserOfflineBooking"
 	User_UserViewPackages_FullMethodName         = "/pb.User/UserViewPackages"
 	User_UserOnlinePayment_FullMethodName        = "/pb.User/UserOnlinePayment"
-	User_UserFilterPackage_FullMethodName        = "/pb.User/UserFilterPackage"
+	User_UserPaymentConfirmed_FullMethodName     = "/pb.User/UserPaymentConfirmed"
 )
 
 // UserClient is the client API for User service.
@@ -54,11 +55,12 @@ type UserClient interface {
 	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
 	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
 	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error)
+	UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error)
 	UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error)
 	UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponce, error)
 	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error)
 	UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error)
-	UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error)
+	UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error)
 }
 
 type userClient struct {
@@ -177,6 +179,15 @@ func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts
 	return out, nil
 }
 
+func (c *userClient) UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error) {
+	out := new(UserPackages)
+	err := c.cc.Invoke(ctx, User_UserFilterPackage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userClient) UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error) {
 	out := new(UserTravellerResponse)
 	err := c.cc.Invoke(ctx, User_UserTravellerDetails_FullMethodName, in, out, opts...)
@@ -213,9 +224,9 @@ func (c *userClient) UserOnlinePayment(ctx context.Context, in *UserBooking, opt
 	return out, nil
 }
 
-func (c *userClient) UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error) {
-	out := new(UserPackages)
-	err := c.cc.Invoke(ctx, User_UserFilterPackage_FullMethodName, in, out, opts...)
+func (c *userClient) UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error) {
+	out := new(UserBookingResponce)
+	err := c.cc.Invoke(ctx, User_UserPaymentConfirmed_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -238,11 +249,12 @@ type UserServer interface {
 	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
 	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
 	UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error)
+	UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error)
 	UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error)
 	UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error)
 	UserViewPackages(context.Context, *UserView) (*UserPackages, error)
 	UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error)
-	UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error)
+	UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -286,6 +298,9 @@ func (UnimplementedUserServer) UserViewCatagories(context.Context, *UserView) (*
 func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPacakge not implemented")
 }
+func (UnimplementedUserServer) UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserFilterPackage not implemented")
+}
 func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserTravellerDetails not implemented")
 }
@@ -298,8 +313,8 @@ func (UnimplementedUserServer) UserViewPackages(context.Context, *UserView) (*Us
 func (UnimplementedUserServer) UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserOnlinePayment not implemented")
 }
-func (UnimplementedUserServer) UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserFilterPackage not implemented")
+func (UnimplementedUserServer) UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserPaymentConfirmed not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -530,6 +545,24 @@ func _User_UserSearchPacakge_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserFilterPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserFilter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserFilterPackage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserFilterPackage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserFilterPackage(ctx, req.(*UserFilter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_UserTravellerDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserTravellerRequest)
 	if err := dec(in); err != nil {
@@ -602,20 +635,20 @@ func _User_UserOnlinePayment_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserFilterPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserFilter)
+func _User_UserPaymentConfirmed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserPaymentConfirmedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserFilterPackage(ctx, in)
+		return srv.(UserServer).UserPaymentConfirmed(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserFilterPackage_FullMethodName,
+		FullMethod: User_UserPaymentConfirmed_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserFilterPackage(ctx, req.(*UserFilter))
+		return srv.(UserServer).UserPaymentConfirmed(ctx, req.(*UserPaymentConfirmedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -676,6 +709,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserSearchPacakge_Handler,
 		},
 		{
+			MethodName: "UserFilterPackage",
+			Handler:    _User_UserFilterPackage_Handler,
+		},
+		{
 			MethodName: "UserTravellerDetails",
 			Handler:    _User_UserTravellerDetails_Handler,
 		},
@@ -692,8 +729,8 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserOnlinePayment_Handler,
 		},
 		{
-			MethodName: "UserFilterPackage",
-			Handler:    _User_UserFilterPackage_Handler,
+			MethodName: "UserPaymentConfirmed",
+			Handler:    _User_UserPaymentConfirmed_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

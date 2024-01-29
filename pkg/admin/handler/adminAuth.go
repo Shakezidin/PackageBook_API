@@ -10,8 +10,18 @@ import (
 	pb "github.com/Shakezidin/pkg/admin/pb"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	
 )
 
+// AdminLoginHandler handles the login for admin users.
+// @Summary Admin Login
+// @Description Logs in an admin user.
+// @Accept json
+// @Produce json
+// @Param login body Login true "Login credentials"
+// @Success 200 {object} gin.H{"status": int, "message": string, "data": object} "OK"
+// @Failure 400 {object} gin.H{"status": int, "error": string} "Bad Request"
+// @Router /login [post]
 func AdminLoginHandler(ctx *gin.Context, client pb.AdminClient, role string) {
 	var login dto.Login
 

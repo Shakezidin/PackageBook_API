@@ -34,18 +34,26 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.POST("/signup", UserHandler.UserSignup)
 		user.POST("/signup/verify", UserHandler.UserSignupVerify)
 		user.POST("/login", UserHandler.UserLogin)
+
 		user.POST("/password/forget", UserHandler.ForgetPassword)
 		user.POST("/password/forget/verify", UserHandler.ForgetPasswordVerify)
 		user.POST("/password/forget/newpassword", UserHandler.NewPassword)
 		user.POST("/profile/update", UserHandler.UserAuthenticate, UserHandler.UpdateProfile)
+
 		user.GET("/home/packages", UserHandler.ViewPackages)
+		user.GET("/package/search", UserHandler.SearchPackage)
+		user.GET("/package/search/filter", UserHandler.PackageFilter)
 		user.GET("/catagories/view", UserHandler.ViewCatagories)
 		user.GET("/package/view", UserHandler.ViewPackage)
 		user.GET("/destination/view", UserHandler.ViewDestination)
 		user.GET("/activity/view", UserHandler.ViewActivity)
-		user.GET("/package/search", UserHandler.SearchPackage)
+
 		user.POST("/traveller/add", UserHandler.UserAuthenticate, UserHandler.AddTraveller)
-		user.GET("/booking/offline", UserHandler.UserAuthenticate, UserHandler.OfflinePayment)
+		user.GET("/booking/payment/advance", UserHandler.AdvancePayment)
+
+		user.GET("/booking/payment/full", UserHandler.OnlinePayment)
+		user.GET("/payment/success", UserHandler.PaymentSuccess)
+		user.GET("/success/render", UserHandler.PaymentSuccessPage)
 	}
 }
 
@@ -110,14 +118,30 @@ func (c *User) SearchPackage(ctx *gin.Context) {
 	handler.SearchPackage(ctx, c.client)
 }
 
+func (c *User) PackageFilter(ctx *gin.Context) {
+	handler.PackageFilter(ctx, c.client)
+}
+
 func (c *User) AddTraveller(ctx *gin.Context) {
 	handler.AddTraveller(ctx, c.client)
 }
 
-func (c *User) OfflinePayment(ctx *gin.Context) {
-	handler.OfflinePayment(ctx, c.client)
+func (c *User) AdvancePayment(ctx *gin.Context) {
+	handler.OnlinePayment(ctx, c.client, "advance")
 }
 
 func (c *User) ViewPackages(ctx *gin.Context) {
 	handler.ViewPackages(ctx, c.client)
+}
+
+func (c *User) OnlinePayment(ctx *gin.Context) {
+	handler.OnlinePayment(ctx, c.client, "full")
+}
+
+func (c *User) PaymentSuccess(ctx *gin.Context) {
+	handler.PaymentSuccess(ctx, c.client)
+}
+
+func (c *User) PaymentSuccessPage(ctx *gin.Context) {
+	handler.PaymentSuccessPage(ctx, c.client)
 }

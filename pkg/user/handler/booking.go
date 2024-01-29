@@ -55,7 +55,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	userID, err := extractUserID(ctx)
+	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -74,6 +74,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 		})
 	}
 
+	ctx.Set("registered_email", email)
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
 		TravellerDetails: td,
 		UserId:           userID,
@@ -91,18 +92,18 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"status":  http.StatusAccepted,
-		"message": "successful in retrieving search details",
+		"message": "user details saved successfully",
 		"data":    response,
 	})
 }
 
-func OfflinePayment(ctx *gin.Context, client pb.UserClient) {
+func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	refId := ctx.GetHeader("refid")
 	if refId == "" {
 		log.Println("reference id is empty")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  errors.New("reference id or booking id is empty"),
+			"error":  errors.New("reference id is empty"),
 		})
 		return
 	}

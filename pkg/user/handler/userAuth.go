@@ -14,8 +14,6 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// var validate = validator.New()
-
 func UserSignupHandler(ctx *gin.Context, client pb.UserClient, role string) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
@@ -87,13 +85,11 @@ func VerifySignup(ctx *gin.Context, client pb.UserClient) {
 		})
 		return
 	}
-	fmt.Println("hello")
 
 	response, err := client.UserSignupVerifyRequest(cont, &pb.UserVerify{
 		OTP:   int32(req.OTP),
 		Email: req.Email,
 	})
-	fmt.Println("gello")
 
 	if err != nil {
 		log.Printf("error registering user err: %v", err.Error())
@@ -106,11 +102,23 @@ func VerifySignup(ctx *gin.Context, client pb.UserClient) {
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusAccepted,
-		"message": "OTP verified, user Creation successful.",
+		"message": "OTP verified, user creation successful.",
 		"data":    response,
 	})
 }
 
+// @Summary User Login
+// @Description Log in a user and return authentication information
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param email body string true "User's email address"
+// @Param password body string true "User's password"
+// @Param role path string true "User's role"
+// @Success 200 {object} gin.H {"status": 200, "message": "User logged in successfully", "data": response}
+// @Failure 400 {object} gin.H {"status": 400, "error": "Error binding JSON or validation error"}
+// @Failure 401 {object} gin.H {"status": 401, "error": "Error logging in user"}
+// @Router /login/{role} [post]
 func UserLoginHandler(ctx *gin.Context, client pb.UserClient, role string) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)

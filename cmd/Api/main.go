@@ -17,6 +17,7 @@ func main() {
 	}
 
 	server := server.Server()
+	server.R.LoadHTMLGlob("../../templates/*")
 	admin.NewAdminRoutes(server.R, *config)
 	coordinator.NewCoordinatorRoute(server.R, *config)
 	user.NewUserRoute(server.R, *config)

@@ -16,10 +16,41 @@ service User {
     rpc UserViewDestination(UserView)returns(UserDestination);
     rpc UserViewActivity(UserView)returns(UserActivity);
     rpc UserViewCatagories(UserView)returns(UserCategories);
-    rpc UserSearchPacakge(UserSearch)returns(UserPacakges);
+    rpc UserSearchPacakge(UserSearch)returns(UserPackages);
+    rpc UserFilterPackage(UserFilter)returns(UserPackages);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
     rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
-    rpc UserViewPackages (UserView)returns(UserPacakges);
+    rpc UserViewPackages (UserView)returns(UserPackages);
+    rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
+    rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponce);
+}
+
+message UserPaymentConfirmedRequest{
+    string email = 1;
+    string ReferenceID = 2;
+    string PaymentId = 3;
+    string UserID = 4;
+    string OrderID = 5;
+    string signature = 6;
+    string total = 7;
+}
+
+message UserFilter {
+    int64 page = 1;
+    string departurtime = 2;
+    int64 minPrice = 3;
+    int64 maxPrice = 4;
+    int64 categoryId = 5;
+    string OrderBy = 6;
+    bool status = 7;
+}
+
+message UserOnlinePaymentResponse {
+    int32 user_id = 1;
+    float total_fare = 2;
+    string booking_reference = 3;
+    string email = 4;
+    string order_id = 5;
 }
 
 message UserBookingResponce{
@@ -30,6 +61,7 @@ message UserBookingResponce{
 message UserBooking{
     string refId = 1;
     int64 userId = 2;
+    string Typ = 3;
 }
 
 message UserTravellerResponse {
@@ -37,7 +69,8 @@ message UserTravellerResponse {
     int64 package_price = 2;
     int64 activityTotalPrice = 3;
     int64 totalPrice = 4;
-    string refId = 5;
+    int64 advanceAmount = 5;
+    string refId = 6;
 }
 
 message UserTravellerDetails {
@@ -53,7 +86,7 @@ message UserTravellerRequest {
     string packageId = 3;
 }
 
-message UserPacakges{
+message UserPackages{
     repeated UserPackage packages = 1;
 }
 
@@ -163,6 +196,7 @@ message UserSignup{
 message UserResponce{
     string status = 1;
     string message = 2;
+    int64  Id = 3;
 }
 
 message UserVerify{

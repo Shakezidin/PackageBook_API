@@ -19,11 +19,11 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var pkg dto.Addpackage
 
 	destination := ctx.GetHeader("destination")
-	startlocation:=ctx.GetHeader("startlocation")
+	startlocation := ctx.GetHeader("startlocation")
 	categoryIdStr := ctx.GetHeader("id")
 	categoryId, err := strconv.Atoi(categoryIdStr)
 	if err != nil {
-		fmt.Println("categoryId missing")
+		fmt.Println("categoryID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -53,7 +53,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 	pkg.Destination = destination
-	pkg.StartLocation=startlocation
+	pkg.StartLocation = startlocation
 
 	validate := validator.New()
 	err = validate.Struct(pkg)
@@ -85,7 +85,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	if !enddate.Add(24 * time.Hour).After(startdate) {
-		log.Printf("date fromat error")
+		log.Printf("error in start date and enddate")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -119,11 +119,9 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v package created succesfully", pkg.Name),
-		"data":    response,
+		"status": http.StatusAccepted,
+		"data":   response,
 	})
-
 }
 
 func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
@@ -161,9 +159,13 @@ func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 }
 
-func CoordinatorViewCatagory(ctx *gin.Context,client cpb.CoordinatorClient){
+func CoordinatorViewCatagory(ctx *gin.Context, client cpb.CoordinatorClient) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	page, _ := strconv.Atoi(pageStr)
 	var ctxt = context.Background()
-	response, err := client.ViewCatagories(ctxt, &cpb.View{})
+	response, err := client.ViewCatagories(ctxt, &cpb.View{
+		Page: int64(page),
+	})
 
 	if err != nil {
 		log.Printf("catagories fetching  error", err.Error())

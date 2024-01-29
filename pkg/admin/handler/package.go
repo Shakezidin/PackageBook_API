@@ -20,6 +20,7 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 		Status: status,
 		Page:   int64(page),
 	})
+
 	if err != nil {
 		log.Printf("error while fetching packages", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -30,7 +31,7 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
+		"status":  http.StatusAccepted,
 		"message": fmt.Sprintf("packages fetched succesfully"),
 		"data":    response,
 	})

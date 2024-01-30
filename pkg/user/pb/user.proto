@@ -125,6 +125,14 @@ message UserCategory{
     string categoryName = 2;
 }
 
+message FoodMenu {
+    int64 FoodMenuId = 1;
+    int64  PackageID = 2;
+    string Breakfast =3;
+    string Lunch     = 4;
+    string Dinner    =5;    
+}
+
 message UserActivity{
     int64  activityId = 1;
     string activityname = 2;
@@ -146,6 +154,8 @@ message UserDestination{
     string image = 6;
     repeated UserActivity activity = 7;
     int64  PackageID = 8;
+    string TransportationMode = 9;
+    string ArrivalLocation   = 10;
 }
 
 message UserPackage{

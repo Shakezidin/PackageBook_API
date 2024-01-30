@@ -94,7 +94,6 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 }
 
 type Filter struct {
-	DepartureTime string  `json:"depparturetime"`
 	MinPrice      float64 `json:"minprice" validate:"min=5"`
 	MaxPrice      float64 `json:"maxprice" validate:"max=10000"`
 	Orderby       string  `json:"orderby"`
@@ -121,7 +120,6 @@ func PackageFilter(ctx *gin.Context, client pb.UserClient) {
 	response, err := client.UserFilterPackage(ctxt, &pb.UserFilter{
 		Status:       true,
 		Page:         int64(pageInt),
-		Departurtime: filter.DepartureTime,
 		MinPrice:     int64(filter.MinPrice),
 		MaxPrice:     int64(filter.MaxPrice),
 		OrderBy:      filter.Orderby,

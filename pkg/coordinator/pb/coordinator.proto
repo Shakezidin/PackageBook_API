@@ -9,6 +9,8 @@ service Coordinator {
     rpc CoordinatorSignupVerifyRequest(Verify)returns(Responce);
     rpc CoordinatorLoginRequest(Login)returns(LoginResponce);
     rpc CoordinatorAddPackage(Package)returns(Responce);
+    rpc CoordinatorAddFoodMenu(FoodMenu)returns(Responce);
+    rpc CoordinatorViewFoodMenu(View)returns(FoodMenus);
     rpc CoordinatorAddDestination(Destination)returns(Responce);
     rpc CoordinatorAddActivity(Activity)returns(Responce);
     rpc CoordinatorViewPackage(View)returns(Package);
@@ -86,6 +88,19 @@ message Activity{
     int64  destinationId = 9;
 }
 
+message FoodMenus{
+    repeated FoodMenu Foodmenu= 1;
+}
+
+message    FoodMenu {
+    int64  FoodMenuId = 1;
+    int64  PackageID = 2;
+    string Breakfast = 3;
+    string Lunch     = 4;
+    string Dinner    = 5;  
+    string Date      = 6;  
+}
+
 message Destination{
     int64   destinationId = 1;
     string  DestinationName = 2;
@@ -95,6 +110,8 @@ message Destination{
     string  image = 6;
     repeated Activity activity = 7;
     int64   PackageID = 8;
+    string TransportationMode = 9;
+    string ArrivalLocation   = 10;
 }
 
 message Package{

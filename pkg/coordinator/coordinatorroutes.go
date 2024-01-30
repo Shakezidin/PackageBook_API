@@ -39,17 +39,20 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/password/forget/verify", CoordinatorHandler.ForgetPasswordVerify)
 		coordinator.POST("/password/forget/newpassword", CoordinatorHandler.NewPassword)
 
-		coordinator.GET("/catagory/view",CoordinatorHandler.CoordinatorViewCatagory)
+		coordinator.GET("/catagory/view", CoordinatorHandler.CoordinatorViewCatagory)
 		coordinator.GET("/location/suggest", CoordinatorHandler.CoordinatorLocations)
 
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
 
-		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.CoordinatorAddDestination)
+		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddDestination)
 		coordinator.GET("/destination/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDestination)
-		
-		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAuthenticate,CoordinatorHandler.CoordinatorAddActivity)
+
+		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddActivity)
 		coordinator.GET("/activity/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewActivity)
+
+		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
+		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
 	}
 }
 
@@ -118,6 +121,14 @@ func (c *Coordinator) CoordinatorLocations(ctx *gin.Context) {
 	handler.SuggestLocation(ctx)
 }
 
-func(c *Coordinator)CoordinatorViewCatagory(ctx *gin.Context){
-	handler.CoordinatorViewCatagory(ctx,c.client)
+func (c *Coordinator) CoordinatorViewCatagory(ctx *gin.Context) {
+	handler.CoordinatorViewCatagory(ctx, c.client)
+}
+
+func (c *Coordinator) CoordinatorAddFoodMenu(ctx *gin.Context) {
+	handler.CoordinatorAddFoodMenu(ctx,c.client)
+}
+
+func (c *Coordinator)CoordinatorViewFoodMenus(ctx *gin.Context){
+	handler.CoordinatorViewFoodMenus(ctx,c.client)
 }

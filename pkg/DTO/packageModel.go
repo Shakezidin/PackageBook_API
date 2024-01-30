@@ -66,3 +66,12 @@ type AddPromotion struct {
 type AddCategory struct {
 	Category string `json:"catagory" validate:"required"`
 }
+
+type FoodMenu struct {
+	ID        int    `json:"id"`
+	PackageID int    `json:"package_id" validate:"required"`
+	Breakfast string `json:"breakfast" validate:"required"`
+	Lunch     string `json:"lunch" validate:"required"`
+	Dinner    string `json:"dinner" validate:"required"`
+	Date      string `json:"date"   validate:"required"`
+}

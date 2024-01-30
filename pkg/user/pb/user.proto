@@ -128,9 +128,10 @@ message UserCategory{
 message FoodMenu {
     int64 FoodMenuId = 1;
     int64  PackageID = 2;
-    string Breakfast =3;
+    string Breakfast = 3;
     string Lunch     = 4;
-    string Dinner    =5;    
+    string Dinner    = 5;  
+    string Date      = 6;  
 }
 
 message UserActivity{

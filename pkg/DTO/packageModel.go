@@ -28,6 +28,7 @@ type Addpackage struct {
 	Description      string `json:"description"`
 	StartLocation    string `json:"startlocation" validate:"required"`
 	StartDate        string `json:"startdate" validate:"required"`
+	StartTime        string `json:"starttime" validate:"required"`
 	EndDate          string `json:"enddate" validate:"required"`
 	Price            int    `json:"price" validate:"required"`
 	Image            string `json:"image" validate:"required"`

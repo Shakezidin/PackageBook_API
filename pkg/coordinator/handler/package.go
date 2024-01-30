@@ -73,6 +73,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	id, _ := strconv.Atoi(Id)
 
 	startdate, err := time.Parse("02-01-2006", pkg.StartDate)
+	_, err = time.Parse("03:04 PM", pkg.StartTime)
 	enddate, err := time.Parse("02-01-2006", pkg.EndDate)
 	if err != nil {
 		log.Printf("date fromat error")
@@ -99,6 +100,7 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		Packagename:      pkg.Name,
 		Startdate:        pkg.StartDate,
 		Startlocation:    pkg.StartLocation,
+		Starttime:        pkg.StartTime,
 		Enddate:          pkg.EndDate,
 		Price:            int64(pkg.Price),
 		Image:            pkg.Image,

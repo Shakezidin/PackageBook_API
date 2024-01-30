@@ -142,16 +142,17 @@ message UserPackage{
     string startlocation = 4;
     int64  availableSpace = 5;
     string startdate = 6;
-    string enddate = 7;
-    int64  price = 8;
-    string image = 9;
-    int64  destinationCount = 10;
-    string destination = 11;
-    string Description = 12;
-    int64  maxCapacity = 13;
-    int64  categoryId = 14;  
-    UserCategory category = 15;
-    repeated UserDestination Destinations = 16;
+    string starttime = 7;
+    string enddate = 8;
+    int64  price = 9;
+    string image = 10;
+    int64  destinationCount = 11;
+    string destination = 12;
+    string Description = 13;
+    int64  maxCapacity = 14;
+    int64  categoryId = 15;  
+    UserCategory category = 16;
+    repeated UserDestination Destinations = 17;
 }
 
 

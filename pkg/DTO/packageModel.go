@@ -28,6 +28,7 @@ type Addpackage struct {
 	Description      string `json:"description"`
 	StartLocation    string `json:"startlocation" validate:"required"`
 	StartDate        string `json:"startdate" validate:"required"`
+	StartTime        string `json:"starttime"`
 	EndDate          string `json:"enddate" validate:"required"`
 	Price            int    `json:"price" validate:"required"`
 	Image            string `json:"image" validate:"required"`
@@ -37,9 +38,11 @@ type Addpackage struct {
 }
 
 type AddDestination struct {
-	DestinationName string `json:"destinationname" validate:"required"`
-	Description     string `json:"description" validate:"required"`
-	Image           string `json:"image" validate:"required"`
+	DestinationName    string `json:"destinationname" validate:"required"`
+	Description        string `json:"description" validate:"required"`
+	Image              string `json:"image" validate:"required"`
+	TransportationMode string `json:"transportationmode"`
+	ArrivalLocation    string `json:"arrivallocation"`
 }
 
 type AddActivities struct {
@@ -69,7 +72,7 @@ type AddCategory struct {
 
 type FoodMenu struct {
 	ID        int    `json:"id"`
-	PackageID int    `json:"package_id" validate:"required"`
+	PackageID int    `json:"package_id" `
 	Breakfast string `json:"breakfast" validate:"required"`
 	Lunch     string `json:"lunch" validate:"required"`
 	Dinner    string `json:"dinner" validate:"required"`

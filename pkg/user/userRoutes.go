@@ -45,6 +45,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/package/search/filter", UserHandler.PackageFilter)
 		user.GET("/catagories/view", UserHandler.ViewCatagories)
 		user.GET("/package/view", UserHandler.ViewPackage)
+		user.GET("/package/foodmenu/view", UserHandler.ViewFoodMenus)
 		user.GET("/destination/view", UserHandler.ViewDestination)
 		user.GET("/activity/view", UserHandler.ViewActivity)
 
@@ -144,4 +145,8 @@ func (c *User) PaymentSuccess(ctx *gin.Context) {
 
 func (c *User) PaymentSuccessPage(ctx *gin.Context) {
 	handler.PaymentSuccessPage(ctx, c.client)
+}
+
+func (c *User)ViewFoodMenus(ctx *gin.Context){
+	handler.ViewFoodMenus(ctx,c.client)
 }

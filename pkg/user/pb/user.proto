@@ -8,7 +8,6 @@ service User {
     rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
     rpc UserSignupRequest(UserSignup) returns(UserResponce);
     rpc UserSignupVerifyRequest(UserVerify)returns(UserResponce);
-    rpc UserViewPackage(UserView)returns(UserPackage);
     rpc UserForgetPassword(UserforgetPassword)returns(UserResponce);
     rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
     rpc UserNewPassword(Usernewpassword)returns(UserResponce);
@@ -18,6 +17,8 @@ service User {
     rpc UserViewCatagories(UserView)returns(UserCategories);
     rpc UserSearchPacakge(UserSearch)returns(UserPackages);
     rpc UserFilterPackage(UserFilter)returns(UserPackages);
+    rpc UserViewPackage(UserView)returns(UserPackage);
+    rpc UserViewFoodMenu(UserView)returns(UserFoodMenus);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
     rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
     rpc UserViewPackages (UserView)returns(UserPackages);
@@ -123,6 +124,10 @@ message UserforgetPassword{
 message UserCategory{
     int64 categoryId =1;
     string categoryName = 2;
+}
+
+message UserFoodMenus{
+    repeated UserFoodMenu Foodmenu= 1;
 }
 
 message    UserFoodMenu {

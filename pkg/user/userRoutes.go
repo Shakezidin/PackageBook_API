@@ -55,6 +55,11 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/booking/payment/full", UserHandler.OnlinePayment)
 		user.GET("/payment/success", UserHandler.PaymentSuccess)
 		user.GET("/success/render", UserHandler.PaymentSuccessPage)
+
+		user.GET("/booking/history", UserHandler.UserAuthenticate, UserHandler.ViewHistory)
+		user.GET("/booking/history/view", UserHandler.UserAuthenticate, UserHandler.ViewBooking)
+
+		user.GET("/booking/history/cancel", UserHandler.UserAuthenticate, UserHandler.PackageCancel)
 	}
 }
 
@@ -147,6 +152,18 @@ func (c *User) PaymentSuccessPage(ctx *gin.Context) {
 	handler.PaymentSuccessPage(ctx, c.client)
 }
 
-func (c *User)ViewFoodMenus(ctx *gin.Context){
-	handler.ViewFoodMenus(ctx,c.client)
+func (c *User) ViewFoodMenus(ctx *gin.Context) {
+	handler.ViewFoodMenus(ctx, c.client)
+}
+
+func (c *User) ViewHistory(ctx *gin.Context) {
+	handler.ViewHistory(ctx, c.client)
+}
+
+func (c *User) ViewBooking(ctx *gin.Context) {
+	handler.ViewBooking(ctx, c.client)
+}
+
+func (c *User) PackageCancel(ctx *gin.Context) {
+	handler.PackageCancel(ctx, c.client)
 }

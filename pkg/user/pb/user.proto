@@ -24,6 +24,26 @@ service User {
     rpc UserViewPackages (UserView)returns(UserPackages);
     rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
     rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponce);
+    rpc UserViewHistory(UserView)returns(UserHistories);
+    rpc UserViewBooking(UserView)returns(UserHistory);
+    rpc UserCancelBooking(UserView)returns(UserResponce);
+}
+
+message UserHistories{
+    repeated UserHistory history = 1;
+}
+
+message UserHistory{
+    int64 Id = 1;
+    string paymentMode = 2;
+    string BookingStatus = 3;
+    string CancelledStatus = 4;
+    int64  TotalPrice = 5;
+    int64  UserId = 6;
+    string bookingId = 7;
+    string BookDate = 8;
+    string StartDate = 9;
+    repeated UserTravellerDetails travellers = 10;
 }
 
 message UserPaymentConfirmedRequest{
@@ -190,6 +210,7 @@ message UserView{
     int64 Id = 1;
     bool status = 2;
     int64 page = 3;
+    int64 userId = 4;
 }
 
 message UserLogin{

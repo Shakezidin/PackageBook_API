@@ -230,5 +230,4 @@ func UpdateProfile(ctx *gin.Context, client pb.UserClient) {
 		"status": http.StatusAccepted,
 		"data":   response,
 	})
-
 }

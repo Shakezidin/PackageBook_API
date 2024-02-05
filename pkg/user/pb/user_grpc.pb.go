@@ -38,6 +38,9 @@ const (
 	User_UserViewPackages_FullMethodName         = "/pb.User/UserViewPackages"
 	User_UserOnlinePayment_FullMethodName        = "/pb.User/UserOnlinePayment"
 	User_UserPaymentConfirmed_FullMethodName     = "/pb.User/UserPaymentConfirmed"
+	User_UserViewHistory_FullMethodName          = "/pb.User/UserViewHistory"
+	User_UserViewBooking_FullMethodName          = "/pb.User/UserViewBooking"
+	User_UserCancelBooking_FullMethodName        = "/pb.User/UserCancelBooking"
 )
 
 // UserClient is the client API for User service.
@@ -63,6 +66,9 @@ type UserClient interface {
 	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error)
 	UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error)
 	UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error)
+	UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error)
+	UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error)
+	UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error)
 }
 
 type userClient struct {
@@ -244,6 +250,33 @@ func (c *userClient) UserPaymentConfirmed(ctx context.Context, in *UserPaymentCo
 	return out, nil
 }
 
+func (c *userClient) UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error) {
+	out := new(UserHistories)
+	err := c.cc.Invoke(ctx, User_UserViewHistory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error) {
+	out := new(UserHistory)
+	err := c.cc.Invoke(ctx, User_UserViewBooking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error) {
+	out := new(UserResponce)
+	err := c.cc.Invoke(ctx, User_UserCancelBooking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -267,6 +300,9 @@ type UserServer interface {
 	UserViewPackages(context.Context, *UserView) (*UserPackages, error)
 	UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error)
 	UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error)
+	UserViewHistory(context.Context, *UserView) (*UserHistories, error)
+	UserViewBooking(context.Context, *UserView) (*UserHistory, error)
+	UserCancelBooking(context.Context, *UserView) (*UserResponce, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -330,6 +366,15 @@ func (UnimplementedUserServer) UserOnlinePayment(context.Context, *UserBooking) 
 }
 func (UnimplementedUserServer) UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPaymentConfirmed not implemented")
+}
+func (UnimplementedUserServer) UserViewHistory(context.Context, *UserView) (*UserHistories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewHistory not implemented")
+}
+func (UnimplementedUserServer) UserViewBooking(context.Context, *UserView) (*UserHistory, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewBooking not implemented")
+}
+func (UnimplementedUserServer) UserCancelBooking(context.Context, *UserView) (*UserResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCancelBooking not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -686,6 +731,60 @@ func _User_UserPaymentConfirmed_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserViewHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewHistory(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserViewBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewBooking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewBooking(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserCancelBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserCancelBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserCancelBooking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserCancelBooking(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -768,6 +867,18 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserPaymentConfirmed",
 			Handler:    _User_UserPaymentConfirmed_Handler,
+		},
+		{
+			MethodName: "UserViewHistory",
+			Handler:    _User_UserViewHistory_Handler,
+		},
+		{
+			MethodName: "UserViewBooking",
+			Handler:    _User_UserViewBooking_Handler,
+		},
+		{
+			MethodName: "UserCancelBooking",
+			Handler:    _User_UserCancelBooking_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -55,6 +55,8 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 
 		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
 		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
+
+		coordinator.GET("/")
 	}
 }
 

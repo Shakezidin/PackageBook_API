@@ -21,6 +21,35 @@ service Coordinator {
     rpc CoordinatorForgetPasswordVerify(forgetPasswordVerify)returns(Responce);
     rpc CoordinatorNewPassword(newpassword)returns(Responce);
     rpc ViewCatagories(View)returns(Catagories);
+    rpc VeiwHistory(View)returns(Histories);
+    rpc ViewBooking(View)returns(History);
+    rpc ViewTraveller(View)returns(TravellerDetails);
+}
+
+message Histories{
+    repeated History history = 1;
+}
+
+message History{
+    int64 Id = 1;
+    string paymentMode = 2;
+    string BookingStatus = 3;
+    string CancelledStatus = 4;
+    int64  TotalPrice = 5;
+    int64  UserId = 6;
+    string bookingId = 7;
+    string BookDate = 8;
+    string StartDate = 9;
+    repeated TravellerDetails travellers = 10;
+}
+
+message TravellerDetails {
+    string name = 1;
+    string age = 2;
+    string gender = 3;
+    repeated string activityId = 4;
+    int64 Id = 5;
+    repeated Activity activity = 6;
 }
 
 message PackagesResponce{
@@ -66,7 +95,7 @@ message forgetPassword{
 
 message View{
     int64 Id = 1;
-    bool status = 2;
+    string status = 2;
     int64 page = 3;
 }
 

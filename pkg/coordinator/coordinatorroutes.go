@@ -56,7 +56,9 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
 		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
 
-		coordinator.GET("/")
+		coordinator.GET("/bookings/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewBookings)
+		coordinator.GET("/booking/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewBooking)
+		coordinator.GET("/traveller/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewTraveller)
 	}
 }
 
@@ -139,4 +141,16 @@ func (c *Coordinator) CoordinatorAddFoodMenu(ctx *gin.Context) {
 
 func (c *Coordinator) CoordinatorViewFoodMenus(ctx *gin.Context) {
 	handler.CoordinatorViewFoodMenus(ctx, c.client)
+}
+
+func (c *Coordinator) ViewBookings(ctx *gin.Context) {
+	handler.ViewBookings(ctx, c.client)
+}
+
+func (c *Coordinator) ViewBooking(ctx *gin.Context) {
+	handler.ViewBooking(ctx, c.client)
+}
+
+func (c *Coordinator) ViewTraveller(ctx *gin.Context) {
+	handler.ViewTraveller(ctx, c.client)
 }

@@ -204,11 +204,9 @@ message UserPackage{
     repeated UserDestination Destinations = 17;
 }
 
-
-
 message UserView{
     int64 Id = 1;
-    bool status = 2;
+    string status = 2;
     int64 page = 3;
     int64 userId = 4;
 }

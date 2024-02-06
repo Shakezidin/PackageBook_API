@@ -73,7 +73,7 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
 	response, err := client.UserViewPackages(ctxt, &pb.UserView{
-		Status: true,
+		Status: "true",
 		Page:   int64(pageInt),
 	})
 

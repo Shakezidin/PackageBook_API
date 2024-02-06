@@ -44,6 +44,7 @@ message UserHistory{
     string BookDate = 8;
     string StartDate = 9;
     repeated UserTravellerDetails travellers = 10;
+    int64 PaidAmount = 11;
 }
 
 message UserPaymentConfirmedRequest{

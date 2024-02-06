@@ -18,7 +18,7 @@ func ViewBookings(ctx *gin.Context, client cpb.CoordinatorClient) {
 		log.Printf("package id missing", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"error":  "package id missing",
 		})
 		return
 	}
@@ -76,7 +76,7 @@ func ViewBooking(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 }
 
-func ViewTraveller(ctx *gin.Context,client cpb.CoordinatorClient){
+func ViewTraveller(ctx *gin.Context, client cpb.CoordinatorClient) {
 	id := ctx.GetHeader("id")
 	ID, err := strconv.Atoi(id)
 	if err != nil {
@@ -88,7 +88,7 @@ func ViewTraveller(ctx *gin.Context,client cpb.CoordinatorClient){
 		return
 	}
 	var ctxt = context.Background()
-	response, err := client.ViewBooking(ctxt, &cpb.View{
+	response, err := client.ViewTraveller(ctxt, &cpb.View{
 		Id: int64(ID),
 	})
 

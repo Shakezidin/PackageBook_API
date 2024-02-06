@@ -55,20 +55,13 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 		// admin.GET("/coordinator/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockCoordinator)
 		// admin.GET("/coordinator/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedCoordinator)
 
-		// admin.GET("bookings/view",adminHandler.AdminAuthenticate,adminHandler.ViewBookings)
-		// admin.GET("booking/view",adminHandler.AdminAuthenticate,adminHandler.ViewBooking)
+		admin.GET("bookings/view", adminHandler.AdminAuthenticate, adminHandler.ViewBookings)
+		// admin.GET("booking/view", adminHandler.AdminAuthenticate, adminHandler.ViewBooking)
 
 		// admin.GET("/banners", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.GET("/banner/details", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.GET("/banner/activate", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.DELETE("/banner/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-
-		// admin.GET("/coupons/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.POST("/coupon/add", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.GET("/coupon/block", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.GET("/coupon/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.PATCH("/coupon/update", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.DELETE("/coupon/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 	}
 }
 
@@ -123,4 +116,8 @@ func (a *Admin) ViewUsers(ctx *gin.Context) {
 
 func (a *Admin) ViewCoordinators(ctx *gin.Context) {
 	// handler.ViewCoordinators(ctx, a.client)
+}
+
+func (a *Admin) ViewBookings(ctx *gin.Context) {
+	// handler.ViewBookings(ctx, a.client)
 }

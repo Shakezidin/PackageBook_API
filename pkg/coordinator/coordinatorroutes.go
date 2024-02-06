@@ -35,6 +35,8 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
 
+		coordinator.GET("/dashbord/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDashBord)
+
 		coordinator.GET("/packages/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackages)
 
 		coordinator.POST("/password/forget", CoordinatorHandler.ForgetPassword)
@@ -153,4 +155,8 @@ func (c *Coordinator) ViewBooking(ctx *gin.Context) {
 
 func (c *Coordinator) ViewTraveller(ctx *gin.Context) {
 	handler.ViewTraveller(ctx, c.client)
+}
+
+func (c *Coordinator) ViewDashBord(ctx *gin.Context) {
+	handler.ViewDashBord(ctx, c.client)
 }

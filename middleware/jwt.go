@@ -14,6 +14,7 @@ type Claims struct {
 	Id    string
 	Email string
 	Role  string
+	Token string
 	jwt.StandardClaims
 }
 
@@ -36,19 +37,14 @@ func ValidateToken(ctx *gin.Context, role string) (string, string, error) {
 		return []byte(jwtKey), nil
 	})
 
-	if err != nil {
-		log.Printf("error parsing token: %v", err)
-		return "", "", errors.New("error parsing token")
-	}
-	if !parserToken.Valid {
+	if err != nil || !parserToken.Valid {
 		log.Print("invalid token")
-		return "", "", errors.New("token invalid")
+		return "", "", errors.New("invalid token")
 	}
 
-	expTime := claims.ExpiresAt
-	if expTime < time.Now().Unix() {
-		log.Print("token Expired")
-		return "", "", errors.New("token expired")
+	if claims.Token != "Access" {
+		log.Println("unauthorized user")
+		return "", "", errors.New("not an access token")
 	}
 
 	userRole := claims.Role
@@ -57,6 +53,44 @@ func ValidateToken(ctx *gin.Context, role string) (string, string, error) {
 		return "", "", errors.New("unauthorized user")
 	}
 
+	expTime := claims.ExpiresAt
+	if expTime < time.Now().Unix() {
+		log.Print("token expired")
+		return "", "", errors.New("token expired")
+	}
+
 	return claims.Email, claims.Id, nil
+}
+
+func ValidateRefreshToken(c *gin.Context, role string) (string, error) {
+	type tokenReqBody struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+	tokenReq := tokenReqBody{}
+	if err := c.Bind(&tokenReq); err != nil {
+		return "", err
+	}
+	claims := &Claims{}
+	parserToken, err := jwt.ParseWithClaims(tokenReq.RefreshToken, claims, func(t *jwt.Token) (interface{}, error) {
+		return []byte(jwtKey), nil
+	})
+
+	if err != nil || !parserToken.Valid {
+		log.Print("invalid token")
+		return "", errors.New("invalid token")
+	}
+
+	if claims.Token != "Refresh" {
+		log.Println("unauthorized user")
+		return "", errors.New("not an refresh token")
+	}
+
+	expTime := claims.ExpiresAt
+	if expTime < time.Now().Unix() {
+		log.Print("token expired")
+		return "", errors.New("token expired")
+	}
+
+	return claims.Id, nil
 
 }

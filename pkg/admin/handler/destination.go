@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,35 +11,36 @@ import (
 )
 
 func ViewDestination(ctx *gin.Context, client pb.AdminClient) {
-	destinationIdStr := ctx.GetHeader("id")
+	destinationIdStr := ctx.GetHeader("id") // Retrieve destination ID from path parameter
 	destinationId, err := strconv.Atoi(destinationIdStr)
 	if err != nil {
-		fmt.Println("destinationID missing")
+		errMsg := "destination ID missing or invalid"
+		log.Printf("%s: %v", errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"error":  errMsg,
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	ctxt := context.Background()
 	response, err := client.AdminViewDestination(ctxt, &pb.AdminView{
 		Id: int64(destinationId),
 	})
 
 	if err != nil {
-		log.Printf("error while fetching destination", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		errMsg := "error while fetching destination"
+		log.Printf("%s: %v", errMsg, err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errMsg,
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("destination fetched succesfully"),
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "destination fetched successfully",
 		"data":    response,
 	})
 }

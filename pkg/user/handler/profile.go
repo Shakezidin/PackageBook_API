@@ -10,7 +10,7 @@ import (
 
 	"github.com/Shakezidin/middleware"
 	dto "github.com/Shakezidin/pkg/DTO"
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )

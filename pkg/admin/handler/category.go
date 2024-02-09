@@ -16,22 +16,23 @@ import (
 func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 	var category dto.AddCategory
 	if err := ctx.BindJSON(&category); err != nil {
-		log.Printf("error binding JSON")
+		errMsg := "error binding JSON"
+		log.Println(errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"error":  errMsg,
 		})
 		return
 	}
 
 	validate := validator.New()
 
-	err := validate.Struct(category)
-	if err != nil {
-		log.Printf("Validation error")
+	if err := validate.Struct(category); err != nil {
+		errMsg := "validation error"
+		log.Println(errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  "Validation error",
+			"status": http.StatusBadRequest,
+			"error":  errMsg,
 		})
 		return
 	}
@@ -42,23 +43,23 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while adding category %v err: %v", category.Category, err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		errMsg := "error while adding category"
+		log.Printf("%s %v: %v", errMsg, category.Category, err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errMsg,
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v added success", category.Category),
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": fmt.Sprintf("%v added successfully", category.Category),
 		"data":    response,
 	})
-
 }
 
-func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
+func ViewCategories(ctx *gin.Context, client pb.AdminClient) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
 
@@ -68,18 +69,18 @@ func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while fetching categories , err: %v", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		errMsg := "error while fetching categories"
+		log.Printf("%s: %v", errMsg, err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errMsg,
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("catagories fetched success"),
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "categories fetched successfully",
 		"data":    response,
 	})
-
 }

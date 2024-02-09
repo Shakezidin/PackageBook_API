@@ -7,7 +7,7 @@ import (
 	"github.com/Shakezidin/middleware"
 	"github.com/Shakezidin/pkg/config"
 	"github.com/Shakezidin/pkg/user/handler"
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 
@@ -60,6 +60,8 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/booking/history/view", UserHandler.UserAuthenticate, UserHandler.ViewBooking)
 
 		user.GET("/booking/history/cancel", UserHandler.UserAuthenticate, UserHandler.PackageCancel)
+
+		user.POST("/auth/refresh", UserHandler.ValidateRefreshToken)
 	}
 }
 
@@ -166,4 +168,8 @@ func (c *User) ViewBooking(ctx *gin.Context) {
 
 func (c *User) PackageCancel(ctx *gin.Context) {
 	handler.PackageCancel(ctx, c.client)
+}
+
+func (c *User) ValidateRefreshToken(ctx *gin.Context) {
+	handler.ValidateRefreshToken(ctx, c.client)
 }

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/Shakezidin/middleware"
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 

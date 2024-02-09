@@ -19,28 +19,29 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_UserLoginRequest_FullMethodName         = "/pb.User/UserLoginRequest"
-	User_UserSignupRequest_FullMethodName        = "/pb.User/UserSignupRequest"
-	User_UserSignupVerifyRequest_FullMethodName  = "/pb.User/UserSignupVerifyRequest"
-	User_UserForgetPassword_FullMethodName       = "/pb.User/UserForgetPassword"
-	User_UserForgetPasswordVerify_FullMethodName = "/pb.User/UserForgetPasswordVerify"
-	User_UserNewPassword_FullMethodName          = "/pb.User/UserNewPassword"
-	User_UserProfileUpdate_FullMethodName        = "/pb.User/UserProfileUpdate"
-	User_UserViewDestination_FullMethodName      = "/pb.User/UserViewDestination"
-	User_UserViewActivity_FullMethodName         = "/pb.User/UserViewActivity"
-	User_UserViewCatagories_FullMethodName       = "/pb.User/UserViewCatagories"
-	User_UserSearchPacakge_FullMethodName        = "/pb.User/UserSearchPacakge"
-	User_UserFilterPackage_FullMethodName        = "/pb.User/UserFilterPackage"
-	User_UserViewPackage_FullMethodName          = "/pb.User/UserViewPackage"
-	User_UserViewFoodMenu_FullMethodName         = "/pb.User/UserViewFoodMenu"
-	User_UserTravellerDetails_FullMethodName     = "/pb.User/UserTravellerDetails"
-	User_UserOfflineBooking_FullMethodName       = "/pb.User/UserOfflineBooking"
-	User_UserViewPackages_FullMethodName         = "/pb.User/UserViewPackages"
-	User_UserOnlinePayment_FullMethodName        = "/pb.User/UserOnlinePayment"
-	User_UserPaymentConfirmed_FullMethodName     = "/pb.User/UserPaymentConfirmed"
-	User_UserViewHistory_FullMethodName          = "/pb.User/UserViewHistory"
-	User_UserViewBooking_FullMethodName          = "/pb.User/UserViewBooking"
-	User_UserCancelBooking_FullMethodName        = "/pb.User/UserCancelBooking"
+	User_UserLoginRequest_FullMethodName         = "/userpb.User/UserLoginRequest"
+	User_UserSignupRequest_FullMethodName        = "/userpb.User/UserSignupRequest"
+	User_UserSignupVerifyRequest_FullMethodName  = "/userpb.User/UserSignupVerifyRequest"
+	User_UserForgetPassword_FullMethodName       = "/userpb.User/UserForgetPassword"
+	User_UserForgetPasswordVerify_FullMethodName = "/userpb.User/UserForgetPasswordVerify"
+	User_UserNewPassword_FullMethodName          = "/userpb.User/UserNewPassword"
+	User_UserProfileUpdate_FullMethodName        = "/userpb.User/UserProfileUpdate"
+	User_UserViewDestination_FullMethodName      = "/userpb.User/UserViewDestination"
+	User_UserViewActivity_FullMethodName         = "/userpb.User/UserViewActivity"
+	User_UserViewCatagories_FullMethodName       = "/userpb.User/UserViewCatagories"
+	User_UserSearchPacakge_FullMethodName        = "/userpb.User/UserSearchPacakge"
+	User_UserFilterPackage_FullMethodName        = "/userpb.User/UserFilterPackage"
+	User_UserViewPackage_FullMethodName          = "/userpb.User/UserViewPackage"
+	User_UserViewFoodMenu_FullMethodName         = "/userpb.User/UserViewFoodMenu"
+	User_UserTravellerDetails_FullMethodName     = "/userpb.User/UserTravellerDetails"
+	User_UserOfflineBooking_FullMethodName       = "/userpb.User/UserOfflineBooking"
+	User_UserViewPackages_FullMethodName         = "/userpb.User/UserViewPackages"
+	User_UserOnlinePayment_FullMethodName        = "/userpb.User/UserOnlinePayment"
+	User_UserPaymentConfirmed_FullMethodName     = "/userpb.User/UserPaymentConfirmed"
+	User_UserViewHistory_FullMethodName          = "/userpb.User/UserViewHistory"
+	User_UserViewBooking_FullMethodName          = "/userpb.User/UserViewBooking"
+	User_UserCancelBooking_FullMethodName        = "/userpb.User/UserCancelBooking"
+	User_UserRefreshToken_FullMethodName         = "/userpb.User/UserRefreshToken"
 )
 
 // UserClient is the client API for User service.
@@ -69,6 +70,7 @@ type UserClient interface {
 	UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error)
 	UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error)
 	UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error)
+	UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error)
 }
 
 type userClient struct {
@@ -277,6 +279,15 @@ func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts .
 	return out, nil
 }
 
+func (c *userClient) UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error) {
+	out := new(UserLoginResponce)
+	err := c.cc.Invoke(ctx, User_UserRefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -303,6 +314,7 @@ type UserServer interface {
 	UserViewHistory(context.Context, *UserView) (*UserHistories, error)
 	UserViewBooking(context.Context, *UserView) (*UserHistory, error)
 	UserCancelBooking(context.Context, *UserView) (*UserResponce, error)
+	UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -375,6 +387,9 @@ func (UnimplementedUserServer) UserViewBooking(context.Context, *UserView) (*Use
 }
 func (UnimplementedUserServer) UserCancelBooking(context.Context, *UserView) (*UserResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCancelBooking not implemented")
+}
+func (UnimplementedUserServer) UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRefreshToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -785,11 +800,29 @@ func _User_UserCancelBooking_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenData)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRefreshToken(ctx, req.(*TokenData))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.User",
+	ServiceName: "userpb.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -879,6 +912,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserCancelBooking",
 			Handler:    _User_UserCancelBooking_Handler,
+		},
+		{
+			MethodName: "UserRefreshToken",
+			Handler:    _User_UserRefreshToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

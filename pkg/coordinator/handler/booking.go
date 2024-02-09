@@ -23,7 +23,7 @@ func ViewBookings(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 	var ctxt = context.Background()
-	response, err := client.VeiwHistory(ctxt, &cpb.View{
+	response, err := client.ViewHistory(ctxt, &cpb.View{
 		Status: "true",
 		Id:     int64(ID),
 	})

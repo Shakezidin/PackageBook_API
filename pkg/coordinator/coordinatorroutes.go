@@ -48,15 +48,15 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
+		
+		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
+		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
 
 		coordinator.POST("/destination/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddDestination)
 		coordinator.GET("/destination/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDestination)
 
 		coordinator.POST("/activity/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddActivity)
 		coordinator.GET("/activity/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewActivity)
-
-		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
-		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
 
 		coordinator.GET("/bookings/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewBookings)
 		coordinator.GET("/booking/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewBooking)

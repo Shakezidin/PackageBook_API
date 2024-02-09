@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,30 +21,29 @@ func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while fetching packages", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		log.Printf("error while fetching packages: %v", err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  "failed to fetch packages",
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("packages fetched succesfully"),
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "packages fetched successfully",
 		"data":    response,
 	})
 }
 
 func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
-	packageIdStr := ctx.GetHeader("id")
+	packageIdStr := ctx.GetHeader("id") // Retrieve package ID from path parameter
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("packageID missing")
+		log.Printf("package ID missing or invalid: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  "package id missing",
-			"msg":    "error",
+			"error":  "package ID missing or invalid",
 		})
 		return
 	}
@@ -56,30 +54,29 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while fetching package", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		log.Printf("error while fetching package: %v", err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  "failed to fetch package",
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "package fetched succesfully",
+		"message": "package fetched successfully",
 		"data":    response,
 	})
 }
 
 func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
-	packageIdStr := ctx.GetHeader("id")
+	packageIdStr := ctx.GetHeader("id") // Retrieve package ID from path parameter
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("packageID missing")
+		log.Printf("package ID missing or invalid: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"error":  "package ID missing or invalid",
 		})
 		return
 	}
@@ -90,17 +87,17 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while updating package status", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		log.Printf("error while updating package status: %v", err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  "failed to update package status",
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": fmt.Sprintf("package status updated succesfully"),
+		"message": "package status updated successfully",
 		"data":    response,
 	})
 }

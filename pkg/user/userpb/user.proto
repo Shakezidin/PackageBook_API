@@ -1,6 +1,6 @@
 syntax ="proto3";
 
-package pb;
+package userpb;
 
 option go_package = ".";
 
@@ -27,6 +27,13 @@ service User {
     rpc UserViewHistory(UserView)returns(UserHistories);
     rpc UserViewBooking(UserView)returns(UserHistory);
     rpc UserCancelBooking(UserView)returns(UserResponce);
+    rpc UserRefreshToken(TokenData)returns(UserLoginResponce);
+}
+
+message TokenData{
+    string role = 1;
+    string email = 2;
+    string id = 3;
 }
 
 message UserHistories{
@@ -220,6 +227,7 @@ message UserLogin{
 
 message UserLoginResponce{
     string token = 1;
+    string refreshToken = 2;
 }
 
 message UserSignup{

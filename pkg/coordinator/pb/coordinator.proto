@@ -21,10 +21,11 @@ service Coordinator {
     rpc CoordinatorForgetPasswordVerify(forgetPasswordVerify)returns(Responce);
     rpc CoordinatorNewPassword(newpassword)returns(Responce);
     rpc ViewCatagories(View)returns(Catagories);
-    rpc VeiwHistory(View)returns(Histories);
+    rpc ViewHistory(View)returns(Histories);
     rpc ViewBooking(View)returns(History);
     rpc ViewTraveller(View)returns(TravellerDetails);
     rpc ViewDashBord(View)returns(DashBord);
+    
 }
 
 message DashBord{

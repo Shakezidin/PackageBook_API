@@ -56,10 +56,12 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorAddDestination(ctxt, &cpb.Destination{
-		DestinationName: destination.DestinationName,
-		Description:     destination.Description,
-		PackageID:       int64(packageId),
-		Image:           destination.Image,
+		DestinationName:    destination.DestinationName,
+		Description:        destination.Description,
+		PackageID:          int64(packageId),
+		Image:              destination.Image,
+		TransportationMode: destination.TransportationMode,
+		ArrivalLocation:    destination.ArrivalLocation,
 	})
 
 	if err != nil {

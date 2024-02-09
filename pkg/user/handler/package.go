@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 
@@ -73,7 +73,7 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
 	response, err := client.UserViewPackages(ctxt, &pb.UserView{
-		Status: true,
+		Status: "true",
 		Page:   int64(pageInt),
 	})
 
@@ -93,11 +93,48 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	})
 }
 
+func ViewFoodMenus(ctx *gin.Context, client pb.UserClient) {
+	packageIdStr := ctx.GetHeader("id")
+	packageId, err := strconv.Atoi(packageIdStr)
+	if err != nil {
+		fmt.Println("packageID missing")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+			"msg":    "packageID missing",
+		})
+		return
+	}
+	page := ctx.DefaultQuery("page", "1")
+	pageInt, _ := strconv.Atoi(page)
+	var ctxt = context.Background()
+	response, err := client.UserViewFoodMenu(ctxt, &pb.UserView{
+		Id:   int64(packageId),
+		Page: int64(pageInt),
+	})
+
+	if err != nil {
+		log.Printf("food menu fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("food menu fetched succesfully"),
+		"data":    response,
+	})
+}
+
 type Filter struct {
-	MinPrice      float64 `json:"minprice" validate:"min=5"`
-	MaxPrice      float64 `json:"maxprice" validate:"max=10000"`
-	Orderby       string  `json:"orderby"`
-	CategoryId    string  `json:"categoryid"`
+	StartTime  string  `json:"starttime"`
+	MinPrice   float64 `json:"minprice" validate:"min=5"`
+	MaxPrice   float64 `json:"maxprice" validate:"max=10000"`
+	Orderby    string  `json:"orderby"`
+	CategoryId string  `json:"categoryid"`
 }
 
 func PackageFilter(ctx *gin.Context, client pb.UserClient) {
@@ -124,6 +161,7 @@ func PackageFilter(ctx *gin.Context, client pb.UserClient) {
 		MaxPrice:     int64(filter.MaxPrice),
 		OrderBy:      filter.Orderby,
 		CategoryId:   int64(categoryId),
+		Departurtime: filter.StartTime,
 	})
 
 	if err != nil {

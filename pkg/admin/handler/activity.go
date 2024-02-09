@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,32 +14,40 @@ func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
 	activityIdStr := ctx.GetHeader("id")
 	activityId, err := strconv.Atoi(activityIdStr)
 	if err != nil {
-		fmt.Println("activityID missing")
+		errMsg := "invalid activity ID"
+		log.Println(errMsg)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"error":  errMsg,
 		})
 		return
 	}
 
-	var ctxt = context.Background()
-	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{
-		Id: int64(activityId),
-	})
-
+	ctxt := context.Background()
+	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{Id: int64(activityId)})
 	if err != nil {
-		log.Printf("error while fetching activity", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		errMsg := "error fetching activity"
+		log.Printf("%s: %v", errMsg, err)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  errMsg,
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
+	if response == nil || response.ActivityId == 0 {
+		errMsg := "activity not found"
+		log.Println(errMsg)
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errMsg,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "activity fetched successfully",
 		"data":    response,
 	})
 }

@@ -1,6 +1,6 @@
 syntax ="proto3";
 
-package pb;
+package userpb;
 
 option go_package = ".";
 
@@ -8,7 +8,6 @@ service User {
     rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
     rpc UserSignupRequest(UserSignup) returns(UserResponce);
     rpc UserSignupVerifyRequest(UserVerify)returns(UserResponce);
-    rpc UserViewPackage(UserView)returns(UserPackage);
     rpc UserForgetPassword(UserforgetPassword)returns(UserResponce);
     rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
     rpc UserNewPassword(Usernewpassword)returns(UserResponce);
@@ -18,11 +17,41 @@ service User {
     rpc UserViewCatagories(UserView)returns(UserCategories);
     rpc UserSearchPacakge(UserSearch)returns(UserPackages);
     rpc UserFilterPackage(UserFilter)returns(UserPackages);
+    rpc UserViewPackage(UserView)returns(UserPackage);
+    rpc UserViewFoodMenu(UserView)returns(UserFoodMenus);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
     rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
     rpc UserViewPackages (UserView)returns(UserPackages);
     rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
     rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponce);
+    rpc UserViewHistory(UserView)returns(UserHistories);
+    rpc UserViewBooking(UserView)returns(UserHistory);
+    rpc UserCancelBooking(UserView)returns(UserResponce);
+    rpc UserRefreshToken(TokenData)returns(UserLoginResponce);
+}
+
+message TokenData{
+    string role = 1;
+    string email = 2;
+    string id = 3;
+}
+
+message UserHistories{
+    repeated UserHistory history = 1;
+}
+
+message UserHistory{
+    int64 Id = 1;
+    string paymentMode = 2;
+    string BookingStatus = 3;
+    string CancelledStatus = 4;
+    int64  TotalPrice = 5;
+    int64  UserId = 6;
+    string bookingId = 7;
+    string BookDate = 8;
+    string StartDate = 9;
+    repeated UserTravellerDetails travellers = 10;
+    int64 PaidAmount = 11;
 }
 
 message UserPaymentConfirmedRequest{
@@ -125,6 +154,19 @@ message UserCategory{
     string categoryName = 2;
 }
 
+message UserFoodMenus{
+    repeated UserFoodMenu Foodmenu= 1;
+}
+
+message    UserFoodMenu {
+    int64  FoodMenuId = 1;
+    int64  PackageID = 2;
+    string Breakfast = 3;
+    string Lunch     = 4;
+    string Dinner    = 5;  
+    string Date      = 6;  
+}
+
 message UserActivity{
     int64  activityId = 1;
     string activityname = 2;
@@ -146,6 +188,8 @@ message UserDestination{
     string image = 6;
     repeated UserActivity activity = 7;
     int64  PackageID = 8;
+    string TransportationMode = 9;
+    string ArrivalLocation   = 10;
 }
 
 message UserPackage{
@@ -168,12 +212,11 @@ message UserPackage{
     repeated UserDestination Destinations = 17;
 }
 
-
-
 message UserView{
     int64 Id = 1;
-    bool status = 2;
+    string status = 2;
     int64 page = 3;
+    int64 userId = 4;
 }
 
 message UserLogin{
@@ -184,6 +227,7 @@ message UserLogin{
 
 message UserLoginResponce{
     string token = 1;
+    string refreshToken = 2;
 }
 
 message UserSignup{

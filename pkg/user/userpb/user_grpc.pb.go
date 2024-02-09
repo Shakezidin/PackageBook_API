@@ -19,24 +19,29 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_UserLoginRequest_FullMethodName         = "/pb.User/UserLoginRequest"
-	User_UserSignupRequest_FullMethodName        = "/pb.User/UserSignupRequest"
-	User_UserSignupVerifyRequest_FullMethodName  = "/pb.User/UserSignupVerifyRequest"
-	User_UserViewPackage_FullMethodName          = "/pb.User/UserViewPackage"
-	User_UserForgetPassword_FullMethodName       = "/pb.User/UserForgetPassword"
-	User_UserForgetPasswordVerify_FullMethodName = "/pb.User/UserForgetPasswordVerify"
-	User_UserNewPassword_FullMethodName          = "/pb.User/UserNewPassword"
-	User_UserProfileUpdate_FullMethodName        = "/pb.User/UserProfileUpdate"
-	User_UserViewDestination_FullMethodName      = "/pb.User/UserViewDestination"
-	User_UserViewActivity_FullMethodName         = "/pb.User/UserViewActivity"
-	User_UserViewCatagories_FullMethodName       = "/pb.User/UserViewCatagories"
-	User_UserSearchPacakge_FullMethodName        = "/pb.User/UserSearchPacakge"
-	User_UserFilterPackage_FullMethodName        = "/pb.User/UserFilterPackage"
-	User_UserTravellerDetails_FullMethodName     = "/pb.User/UserTravellerDetails"
-	User_UserOfflineBooking_FullMethodName       = "/pb.User/UserOfflineBooking"
-	User_UserViewPackages_FullMethodName         = "/pb.User/UserViewPackages"
-	User_UserOnlinePayment_FullMethodName        = "/pb.User/UserOnlinePayment"
-	User_UserPaymentConfirmed_FullMethodName     = "/pb.User/UserPaymentConfirmed"
+	User_UserLoginRequest_FullMethodName         = "/userpb.User/UserLoginRequest"
+	User_UserSignupRequest_FullMethodName        = "/userpb.User/UserSignupRequest"
+	User_UserSignupVerifyRequest_FullMethodName  = "/userpb.User/UserSignupVerifyRequest"
+	User_UserForgetPassword_FullMethodName       = "/userpb.User/UserForgetPassword"
+	User_UserForgetPasswordVerify_FullMethodName = "/userpb.User/UserForgetPasswordVerify"
+	User_UserNewPassword_FullMethodName          = "/userpb.User/UserNewPassword"
+	User_UserProfileUpdate_FullMethodName        = "/userpb.User/UserProfileUpdate"
+	User_UserViewDestination_FullMethodName      = "/userpb.User/UserViewDestination"
+	User_UserViewActivity_FullMethodName         = "/userpb.User/UserViewActivity"
+	User_UserViewCatagories_FullMethodName       = "/userpb.User/UserViewCatagories"
+	User_UserSearchPacakge_FullMethodName        = "/userpb.User/UserSearchPacakge"
+	User_UserFilterPackage_FullMethodName        = "/userpb.User/UserFilterPackage"
+	User_UserViewPackage_FullMethodName          = "/userpb.User/UserViewPackage"
+	User_UserViewFoodMenu_FullMethodName         = "/userpb.User/UserViewFoodMenu"
+	User_UserTravellerDetails_FullMethodName     = "/userpb.User/UserTravellerDetails"
+	User_UserOfflineBooking_FullMethodName       = "/userpb.User/UserOfflineBooking"
+	User_UserViewPackages_FullMethodName         = "/userpb.User/UserViewPackages"
+	User_UserOnlinePayment_FullMethodName        = "/userpb.User/UserOnlinePayment"
+	User_UserPaymentConfirmed_FullMethodName     = "/userpb.User/UserPaymentConfirmed"
+	User_UserViewHistory_FullMethodName          = "/userpb.User/UserViewHistory"
+	User_UserViewBooking_FullMethodName          = "/userpb.User/UserViewBooking"
+	User_UserCancelBooking_FullMethodName        = "/userpb.User/UserCancelBooking"
+	User_UserRefreshToken_FullMethodName         = "/userpb.User/UserRefreshToken"
 )
 
 // UserClient is the client API for User service.
@@ -46,7 +51,6 @@ type UserClient interface {
 	UserLoginRequest(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginResponce, error)
 	UserSignupRequest(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
 	UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponce, error)
-	UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error)
 	UserForgetPassword(ctx context.Context, in *UserforgetPassword, opts ...grpc.CallOption) (*UserResponce, error)
 	UserForgetPasswordVerify(ctx context.Context, in *UserforgetPasswordVerify, opts ...grpc.CallOption) (*UserResponce, error)
 	UserNewPassword(ctx context.Context, in *Usernewpassword, opts ...grpc.CallOption) (*UserResponce, error)
@@ -56,11 +60,17 @@ type UserClient interface {
 	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
 	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error)
 	UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error)
+	UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error)
+	UserViewFoodMenu(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserFoodMenus, error)
 	UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error)
 	UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponce, error)
 	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error)
 	UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error)
 	UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error)
+	UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error)
+	UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error)
+	UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error)
+	UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error)
 }
 
 type userClient struct {
@@ -92,15 +102,6 @@ func (c *userClient) UserSignupRequest(ctx context.Context, in *UserSignup, opts
 func (c *userClient) UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponce, error) {
 	out := new(UserResponce)
 	err := c.cc.Invoke(ctx, User_UserSignupVerifyRequest_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error) {
-	out := new(UserPackage)
-	err := c.cc.Invoke(ctx, User_UserViewPackage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -188,6 +189,24 @@ func (c *userClient) UserFilterPackage(ctx context.Context, in *UserFilter, opts
 	return out, nil
 }
 
+func (c *userClient) UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error) {
+	out := new(UserPackage)
+	err := c.cc.Invoke(ctx, User_UserViewPackage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserViewFoodMenu(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserFoodMenus, error) {
+	out := new(UserFoodMenus)
+	err := c.cc.Invoke(ctx, User_UserViewFoodMenu_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userClient) UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error) {
 	out := new(UserTravellerResponse)
 	err := c.cc.Invoke(ctx, User_UserTravellerDetails_FullMethodName, in, out, opts...)
@@ -233,6 +252,42 @@ func (c *userClient) UserPaymentConfirmed(ctx context.Context, in *UserPaymentCo
 	return out, nil
 }
 
+func (c *userClient) UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error) {
+	out := new(UserHistories)
+	err := c.cc.Invoke(ctx, User_UserViewHistory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error) {
+	out := new(UserHistory)
+	err := c.cc.Invoke(ctx, User_UserViewBooking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error) {
+	out := new(UserResponce)
+	err := c.cc.Invoke(ctx, User_UserCancelBooking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error) {
+	out := new(UserLoginResponce)
+	err := c.cc.Invoke(ctx, User_UserRefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -240,7 +295,6 @@ type UserServer interface {
 	UserLoginRequest(context.Context, *UserLogin) (*UserLoginResponce, error)
 	UserSignupRequest(context.Context, *UserSignup) (*UserResponce, error)
 	UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponce, error)
-	UserViewPackage(context.Context, *UserView) (*UserPackage, error)
 	UserForgetPassword(context.Context, *UserforgetPassword) (*UserResponce, error)
 	UserForgetPasswordVerify(context.Context, *UserforgetPasswordVerify) (*UserResponce, error)
 	UserNewPassword(context.Context, *Usernewpassword) (*UserResponce, error)
@@ -250,11 +304,17 @@ type UserServer interface {
 	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
 	UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error)
 	UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error)
+	UserViewPackage(context.Context, *UserView) (*UserPackage, error)
+	UserViewFoodMenu(context.Context, *UserView) (*UserFoodMenus, error)
 	UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error)
 	UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error)
 	UserViewPackages(context.Context, *UserView) (*UserPackages, error)
 	UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error)
 	UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error)
+	UserViewHistory(context.Context, *UserView) (*UserHistories, error)
+	UserViewBooking(context.Context, *UserView) (*UserHistory, error)
+	UserCancelBooking(context.Context, *UserView) (*UserResponce, error)
+	UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -270,9 +330,6 @@ func (UnimplementedUserServer) UserSignupRequest(context.Context, *UserSignup) (
 }
 func (UnimplementedUserServer) UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSignupVerifyRequest not implemented")
-}
-func (UnimplementedUserServer) UserViewPackage(context.Context, *UserView) (*UserPackage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserViewPackage not implemented")
 }
 func (UnimplementedUserServer) UserForgetPassword(context.Context, *UserforgetPassword) (*UserResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserForgetPassword not implemented")
@@ -301,6 +358,12 @@ func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (
 func (UnimplementedUserServer) UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserFilterPackage not implemented")
 }
+func (UnimplementedUserServer) UserViewPackage(context.Context, *UserView) (*UserPackage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewPackage not implemented")
+}
+func (UnimplementedUserServer) UserViewFoodMenu(context.Context, *UserView) (*UserFoodMenus, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewFoodMenu not implemented")
+}
 func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserTravellerDetails not implemented")
 }
@@ -315,6 +378,18 @@ func (UnimplementedUserServer) UserOnlinePayment(context.Context, *UserBooking) 
 }
 func (UnimplementedUserServer) UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPaymentConfirmed not implemented")
+}
+func (UnimplementedUserServer) UserViewHistory(context.Context, *UserView) (*UserHistories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewHistory not implemented")
+}
+func (UnimplementedUserServer) UserViewBooking(context.Context, *UserView) (*UserHistory, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewBooking not implemented")
+}
+func (UnimplementedUserServer) UserCancelBooking(context.Context, *UserView) (*UserResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCancelBooking not implemented")
+}
+func (UnimplementedUserServer) UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRefreshToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -379,24 +454,6 @@ func _User_UserSignupVerifyRequest_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserSignupVerifyRequest(ctx, req.(*UserVerify))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_UserViewPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserView)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).UserViewPackage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_UserViewPackage_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserViewPackage(ctx, req.(*UserView))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -563,6 +620,42 @@ func _User_UserFilterPackage_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserViewPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewPackage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewPackage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewPackage(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserViewFoodMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewFoodMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewFoodMenu_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewFoodMenu(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_UserTravellerDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserTravellerRequest)
 	if err := dec(in); err != nil {
@@ -653,11 +746,83 @@ func _User_UserPaymentConfirmed_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserViewHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewHistory(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserViewBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserViewBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserViewBooking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserViewBooking(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserCancelBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserView)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserCancelBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserCancelBooking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserCancelBooking(ctx, req.(*UserView))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenData)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserRefreshToken(ctx, req.(*TokenData))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var User_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.User",
+	ServiceName: "userpb.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -671,10 +836,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserSignupVerifyRequest",
 			Handler:    _User_UserSignupVerifyRequest_Handler,
-		},
-		{
-			MethodName: "UserViewPackage",
-			Handler:    _User_UserViewPackage_Handler,
 		},
 		{
 			MethodName: "UserForgetPassword",
@@ -713,6 +874,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserFilterPackage_Handler,
 		},
 		{
+			MethodName: "UserViewPackage",
+			Handler:    _User_UserViewPackage_Handler,
+		},
+		{
+			MethodName: "UserViewFoodMenu",
+			Handler:    _User_UserViewFoodMenu_Handler,
+		},
+		{
 			MethodName: "UserTravellerDetails",
 			Handler:    _User_UserTravellerDetails_Handler,
 		},
@@ -731,6 +900,22 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserPaymentConfirmed",
 			Handler:    _User_UserPaymentConfirmed_Handler,
+		},
+		{
+			MethodName: "UserViewHistory",
+			Handler:    _User_UserViewHistory_Handler,
+		},
+		{
+			MethodName: "UserViewBooking",
+			Handler:    _User_UserViewBooking_Handler,
+		},
+		{
+			MethodName: "UserCancelBooking",
+			Handler:    _User_UserCancelBooking_Handler,
+		},
+		{
+			MethodName: "UserRefreshToken",
+			Handler:    _User_UserRefreshToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

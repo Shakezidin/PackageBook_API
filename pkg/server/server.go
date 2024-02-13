@@ -7,7 +7,7 @@ type ServerStruct struct {
 }
 
 func (s *ServerStruct) StartServer(port string) {
-	s.R.Run("localhost:" + port)
+	s.R.Run(":" + port)
 }
 
 func Server() *ServerStruct {

@@ -2,8 +2,7 @@ package config
 
 import (
 	"fmt"
-
-	"github.com/spf13/viper"
+	"os"
 )
 
 type Configure struct {
@@ -17,17 +16,15 @@ type Configure struct {
 }
 
 func LoadConfigure() (*Configure, error) {
-	var cfg Configure
-
-	viper.SetConfigFile("../../.env")
-	err := viper.ReadInConfig()
-
-	err = viper.Unmarshal(&cfg)
-
-	if err != nil {
-		return &Configure{}, nil
+	cfg := &Configure{
+		APIPORT:            os.Getenv("APIPORT"),
+		ADMINPORT:          os.Getenv("GRPCADMINPORT"),
+		BSERVICEPORT:       os.Getenv("BSERVICEPORT"),
+		SECRETKEY:          os.Getenv("SECRETKEY"),
+		REDISHOST:          os.Getenv("REDISHOST"),
+		GRPCCORDINATORPORT: os.Getenv("GRPCCORDINATORPORT"),
+		GRPCUSERPORT:       os.Getenv("GRPCUSERPORT"),
 	}
-
 	fmt.Println(cfg)
-	return &cfg, nil
+	return cfg, nil
 }

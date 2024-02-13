@@ -71,8 +71,8 @@ func (a *AdminAPI) Authenticate(ctx *gin.Context) {
 	email, _, err := middleware.ValidateToken(ctx, "admin")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error":  "unauthorized",
-			"status": http.StatusUnauthorized,
+			"Error":  "Unauthorized",
+			"Status": http.StatusUnauthorized,
 		})
 		return
 	}

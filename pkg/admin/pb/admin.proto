@@ -49,7 +49,7 @@ message AdminHistories{
 }
 
 message AdminHistory{
-    int64 Id = 1;
+    int64  Id = 1;
     string paymentMode = 2;
     string BookingStatus = 3;
     string CancelledStatus = 4;
@@ -59,7 +59,7 @@ message AdminHistory{
     string BookDate = 8;
     string StartDate = 9;
     repeated AdminTravellerDetails travellers = 10;
-    int64 PaidAmount = 11;
+    int64  PaidAmount = 11;
 }
 
 message AdminTravellerDetails {
@@ -67,7 +67,7 @@ message AdminTravellerDetails {
     string age = 2;
     string gender = 3;
     repeated string activityId = 4;
-    int64 Id = 5;
+    int64  Id = 5;
     repeated AdminActivity activity = 6;
 }
 
@@ -76,7 +76,7 @@ message AdminUsers{
 }
 
 message AdminUser{
-    int64 Id = 1;
+    int64  Id = 1;
     string name =2;
     string email = 3;
     string phone = 4;
@@ -85,9 +85,9 @@ message AdminUser{
 }
 
 message AdminView{
-    int64 Id = 1; 
+    int64  Id = 1; 
     string status = 2;
-    int64 page = 3;
+    int64  page = 3;
 }
 
 message AdminCategories{
@@ -97,11 +97,11 @@ message AdminCategories{
 message AdminResponse{
     string status = 1;
     string message = 2;
-    int64 Id = 3;
+    int64  Id = 3;
 }
 
 message AdminCategory{
-    int64 categoryid = 1;
+    int64  categoryid = 1;
     string category = 2;
 }
 
@@ -141,8 +141,8 @@ message AdminDestination{
     string  image = 6;
     repeated AdminActivity activity = 7;
     int64   PackageID = 8;
-    string TransportationMode = 9;
-    string ArrivalLocation   = 10;
+    string  TransportationMode = 9;
+    string  ArrivalLocation   = 10;
 }
 
 message AdminPackage{

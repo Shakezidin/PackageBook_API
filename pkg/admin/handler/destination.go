@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -10,37 +9,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewDestination handles the HTTP request to view a destination.
 func ViewDestination(ctx *gin.Context, client pb.AdminClient) {
-	destinationIdStr := ctx.GetHeader("id") // Retrieve destination ID from path parameter
+	// Retrieve destination ID from header
+	destinationIdStr := ctx.GetHeader("id")
 	destinationId, err := strconv.Atoi(destinationIdStr)
 	if err != nil {
-		errMsg := "destination ID missing or invalid"
-		log.Printf("%s: %v", errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errMsg,
+			"Status": http.StatusBadRequest,
+			"Error":  "Destination ID missing or invalid",
 		})
 		return
 	}
 
+	// Create a context
 	ctxt := context.Background()
+
+	// Call the gRPC service to fetch the destination
 	response, err := client.AdminViewDestination(ctxt, &pb.AdminView{
 		Id: int64(destinationId),
 	})
 
+	// Handle errors
 	if err != nil {
-		errMsg := "error while fetching destination"
-		log.Printf("%s: %v", errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errMsg,
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Respond with fetched destination
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "destination fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "Destination fetched successfully",
+		"Data":    response,
 	})
 }

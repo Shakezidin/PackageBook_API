@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,12 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewBookings handles the HTTP request to view bookings.
 func ViewBookings(ctx *gin.Context, client pb.AdminClient) {
-	pkgId := ctx.GetHeader("id")
+	pkgID := ctx.GetHeader("id")
 	payment := ctx.DefaultQuery("payment", "full")
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
-	id, _ := strconv.Atoi(pkgId)
+	id, _ := strconv.Atoi(pkgID)
 
 	ctxt := context.Background()
 	response, err := client.AdminViewBookings(ctxt, &pb.AdminView{
@@ -25,33 +24,30 @@ func ViewBookings(ctx *gin.Context, client pb.AdminClient) {
 		Status: payment,
 		Page:   int64(page),
 	})
-
 	if err != nil {
-		errMsg := "error while fetching bookings"
-		log.Println(errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"status": http.StatusInternalServerError,
-			"error":  errMsg,
+			"error":  err.Error(),
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "bookings fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "Bookings fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewBooking handles the HTTP request to view a booking.
 func ViewBooking(ctx *gin.Context, client pb.AdminClient) {
 	id := ctx.GetHeader("id")
 	ID, err := strconv.Atoi(id)
 	if err != nil {
-		errMsg := "booking ID missing or invalid"
-		log.Println(errMsg, err)
+		errMsg := "Booking ID missing or invalid"
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errMsg,
+			"Status": http.StatusBadRequest,
+			"Error":  errMsg,
 		})
 		return
 	}
@@ -60,35 +56,32 @@ func ViewBooking(ctx *gin.Context, client pb.AdminClient) {
 	response, err := client.AdminViewBooking(ctxt, &pb.AdminView{
 		Id: int64(ID),
 	})
-
 	if err != nil {
-		errMsg := "error while fetching booking"
-		log.Println(errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errMsg,
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "booking fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "Booking fetched successfully",
+		"Data":    response,
 	})
 }
 
 // BookingSearchCriteria represents the search criteria for bookings.
 type BookingSearchCriteria struct {
-	PaymentMode     string `json:"paymentMode,omitempty"`
-	BookingStatus   string `json:"bookingStatus,omitempty"`
-	CancelledStatus bool   `json:"cancelledStatus,omitempty"`
-	UserEmail       string `json:"userEmail,omitempty"`
-	BookingID       string `json:"bookingID,omitempty"`
-	BookDate        string `json:"bookDateFrom,omitempty"`
-	StartDate       string `json:"startDateFrom,omitempty"`
-	CoordinatorID   uint   `json:"coordinatorID,omitempty"`
-	CatageryId      uint   `json:"categoryid,omitempty"`
+	PaymentMode     string `json:"paymentmode,omitempty"`
+	BookingStatus   string `json:"bookingstatus,omitempty"`
+	CancelledStatus bool   `json:"cancelledstatus,omitempty"`
+	UserEmail       string `json:"useremail,omitempty"`
+	BookingID       string `json:"bookingid,omitempty"`
+	BookDate        string `json:"bookdatefrom,omitempty"`
+	StartDate       string `json:"startdatefrom,omitempty"`
+	CoordinatorID   uint   `json:"coordinatorid,omitempty"`
+	CategoryID      uint   `json:"categoryid,omitempty"`
 }
 
 func isValidDateFormat(dateStr string) bool {
@@ -96,62 +89,60 @@ func isValidDateFormat(dateStr string) bool {
 	return err == nil
 }
 
+// FilterBookings handles the HTTP request to filter bookings based on criteria.
 func FilterBookings(ctx *gin.Context, client pb.AdminClient) {
-	var Searching BookingSearchCriteria
+	var search BookingSearchCriteria
 
-	if err := ctx.BindJSON(&Searching); err != nil {
-		log.Printf("error binding JSON")
+	if err := ctx.BindJSON(&search); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	if Searching.BookDate != "" && !isValidDateFormat(Searching.BookDate) {
+	if search.BookDate != "" && !isValidDateFormat(search.BookDate) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "Invalid bookDate format. Please use the format DD-MM-YYYY.",
+			"Status": http.StatusBadRequest,
+			"Error":  "Invalid bookdate format. Please use the format DD-MM-YYYY.",
 		})
 		return
 	}
 
-	if Searching.StartDate != "" && !isValidDateFormat(Searching.StartDate) {
+	if search.StartDate != "" && !isValidDateFormat(search.StartDate) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "Invalid startDate format. Please use the format DD-MM-YYYY.",
+			"Status": http.StatusBadRequest,
+			"Error":  "Invalid startdate format. Please use the format DD-MM-YYYY.",
 		})
 		return
 	}
+
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
-	var ctxt = context.Background()
+	ctxt := context.Background()
 	response, err := client.AdminSearchBooking(ctxt, &pb.AdminBookingSearchCriteria{
-		PaymentMode:     Searching.PaymentMode,
-		BookingStatus:   Searching.BookingStatus,
-		CancelledStatus: Searching.CancelledStatus,
-		UserEmail:       Searching.UserEmail,
-		BookingId:       Searching.BookingID,
-		BookDate:        Searching.BookDate,
-		StartDate:       Searching.StartDate,
-		CoordinatorId:   uint32(Searching.CoordinatorID),
+		PaymentMode:     search.PaymentMode,
+		BookingStatus:   search.BookingStatus,
+		CancelledStatus: search.CancelledStatus,
+		UserEmail:       search.UserEmail,
+		BookingId:       search.BookingID,
+		BookDate:        search.BookDate,
+		StartDate:       search.StartDate,
+		CoordinatorId:   uint32(search.CoordinatorID),
 		Page:            int64(pageInt),
-		CatageryId:      int64(Searching.CatageryId),
+		CatageryId:      int64(search.CategoryID),
 	})
-
 	if err != nil {
-		log.Printf("bookings fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("bookings fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusAccepted, gin.H{
+		"Status":  http.StatusAccepted,
+		"Message": "Bookings fetched successfully",
+		"Data":    response,
 	})
 }

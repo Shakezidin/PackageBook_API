@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -10,44 +9,49 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewActivity handles the HTTP request to view an activity by its ID.
 func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
+	// Get the activity ID from the request header.
 	activityIdStr := ctx.GetHeader("id")
+
+	// Convert the activity ID to an integer.
 	activityId, err := strconv.Atoi(activityIdStr)
 	if err != nil {
-		errMsg := "invalid activity ID"
-		log.Println(errMsg)
+		errMsg := "Invalid activity ID"
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  errMsg,
+			"Status": http.StatusBadRequest,
+			"Error":  errMsg,
 		})
 		return
 	}
 
+	// Create a context for the gRPC request.
 	ctxt := context.Background()
+
+	// Call the gRPC service to fetch the activity by ID.
 	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{Id: int64(activityId)})
 	if err != nil {
-		errMsg := "error fetching activity"
-		log.Printf("%s: %v", errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errMsg,
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Check if the response is nil or the activity ID is 0, indicating that the activity was not found.
 	if response == nil || response.ActivityId == 0 {
-		errMsg := "activity not found"
-		log.Println(errMsg)
+		errMsg := "Activity not found"
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
-			"error":  errMsg,
+			"Status": http.StatusNotFound,
+			"Error":  errMsg,
 		})
 		return
 	}
 
+	// Respond with the fetched activity.
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "activity fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "Activity fetched successfully",
+		"Data":    response,
 	})
 }

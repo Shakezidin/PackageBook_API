@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -10,58 +9,69 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewUser handles the HTTP request to view a specific user.
 func ViewUser(ctx *gin.Context, client pb.AdminClient) {
 	idStr := ctx.GetHeader("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  err,
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  "Invalid user ID",
 		})
+		return
 	}
 
+	// Create a context
 	ctxt := context.Background()
+
+	// Call the gRPC service to fetch the user
 	response, err := client.AdminViewUser(ctxt, &pb.AdminView{
 		Id: int64(id),
 	})
 
+	// Handle errors
 	if err != nil {
-		errMsg := "error while fetching user"
-		log.Printf("%s: %v", errMsg, err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  errMsg,
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Respond with fetched user
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "user fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "User fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewUsers handles the HTTP request to view a list of users.
 func ViewUsers(ctx *gin.Context, client pb.AdminClient) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
-	var ctxt = context.Background()
+
+	// Create a context
+	ctxt := context.Background()
+
+	// Call the gRPC service to fetch users
 	response, err := client.AdminViewUsers(ctxt, &pb.AdminView{
 		Page: int64(page),
 	})
 
+	// Handle errors
 	if err != nil {
-		log.Printf("error while users packages: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
-			"error":  "failed to fetch users",
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Respond with fetched users
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
-		"message": "users fetched successfully",
-		"data":    response,
+		"Status":  http.StatusOK,
+		"Message": "Users fetched successfully",
+		"Data":    response,
 	})
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Shakezidin/middleware"
@@ -181,6 +182,36 @@ func NewPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctx.JSON(200, gin.H{
 		"status": http.StatusAccepted,
+		"data":   response,
+	})
+}
+
+func ViewDashBord(ctx *gin.Context, client cpb.CoordinatorClient) {
+	_, id, err := middleware.ValidateToken(ctx, "coordinator")
+	if err != nil {
+		log.Printf("Token validation error, err: %v", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+	Id, _ := strconv.Atoi(id)
+	response, err := client.ViewDashBord(ctx, &cpb.View{
+		Id: int64(Id),
+	})
+
+	if err != nil {
+		log.Printf("error while fetching dashbord err: %v", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status": http.StatusOK,
 		"data":   response,
 	})
 }

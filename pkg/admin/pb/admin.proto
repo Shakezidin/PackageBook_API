@@ -6,34 +6,102 @@ option go_package = ".";
 
 
 service Admin {
-    rpc AdminLoginRequest(AdminLogin) returns (AdminResponce);
-    rpc AdminAddCategory(AdminCategory)returns(AdminResponce);
+    rpc AdminLoginRequest(AdminLogin) returns (AdminResponse);
+    rpc AdminAddCategory(AdminCategory)returns(AdminResponse);
     rpc AdminViewPackages(AdminView)returns(AdminPackages);
     rpc AdminViewpackage(AdminView)returns(AdminPackage);
-    rpc AdminPacakgeStatus(AdminView)returns(AdminResponce);
-    rpc AdminViewCategories(AdminView)returns(AdminCatagories);
+    rpc AdminPacakgeStatus(AdminView)returns(AdminResponse);
+    rpc AdminViewCategories(AdminView)returns(AdminCategories);
     rpc AdminViewDestination(AdminView)returns(AdminDestination);
     rpc AdminViewActivity(AdminView)returns(AdminActivity);
+    rpc AdminViewCoordinators(AdminView)returns(AdminUsers);
+    rpc AdminViewBookings(AdminView)returns(AdminHistories);
+    rpc AdminViewBooking(AdminView)returns(AdminHistory);
+    rpc AdminViewDashBord(AdminView)returns(AdminDashboard);
+    rpc AdminSearchBooking(AdminBookingSearchCriteria)returns(AdminHistories);
+    rpc AdminViewUsers(AdminView)returns(AdminUsers);
+    rpc AdminViewUser(AdminView)returns(AdminUser);
+}
+
+message AdminBookingSearchCriteria {
+    string payment_mode = 1;
+    string booking_status = 2;
+    bool   cancelled_status = 3;
+    string user_email = 4;
+    string booking_id = 5;
+    string book_date = 6;
+    string start_date = 7;
+    uint32 coordinator_id = 8;
+    int64  page = 9;
+    int64  CatageryId = 10;
+}
+
+message AdminDashboard{
+    int64 wallet = 1;
+    int64 today = 2;
+    int64 monthly = 3;
+    int64 CoordinatorCount = 4;
+    int64 UsersCount = 5;
+}
+
+message AdminHistories{
+    repeated AdminHistory history = 1;
+}
+
+message AdminHistory{
+    int64  Id = 1;
+    string paymentMode = 2;
+    string BookingStatus = 3;
+    string CancelledStatus = 4;
+    int64  TotalPrice = 5;
+    int64  UserId = 6;
+    string bookingId = 7;
+    string BookDate = 8;
+    string StartDate = 9;
+    repeated AdminTravellerDetails travellers = 10;
+    int64  PaidAmount = 11;
+}
+
+message AdminTravellerDetails {
+    string name = 1;
+    string age = 2;
+    string gender = 3;
+    repeated string activityId = 4;
+    int64  Id = 5;
+    repeated AdminActivity activity = 6;
+}
+
+message AdminUsers{
+    repeated AdminUser users = 1;
+}
+
+message AdminUser{
+    int64  Id = 1;
+    string name =2;
+    string email = 3;
+    string phone = 4;
+    string password = 5;
+    string role = 6;
 }
 
 message AdminView{
-    int64 Id = 1; 
+    int64  Id = 1; 
     string status = 2;
-    int64 page = 3;
+    int64  page = 3;
 }
 
-message AdminCatagories{
+message AdminCategories{
     repeated AdminCategory catagory = 1;
 }
 
-message AdminResponce{
+message AdminResponse{
     string status = 1;
     string message = 2;
-    int64 Id = 3;
+    int64  Id = 3;
 }
 
 message AdminCategory{
-    int64 categoryid = 1;
+    int64  categoryid = 1;
     string category = 2;
 }
 
@@ -55,6 +123,15 @@ message AdminActivity{
     int64  destinationId = 9;
 }
 
+message    AdminFoodMenu {
+    int64  FoodMenuId = 1;
+    int64  PackageID = 2;
+    string Breakfast = 3;
+    string Lunch     = 4;
+    string Dinner    = 5;  
+    string Date      = 6;  
+}
+
 message AdminDestination{
     int64   destinationId = 1;
     string  DestinationName = 2;
@@ -64,6 +141,8 @@ message AdminDestination{
     string  image = 6;
     repeated AdminActivity activity = 7;
     int64   PackageID = 8;
+    string  TransportationMode = 9;
+    string  ArrivalLocation   = 10;
 }
 
 message AdminPackage{

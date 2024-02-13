@@ -99,8 +99,8 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		CoorinatorId:     int64(id),
 		Packagename:      pkg.Name,
 		Startdate:        pkg.StartDate,
-		Startlocation:    pkg.StartLocation,
 		Starttime:        pkg.StartTime,
+		Startlocation:    pkg.StartLocation,
 		Enddate:          pkg.EndDate,
 		Price:            int64(pkg.Price),
 		Image:            pkg.Image,
@@ -159,6 +159,40 @@ func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		"data":    response,
 	})
 
+}
+
+func ViewPackages(ctx *gin.Context, client cpb.CoordinatorClient) {
+	page := ctx.DefaultQuery("page", "1")
+	pageInt, _ := strconv.Atoi(page)
+	_, id, err := middleware.ValidateToken(ctx, "coordinator")
+	if err != nil {
+		log.Printf("token validation error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+	}
+	Id, _ := strconv.Atoi(id)
+	var ctxt = context.Background()
+	response, err := client.CoordinatorViewPackages(ctxt, &cpb.View{
+		Id:   int64(Id),
+		Page: int64(pageInt),
+	})
+
+	if err != nil {
+		log.Printf("packages fetching  error", err.Error())
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"status":  http.StatusAccepted,
+		"message": fmt.Sprintf("packages fetched succesfully"),
+		"data":    response,
+	})
 }
 
 func CoordinatorViewCatagory(ctx *gin.Context, client cpb.CoordinatorClient) {

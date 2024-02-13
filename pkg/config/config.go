@@ -1,33 +1,25 @@
 package config
 
 import (
-	"fmt"
-
-	"github.com/spf13/viper"
+	"os"
 )
 
+// Configure represents the configuration parameters.
 type Configure struct {
 	APIPORT            string `mapstructure:"APIPORT"`
 	ADMINPORT          string `mapstructure:"GRPCADMINPORT"`
-	BSERVICEPORT       string `mapstructure:"BSERVICEPORT"`
-	SECRETKEY          string `mapstructure:"SECRETKEY"`
-	REDISHOST          string `mapstructure:"REDISHOST"`
-	GRPCCORDINATORPORT string `mapstructure:"GRPCCORDINATORPORT"`
 	GRPCUSERPORT       string `mapstructure:"GRPCUSERPORT"`
+	GRPCCORDINATORPORT string `mapstructure:"GRPCCORDINATORPORT"`
 }
 
+// LoadConfigure loads configuration from environment variables.
 func LoadConfigure() (*Configure, error) {
-	var cfg Configure
-
-	viper.SetConfigFile("../../.env")
-	err := viper.ReadInConfig()
-
-	err = viper.Unmarshal(&cfg)
-
-	if err != nil {
-		return &Configure{}, nil
+	cfg := &Configure{
+		APIPORT:            os.Getenv("APIPORT"),
+		ADMINPORT:          os.Getenv("GRPCADMINPORT"),
+		GRPCUSERPORT:       os.Getenv("GRPCUSERPORT"),
+		GRPCCORDINATORPORT: os.Getenv("GRPCCORDINATORPORT"),
 	}
 
-	fmt.Println(cfg)
-	return &cfg, nil
+	return cfg, nil
 }

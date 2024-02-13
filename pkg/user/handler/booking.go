@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/Shakezidin/middleware"
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 
@@ -55,7 +55,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	userID, err := extractUserID(ctx)
+	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
@@ -74,6 +74,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 		})
 	}
 
+	ctx.Set("registered_email", email)
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
 		TravellerDetails: td,
 		UserId:           userID,
@@ -96,7 +97,7 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	})
 }
 
-func OfflinePayment(ctx *gin.Context, client pb.UserClient) {
+func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	refId := ctx.GetHeader("refid")
 	if refId == "" {
 		log.Println("reference id is empty")

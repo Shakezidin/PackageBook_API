@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Admin struct {
+type AdminAPI struct {
 	cfg    *config.Configure
 	client pb.AdminClient
 }
@@ -19,10 +19,10 @@ type Admin struct {
 func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 	client, err := ClientDial(cfg)
 	if err != nil {
-		log.Fatalf("error Not connected with gRPC server, %v", err.Error())
+		log.Fatalf("error: could not connect to gRPC server: %v", err)
 	}
 
-	adminHandler := &Admin{
+	adminAPI := &AdminAPI{
 		cfg:    &cfg,
 		client: client,
 	}
@@ -31,53 +31,48 @@ func NewAdminRoutes(c *gin.Engine, cfg config.Configure) {
 
 	admin := apiVersion.Group("/admin")
 	{
-		admin.POST("/login", adminHandler.AdminLogin)
+		admin.POST("/login", adminAPI.Login)
+		admin.GET("/login/dashbord", adminAPI.Authenticate, adminAPI.ViewDashboard)
 
-		admin.POST("/category/add", adminHandler.AdminAuthenticate, adminHandler.AddCategory)
-		admin.GET("/catagory/view", adminHandler.AdminAuthenticate, adminHandler.ViewCatagories)
+		admin.POST("/category/add", adminAPI.Authenticate, adminAPI.AddCategory)
+		admin.GET("/catagory/view", adminAPI.Authenticate, adminAPI.ViewCategories)
 
-		admin.GET("/pacakages/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackages)
-		admin.GET("/pacakage/view", adminHandler.AdminAuthenticate, adminHandler.ViewPackage)
-		admin.GET("/package/status", adminHandler.AdminAuthenticate, adminHandler.PackageStatus)
+		admin.GET("/pacakages/view", adminAPI.Authenticate, adminAPI.ViewPackages)
+		admin.GET("/pacakage/view", adminAPI.Authenticate, adminAPI.ViewPackage)
+		admin.GET("/package/status", adminAPI.Authenticate, adminAPI.PackageStatus)
 
-		admin.GET("/destination/view", adminHandler.AdminAuthenticate, adminHandler.ViewDestination)
-		admin.GET("/activity/view", adminHandler.AdminAuthenticate, adminHandler.ViewActivity)
+		admin.GET("/destination/view", adminAPI.Authenticate, adminAPI.ViewDestination)
+		admin.GET("/activity/view", adminAPI.Authenticate, adminAPI.ViewActivity)
 
-		admin.GET("/users/view", adminHandler.AdminAuthenticate, adminHandler.ViewUsers)
-		// admin.GET("/user/view",adminHandler.AdminAuthenticate,adminHandler.ViewUser)
+		admin.GET("/users/view", adminAPI.Authenticate, adminAPI.ViewUsers)
+		admin.GET("/user/view",adminAPI.Authenticate,adminAPI.ViewUser)
 		// admin.GET("/user/block",adminHandler.AdminAuthenticate,adminHandler.BlockUser)
 		// admin.GET("/user/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockedUsers)
 		// admin.GET("/user/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedUsers)
 
-		admin.GET("coordinator/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.GET("/coordinator/view",adminHandler.AdminAuthenticate,adminHandler.ViewCoordinator)
+		admin.GET("/coordinators/view", adminAPI.Authenticate, adminAPI.ViewCoordinators)
+		admin.GET("/coordinator/view",adminAPI.Authenticate,adminAPI.ViewCoordinator)
 		// admin.GET("/coordinator/block",adminHandler.AdminAuthenticate,adminHandler.BlockCoordinator)
 		// admin.GET("/coordinator/view/blocked",adminHandler.AdminAuthenticate,adminHandler.ViewBlockCoordinator)
 		// admin.GET("/coordinator/view/unblocked",adminHandler.AdminAuthenticate,adminHandler.ViewUnBlockedCoordinator)
 
-		// admin.GET("bookings/view",adminHandler.AdminAuthenticate,adminHandler.ViewBookings)
-		// admin.GET("booking/view",adminHandler.AdminAuthenticate,adminHandler.ViewBooking)
+		admin.GET("/bookings/view", adminAPI.Authenticate, adminAPI.ViewBookings)
+		admin.POST("/bookings/view/filter", adminAPI.Authenticate, adminAPI.FilterBookings)
+		admin.GET("/booking/view", adminAPI.Authenticate, adminAPI.ViewBooking)
 
 		// admin.GET("/banners", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.GET("/banner/details", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.GET("/banner/activate", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 		// admin.DELETE("/banner/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-
-		// admin.GET("/coupons/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.POST("/coupon/add", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.GET("/coupon/block", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.GET("/coupon/view", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.PATCH("/coupon/update", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
-		// admin.DELETE("/coupon/delete", adminHandler.AdminAuthenticate, adminHandler.ViewCoordinators)
 	}
 }
 
-func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
+func (a *AdminAPI) Authenticate(ctx *gin.Context) {
 	email, _, err := middleware.ValidateToken(ctx, "admin")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error":  err.Error(),
-			"status": http.StatusUnauthorized,
+			"Error":  "Unauthorized",
+			"Status": http.StatusUnauthorized,
 		})
 		return
 	}
@@ -85,42 +80,66 @@ func (a *Admin) AdminAuthenticate(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (a *Admin) AdminLogin(ctx *gin.Context) {
+func (a *AdminAPI) Login(ctx *gin.Context) {
 	handler.AdminLoginHandler(ctx, a.client, "admin")
 }
 
-func (a *Admin) AddCategory(ctx *gin.Context) {
+func (a *AdminAPI) ViewDashboard(ctx *gin.Context) {
+	handler.ViewDashboard(ctx, a.client)
+}
+
+func (a *AdminAPI) AddCategory(ctx *gin.Context) {
 	handler.AddCategory(ctx, a.client)
 }
 
-func (a *Admin) ViewCatagories(ctx *gin.Context) {
-	handler.ViewCatagories(ctx, a.client)
+func (a *AdminAPI) ViewCategories(ctx *gin.Context) {
+	handler.ViewCategories(ctx, a.client)
 }
 
-func (a *Admin) ViewPackages(ctx *gin.Context) {
+func (a *AdminAPI) ViewPackages(ctx *gin.Context) {
 	handler.ViewPackages(ctx, a.client)
 }
 
-func (a *Admin) ViewPackage(ctx *gin.Context) {
+func (a *AdminAPI) ViewPackage(ctx *gin.Context) {
 	handler.ViewPackage(ctx, a.client)
 }
 
-func (a *Admin) PackageStatus(ctx *gin.Context) {
+func (a *AdminAPI) PackageStatus(ctx *gin.Context) {
 	handler.PackageStatus(ctx, a.client)
 }
 
-func (a *Admin) ViewDestination(ctx *gin.Context) {
+func (a *AdminAPI) ViewDestination(ctx *gin.Context) {
 	handler.ViewDestination(ctx, a.client)
 }
 
-func (a *Admin) ViewActivity(ctx *gin.Context) {
+func (a *AdminAPI) ViewActivity(ctx *gin.Context) {
 	handler.ViewActivity(ctx, a.client)
 }
 
-func (a *Admin) ViewUsers(ctx *gin.Context) {
-	// handler.ViewUser(ctx, a.client)
+func (a *AdminAPI) ViewCoordinators(ctx *gin.Context) {
+	handler.ViewCoordinators(ctx, a.client)
 }
 
-func (a *Admin) ViewCoordinators(ctx *gin.Context) {
-	// handler.ViewCoordinators(ctx, a.client)
+func (a *AdminAPI) ViewBookings(ctx *gin.Context) {
+	handler.ViewBookings(ctx, a.client)
+}
+
+func (a *AdminAPI) ViewBooking(ctx *gin.Context) {
+	handler.ViewBooking(ctx, a.client)
+}
+
+func (a *AdminAPI) FilterBookings(ctx *gin.Context) {
+	handler.FilterBookings(ctx, a.client)
+}
+
+func (a *AdminAPI)ViewUsers(ctx *gin.Context){
+	handler.ViewUsers(ctx,a.client)
+}
+
+func (a *AdminAPI)ViewUser(ctx *gin.Context){
+	handler.ViewUser(ctx,a.client)
+}
+
+func (a *AdminAPI)ViewCoordinator(ctx *gin.Context){
+	
 }

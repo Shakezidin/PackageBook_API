@@ -8,7 +8,10 @@ service Coordinator {
     rpc CoordinatorSignupRequest(Signup)returns(Responce);
     rpc CoordinatorSignupVerifyRequest(Verify)returns(Responce);
     rpc CoordinatorLoginRequest(Login)returns(LoginResponce);
+    rpc CoordinatorViewPackages(View)returns(PackagesResponce);
     rpc CoordinatorAddPackage(Package)returns(Responce);
+    rpc CoordinatorAddFoodMenu(FoodMenu)returns(Responce);
+    rpc CoordinatorViewFoodMenu(View)returns(FoodMenus);
     rpc CoordinatorAddDestination(Destination)returns(Responce);
     rpc CoordinatorAddActivity(Activity)returns(Responce);
     rpc CoordinatorViewPackage(View)returns(Package);
@@ -18,6 +21,48 @@ service Coordinator {
     rpc CoordinatorForgetPasswordVerify(forgetPasswordVerify)returns(Responce);
     rpc CoordinatorNewPassword(newpassword)returns(Responce);
     rpc ViewCatagories(View)returns(Catagories);
+    rpc ViewHistory(View)returns(Histories);
+    rpc ViewBooking(View)returns(History);
+    rpc ViewTraveller(View)returns(TravellerDetails);
+    rpc ViewDashBord(View)returns(DashBord);
+    
+}
+
+message DashBord{
+    int64 wallet = 1;
+    int64 today = 2;
+    int64 monthly = 3;
+}
+
+message Histories{
+    repeated History history = 1;
+}
+
+message History{
+    int64 Id = 1;
+    string paymentMode = 2;
+    string BookingStatus = 3;
+    string CancelledStatus = 4;
+    int64  TotalPrice = 5;
+    int64  UserId = 6;
+    string bookingId = 7;
+    string BookDate = 8;
+    string StartDate = 9;
+    repeated TravellerDetails travellers = 10;
+    int64 PaidAmount = 11;
+}
+
+message TravellerDetails {
+    string name = 1;
+    string age = 2;
+    string gender = 3;
+    repeated string activityId = 4;
+    int64 Id = 5;
+    repeated Activity activity = 6;
+}
+
+message PackagesResponce{
+    repeated Package Packages = 1;
 }
 
 message Catagories{
@@ -32,7 +77,7 @@ message Verify{
 message Responce{
     string status = 1;
     string message = 2;
-    int64 Id = 4;
+    int64 Id = 3;
 }
 
 message Signup{
@@ -59,7 +104,7 @@ message forgetPassword{
 
 message View{
     int64 Id = 1;
-    bool status = 2;
+    string status = 2;
     int64 page = 3;
 }
 
@@ -86,6 +131,19 @@ message Activity{
     int64  destinationId = 9;
 }
 
+message FoodMenus{
+    repeated FoodMenu Foodmenu= 1;
+}
+
+message    FoodMenu {
+    int64  FoodMenuId = 1;
+    int64  PackageID = 2;
+    string Breakfast = 3;
+    string Lunch     = 4;
+    string Dinner    = 5;  
+    string Date      = 6;  
+}
+
 message Destination{
     int64   destinationId = 1;
     string  DestinationName = 2;
@@ -95,6 +153,8 @@ message Destination{
     string  image = 6;
     repeated Activity activity = 7;
     int64   PackageID = 8;
+    string TransportationMode = 9;
+    string ArrivalLocation   = 10;
 }
 
 message Package{

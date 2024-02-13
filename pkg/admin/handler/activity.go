@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -11,36 +9,49 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewActivity handles the HTTP request to view an activity by its ID.
 func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
+	// Get the activity ID from the request header.
 	activityIdStr := ctx.GetHeader("id")
+
+	// Convert the activity ID to an integer.
 	activityId, err := strconv.Atoi(activityIdStr)
 	if err != nil {
-		fmt.Println("activityID missing")
+		errMsg := "Invalid activity ID"
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  errMsg,
 		})
 		return
 	}
 
-	var ctxt = context.Background()
-	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{
-		Id: int64(activityId),
-	})
+	// Create a context for the gRPC request.
+	ctxt := context.Background()
 
+	// Call the gRPC service to fetch the activity by ID.
+	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{Id: int64(activityId)})
 	if err != nil {
-		log.Printf("error while fetching activity", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
-		"data":    response,
+	// Check if the response is nil or the activity ID is 0, indicating that the activity was not found.
+	if response == nil || response.ActivityId == 0 {
+		errMsg := "Activity not found"
+		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"Status": http.StatusNotFound,
+			"Error":  errMsg,
+		})
+		return
+	}
+
+	// Respond with the fetched activity.
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Activity fetched successfully",
+		"Data":    response,
 	})
 }

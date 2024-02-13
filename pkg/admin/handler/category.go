@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -13,25 +11,22 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// AddCategory handles the HTTP request to add a new category.
 func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 	var category dto.AddCategory
 	if err := ctx.BindJSON(&category); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status":  http.StatusBadRequest,
+			"Message": "Invalid request body",
 		})
 		return
 	}
 
 	validate := validator.New()
-
-	err := validate.Struct(category)
-	if err != nil {
-		log.Printf("Validation error")
+	if err := validate.Struct(category); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  "Validation error",
+			"Status":  http.StatusBadRequest,
+			"Message": "Validation failed",
 		})
 		return
 	}
@@ -42,23 +37,22 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while adding category %v err: %v", category.Category, err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v added success", category.Category),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Category added successfully",
+		"Data":    response,
 	})
-
 }
 
-func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
+// ViewCategories handles the HTTP request to view categories.
+func ViewCategories(ctx *gin.Context, client pb.AdminClient) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
 
@@ -68,18 +62,16 @@ func ViewCatagories(ctx *gin.Context, client pb.AdminClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while fetching categories , err: %v", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("catagories fetched success"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Categories fetched successfully",
+		"Data":    response,
 	})
-
 }

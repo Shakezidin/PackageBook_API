@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,96 +10,111 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewPackages handles the HTTP request to view packages.
 func ViewPackages(ctx *gin.Context, client pb.AdminClient) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
 	status := ctx.GetHeader("status")
-	var ctxt = context.Background()
+
+	// Create a context
+	ctxt := context.Background()
+
+	// Call the gRPC service to fetch packages
 	response, err := client.AdminViewPackages(ctxt, &pb.AdminView{
 		Status: status,
 		Page:   int64(page),
 	})
 
+	// Handle errors
 	if err != nil {
-		log.Printf("error while fetching packages", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
-		"message": fmt.Sprintf("packages fetched succesfully"),
-		"data":    response,
+	// Respond with fetched packages
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Packages fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewPackage handles the HTTP request to view a specific package.
 func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
+	// Retrieve package ID from header
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("packageID missing")
+		log.Printf("Package ID missing or invalid: %v", err)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "package id missing",
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing or invalid",
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	// Create a context
+	ctxt := context.Background()
+
+	// Call the gRPC service to fetch the package
 	response, err := client.AdminViewpackage(ctxt, &pb.AdminView{
 		Id: int64(packageId),
 	})
 
+	// Handle errors
 	if err != nil {
-		log.Printf("error while fetching package", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
-		"message": "package fetched succesfully",
-		"data":    response,
+	// Respond with fetched package
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Package fetched successfully",
+		"Data":    response,
 	})
 }
 
+// PackageStatus handles the HTTP request to update the status of a package.
 func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
+	// Retrieve package ID from header
 	packageIdStr := ctx.GetHeader("id")
 	packageId, err := strconv.Atoi(packageIdStr)
 	if err != nil {
-		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"error":  "Package ID missing or invalid",
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	// Create a context
+	ctxt := context.Background()
+
+	// Call the gRPC service to update the package status
 	response, err := client.AdminPacakgeStatus(ctxt, &pb.AdminView{
 		Id: int64(packageId),
 	})
 
+	// Handle errors
 	if err != nil {
-		log.Printf("error while updating package status", err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusOK,
-		"message": fmt.Sprintf("package status updated succesfully"),
-		"data":    response,
+	// Respond with updated package status
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Package status updated successfully",
+		"Data":    response,
 	})
 }

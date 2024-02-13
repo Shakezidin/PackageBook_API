@@ -44,8 +44,8 @@ func AddCategory(ctx *gin.Context, client pb.AdminClient) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"Status":  http.StatusOK,
+	ctx.JSON(http.StatusCreated, gin.H{
+		"Status":  http.StatusCreated,
 		"Message": "Category added successfully",
 		"Data":    response,
 	})

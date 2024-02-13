@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -14,23 +13,25 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// CoordinatorSignupHandler handles the coordinator signup request.
 func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
+	// Set timeout for the context
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
 	var coordinator dto.User
 
+	// Bind request body to coordinator struct
 	if err := ctx.BindJSON(&coordinator); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	//? Validating struct
+	// Validate the coordinator struct
 	validate := validator.New()
 	validate.RegisterValidation("email", utility.EmailValidation)
 	validate.RegisterValidation("phone", utility.PhoneNumberValidation)
@@ -38,17 +39,17 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 	err := validate.Struct(coordinator)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"Status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
+				"Error": fmt.Sprintf("Error in field %v, error: %v", e.Field(), e.Tag()),
 			})
 		}
 		return
 	}
 
+	// Make gRPC call to signup
 	response, err := client.CoordinatorSignupRequest(cont, &cpb.Signup{
 		Name:     coordinator.Name,
 		Email:    coordinator.Email,
@@ -58,74 +59,80 @@ func CoordinatorSignupHandler(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("error logging in user %v err: %v", coordinator.Email, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status": http.StatusOK,
+		"Data":   response,
 	})
 }
 
+// VerifySignup verifies the coordinator signup OTP.
 func VerifySignup(ctx *gin.Context, client cpb.CoordinatorClient) {
+	// Set timeout for the context
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
 	var req dto.Otp
+
+	// Bind request body to OTP struct
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Make gRPC call to verify OTP
 	response, err := client.CoordinatorSignupVerifyRequest(cont, &cpb.Verify{
 		OTP:   int32(req.OTP),
 		Email: req.Email,
 	})
 
 	if err != nil {
-		log.Printf("error registering user err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusAccepted,
-		"message": "OTP verified, user Creation successful.",
-		"data":    response,
+		"Status":  http.StatusCreated,
+		"Message": "OTP verified, coordinator creation successful.",
+		"Data":    response,
 	})
 }
 
+// CoordinatorLoginHandler handles the coordinator login request.
 func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, role string) {
+	// Set timeout for the context
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
+
 	var login dto.Login
 
+	// Bind request body to login struct
 	if err := ctx.BindJSON(&login); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
+	// Validate the login struct
 	validate := validator.New()
 	err := validate.Struct(login)
 	if err != nil {
-		log.Printf("Validation error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"Status": http.StatusBadRequest,
 			"Error":  "Validation error",
@@ -133,6 +140,7 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 		return
 	}
 
+	// Make gRPC call to login
 	response, err := client.CoordinatorLoginRequest(cont, &cpb.Login{
 		Email:    login.Email,
 		Password: login.Password,
@@ -140,17 +148,16 @@ func CoordinatorLoginHandler(ctx *gin.Context, client cpb.CoordinatorClient, rol
 	})
 
 	if err != nil {
-		log.Printf("error logging in user %v err: %v", login.Email, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v logged  in succesfully", login.Email),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": fmt.Sprintf("%v logged  in successfully", login.Email),
+		"Data":    response,
 	})
 }

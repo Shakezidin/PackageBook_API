@@ -140,8 +140,8 @@ func FilterBookings(ctx *gin.Context, client pb.AdminClient) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, gin.H{
-		"Status":  http.StatusAccepted,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
 		"Message": "Bookings fetched successfully",
 		"Data":    response,
 	})

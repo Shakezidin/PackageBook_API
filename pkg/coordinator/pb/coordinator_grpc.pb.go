@@ -34,11 +34,11 @@ const (
 	Coordinator_CoordinatorForgetPassword_FullMethodName       = "/pb.Coordinator/CoordinatorForgetPassword"
 	Coordinator_CoordinatorForgetPasswordVerify_FullMethodName = "/pb.Coordinator/CoordinatorForgetPasswordVerify"
 	Coordinator_CoordinatorNewPassword_FullMethodName          = "/pb.Coordinator/CoordinatorNewPassword"
-	Coordinator_ViewCatagories_FullMethodName                  = "/pb.Coordinator/ViewCatagories"
+	Coordinator_ViewCategories_FullMethodName                  = "/pb.Coordinator/ViewCategories"
 	Coordinator_ViewHistory_FullMethodName                     = "/pb.Coordinator/ViewHistory"
 	Coordinator_ViewBooking_FullMethodName                     = "/pb.Coordinator/ViewBooking"
 	Coordinator_ViewTraveller_FullMethodName                   = "/pb.Coordinator/ViewTraveller"
-	Coordinator_ViewDashBord_FullMethodName                    = "/pb.Coordinator/ViewDashBord"
+	Coordinator_ViewDashboard_FullMethodName                   = "/pb.Coordinator/ViewDashboard"
 )
 
 // CoordinatorClient is the client API for Coordinator service.
@@ -60,11 +60,11 @@ type CoordinatorClient interface {
 	CoordinatorForgetPassword(ctx context.Context, in *ForgetPassword, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorForgetPasswordVerify(ctx context.Context, in *ForgetPasswordVerify, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorNewPassword(ctx context.Context, in *Newpassword, opts ...grpc.CallOption) (*Responce, error)
-	ViewCatagories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error)
+	ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error)
 	ViewHistory(ctx context.Context, in *View, opts ...grpc.CallOption) (*Histories, error)
 	ViewBooking(ctx context.Context, in *View, opts ...grpc.CallOption) (*History, error)
 	ViewTraveller(ctx context.Context, in *View, opts ...grpc.CallOption) (*TravellerDetails, error)
-	ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error)
+	ViewDashboard(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error)
 }
 
 type coordinatorClient struct {
@@ -210,9 +210,9 @@ func (c *coordinatorClient) CoordinatorNewPassword(ctx context.Context, in *Newp
 	return out, nil
 }
 
-func (c *coordinatorClient) ViewCatagories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error) {
+func (c *coordinatorClient) ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error) {
 	out := new(Catagories)
-	err := c.cc.Invoke(ctx, Coordinator_ViewCatagories_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Coordinator_ViewCategories_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -246,9 +246,9 @@ func (c *coordinatorClient) ViewTraveller(ctx context.Context, in *View, opts ..
 	return out, nil
 }
 
-func (c *coordinatorClient) ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error) {
+func (c *coordinatorClient) ViewDashboard(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error) {
 	out := new(DashBord)
-	err := c.cc.Invoke(ctx, Coordinator_ViewDashBord_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Coordinator_ViewDashboard_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -274,11 +274,11 @@ type CoordinatorServer interface {
 	CoordinatorForgetPassword(context.Context, *ForgetPassword) (*Responce, error)
 	CoordinatorForgetPasswordVerify(context.Context, *ForgetPasswordVerify) (*Responce, error)
 	CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error)
-	ViewCatagories(context.Context, *View) (*Catagories, error)
+	ViewCategories(context.Context, *View) (*Catagories, error)
 	ViewHistory(context.Context, *View) (*Histories, error)
 	ViewBooking(context.Context, *View) (*History, error)
 	ViewTraveller(context.Context, *View) (*TravellerDetails, error)
-	ViewDashBord(context.Context, *View) (*DashBord, error)
+	ViewDashboard(context.Context, *View) (*DashBord, error)
 	mustEmbedUnimplementedCoordinatorServer()
 }
 
@@ -331,8 +331,8 @@ func (UnimplementedCoordinatorServer) CoordinatorForgetPasswordVerify(context.Co
 func (UnimplementedCoordinatorServer) CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CoordinatorNewPassword not implemented")
 }
-func (UnimplementedCoordinatorServer) ViewCatagories(context.Context, *View) (*Catagories, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ViewCatagories not implemented")
+func (UnimplementedCoordinatorServer) ViewCategories(context.Context, *View) (*Catagories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewCategories not implemented")
 }
 func (UnimplementedCoordinatorServer) ViewHistory(context.Context, *View) (*Histories, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewHistory not implemented")
@@ -343,8 +343,8 @@ func (UnimplementedCoordinatorServer) ViewBooking(context.Context, *View) (*Hist
 func (UnimplementedCoordinatorServer) ViewTraveller(context.Context, *View) (*TravellerDetails, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewTraveller not implemented")
 }
-func (UnimplementedCoordinatorServer) ViewDashBord(context.Context, *View) (*DashBord, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ViewDashBord not implemented")
+func (UnimplementedCoordinatorServer) ViewDashboard(context.Context, *View) (*DashBord, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewDashboard not implemented")
 }
 func (UnimplementedCoordinatorServer) mustEmbedUnimplementedCoordinatorServer() {}
 
@@ -629,20 +629,20 @@ func _Coordinator_CoordinatorNewPassword_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Coordinator_ViewCatagories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Coordinator_ViewCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(View)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoordinatorServer).ViewCatagories(ctx, in)
+		return srv.(CoordinatorServer).ViewCategories(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Coordinator_ViewCatagories_FullMethodName,
+		FullMethod: Coordinator_ViewCategories_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoordinatorServer).ViewCatagories(ctx, req.(*View))
+		return srv.(CoordinatorServer).ViewCategories(ctx, req.(*View))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -701,20 +701,20 @@ func _Coordinator_ViewTraveller_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Coordinator_ViewDashBord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Coordinator_ViewDashboard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(View)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoordinatorServer).ViewDashBord(ctx, in)
+		return srv.(CoordinatorServer).ViewDashboard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Coordinator_ViewDashBord_FullMethodName,
+		FullMethod: Coordinator_ViewDashboard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoordinatorServer).ViewDashBord(ctx, req.(*View))
+		return srv.(CoordinatorServer).ViewDashboard(ctx, req.(*View))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -787,8 +787,8 @@ var Coordinator_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Coordinator_CoordinatorNewPassword_Handler,
 		},
 		{
-			MethodName: "ViewCatagories",
-			Handler:    _Coordinator_ViewCatagories_Handler,
+			MethodName: "ViewCategories",
+			Handler:    _Coordinator_ViewCategories_Handler,
 		},
 		{
 			MethodName: "ViewHistory",
@@ -803,8 +803,8 @@ var Coordinator_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Coordinator_ViewTraveller_Handler,
 		},
 		{
-			MethodName: "ViewDashBord",
-			Handler:    _Coordinator_ViewDashBord_Handler,
+			MethodName: "ViewDashboard",
+			Handler:    _Coordinator_ViewDashboard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

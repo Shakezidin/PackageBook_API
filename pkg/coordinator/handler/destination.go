@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -15,40 +14,38 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// AddDestination handles the addition of a new destination.
 func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var destination dto.AddDestination
 
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "packageID missing",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
 
 	if err := ctx.BindJSON(&destination); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error binding JSON",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error binding JSON",
 		})
 		return
 	}
+
 	validate := validator.New()
 	err = validate.Struct(destination)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"Status": http.StatusBadRequest,
+			"Error":  "Validation error",
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
+				"Error": fmt.Sprintf("Error in field %v, error: %v", e.Field(), e.Tag()),
 			})
 		}
 		return
@@ -58,69 +55,70 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 	response, err := client.CoordinatorAddDestination(ctxt, &cpb.Destination{
 		DestinationName:    destination.DestinationName,
 		Description:        destination.Description,
-		PackageID:          int64(packageId),
+		PackageID:          int64(packageID),
 		Image:              destination.Image,
 		TransportationMode: destination.TransportationMode,
 		ArrivalLocation:    destination.ArrivalLocation,
 	})
 
 	if err != nil {
-		log.Printf("destination %s creattion error", destination.DestinationName, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v destination created succesfully", destination.DestinationName),
-		"data":    response,
+	ctx.JSON(http.StatusCreated, gin.H{
+		"Status":  http.StatusCreated,
+		"Message": fmt.Sprintf("%v destination created successfully", destination.DestinationName),
+		"Data":    response,
 	})
 }
 
+// ViewDestination fetches destination information based on package ID.
 func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("destination missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorViewDestination(ctxt, &cpb.View{
-		Id: int64(packageId),
+		Id: int64(packageID),
 	})
 
 	if err != nil {
-		log.Printf("destination fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("destination fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Destination fetched successfully",
+		"Data":    response,
 	})
 }
 
 const mapboxAccessToken = "pk.eyJ1Ijoic2ludXppZGluIiwiYSI6ImNscmdpdXh0bjBod2wyam81dGt1dHppN28ifQ.rKMd949jNDCKZr1jC2qfeA"
 
+// SuggestLocation provides location suggestions using Mapbox Geocoding API.
 func SuggestLocation(c *gin.Context) {
 	// Get location from header
 	location := c.GetHeader("location")
 	if location == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Location header is required"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  "Location header is required",
+		})
 		return
 	}
 
@@ -130,7 +128,10 @@ func SuggestLocation(c *gin.Context) {
 	// Make HTTP request to Mapbox Geocoding API
 	response, err := http.Get(apiURL)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error: %s", err)})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
+		})
 		return
 	}
 	defer response.Body.Close()
@@ -138,7 +139,10 @@ func SuggestLocation(c *gin.Context) {
 	// Read and parse the API response
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error: %s", err)})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
+		})
 		return
 	}
 
@@ -146,7 +150,10 @@ func SuggestLocation(c *gin.Context) {
 	var result map[string]interface{}
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error: %s", err)})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  err.Error(),
+		})
 		return
 	}
 
@@ -154,7 +161,10 @@ func SuggestLocation(c *gin.Context) {
 	var suggestions []string
 	features, ok := result["features"].([]interface{})
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid response format"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"Status": http.StatusInternalServerError,
+			"Error":  "Invalid response format",
+		})
 		return
 	}
 
@@ -173,5 +183,9 @@ func SuggestLocation(c *gin.Context) {
 	}
 
 	// Display suggestions to the user
-	c.JSON(http.StatusOK, suggestions)
+	c.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Location suggestions fetched successfully",
+		"Data":    suggestions,
+	})
 }

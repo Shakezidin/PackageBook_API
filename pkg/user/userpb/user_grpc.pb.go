@@ -28,8 +28,8 @@ const (
 	User_UserProfileUpdate_FullMethodName        = "/userpb.User/UserProfileUpdate"
 	User_UserViewDestination_FullMethodName      = "/userpb.User/UserViewDestination"
 	User_UserViewActivity_FullMethodName         = "/userpb.User/UserViewActivity"
-	User_UserViewCatagories_FullMethodName       = "/userpb.User/UserViewCatagories"
-	User_UserSearchPacakge_FullMethodName        = "/userpb.User/UserSearchPacakge"
+	User_UserViewCategories_FullMethodName       = "/userpb.User/UserViewCategories"
+	User_UserSearchPackage_FullMethodName        = "/userpb.User/UserSearchPackage"
 	User_UserFilterPackage_FullMethodName        = "/userpb.User/UserFilterPackage"
 	User_UserViewPackage_FullMethodName          = "/userpb.User/UserViewPackage"
 	User_UserViewFoodMenu_FullMethodName         = "/userpb.User/UserViewFoodMenu"
@@ -57,8 +57,8 @@ type UserClient interface {
 	UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
 	UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error)
 	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
-	UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
-	UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error)
+	UserViewCategories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
+	UserSearchPackage(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error)
 	UserFilterPackage(ctx context.Context, in *UserFilter, opts ...grpc.CallOption) (*UserPackages, error)
 	UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error)
 	UserViewFoodMenu(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserFoodMenus, error)
@@ -162,18 +162,18 @@ func (c *userClient) UserViewActivity(ctx context.Context, in *UserView, opts ..
 	return out, nil
 }
 
-func (c *userClient) UserViewCatagories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error) {
+func (c *userClient) UserViewCategories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error) {
 	out := new(UserCategories)
-	err := c.cc.Invoke(ctx, User_UserViewCatagories_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserViewCategories_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userClient) UserSearchPacakge(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error) {
+func (c *userClient) UserSearchPackage(ctx context.Context, in *UserSearch, opts ...grpc.CallOption) (*UserPackages, error) {
 	out := new(UserPackages)
-	err := c.cc.Invoke(ctx, User_UserSearchPacakge_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, User_UserSearchPackage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -301,8 +301,8 @@ type UserServer interface {
 	UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error)
 	UserViewDestination(context.Context, *UserView) (*UserDestination, error)
 	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
-	UserViewCatagories(context.Context, *UserView) (*UserCategories, error)
-	UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error)
+	UserViewCategories(context.Context, *UserView) (*UserCategories, error)
+	UserSearchPackage(context.Context, *UserSearch) (*UserPackages, error)
 	UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error)
 	UserViewPackage(context.Context, *UserView) (*UserPackage, error)
 	UserViewFoodMenu(context.Context, *UserView) (*UserFoodMenus, error)
@@ -349,11 +349,11 @@ func (UnimplementedUserServer) UserViewDestination(context.Context, *UserView) (
 func (UnimplementedUserServer) UserViewActivity(context.Context, *UserView) (*UserActivity, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewActivity not implemented")
 }
-func (UnimplementedUserServer) UserViewCatagories(context.Context, *UserView) (*UserCategories, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserViewCatagories not implemented")
+func (UnimplementedUserServer) UserViewCategories(context.Context, *UserView) (*UserCategories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserViewCategories not implemented")
 }
-func (UnimplementedUserServer) UserSearchPacakge(context.Context, *UserSearch) (*UserPackages, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPacakge not implemented")
+func (UnimplementedUserServer) UserSearchPackage(context.Context, *UserSearch) (*UserPackages, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserSearchPackage not implemented")
 }
 func (UnimplementedUserServer) UserFilterPackage(context.Context, *UserFilter) (*UserPackages, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserFilterPackage not implemented")
@@ -566,38 +566,38 @@ func _User_UserViewActivity_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserViewCatagories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserViewCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserView)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserViewCatagories(ctx, in)
+		return srv.(UserServer).UserViewCategories(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserViewCatagories_FullMethodName,
+		FullMethod: User_UserViewCategories_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserViewCatagories(ctx, req.(*UserView))
+		return srv.(UserServer).UserViewCategories(ctx, req.(*UserView))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserSearchPacakge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserSearchPackage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserSearch)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserSearchPacakge(ctx, in)
+		return srv.(UserServer).UserSearchPackage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: User_UserSearchPacakge_FullMethodName,
+		FullMethod: User_UserSearchPackage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserSearchPacakge(ctx, req.(*UserSearch))
+		return srv.(UserServer).UserSearchPackage(ctx, req.(*UserSearch))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -862,12 +862,12 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserViewActivity_Handler,
 		},
 		{
-			MethodName: "UserViewCatagories",
-			Handler:    _User_UserViewCatagories_Handler,
+			MethodName: "UserViewCategories",
+			Handler:    _User_UserViewCategories_Handler,
 		},
 		{
-			MethodName: "UserSearchPacakge",
-			Handler:    _User_UserSearchPacakge_Handler,
+			MethodName: "UserSearchPackage",
+			Handler:    _User_UserSearchPackage_Handler,
 		},
 		{
 			MethodName: "UserFilterPackage",

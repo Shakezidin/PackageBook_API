@@ -9,21 +9,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ValidateRefreshToken validates the refresh token and generates a new access token.
 func ValidateRefreshToken(ctx *gin.Context, client pb.UserClient) {
 	id, err := middleware.ValidateRefreshToken(ctx, "user")
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-		})
+		handleError(ctx, err, "Error validating refresh token")
+		return
 	}
-	var ctxt = context.Background()
-	response, _ := client.UserRefreshToken(ctxt, &pb.TokenData{
+
+	ctxt := context.Background()
+	response, err := client.UserRefreshToken(ctxt, &pb.TokenData{
 		Role: "user",
 		Id:   id,
 	})
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
+		})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status": http.StatusOK,
+		"Data":   response,
 	})
 }

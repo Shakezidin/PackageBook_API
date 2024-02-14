@@ -12,9 +12,9 @@ import (
 func ClientDial(cfg config.Configure) (pb.UserClient, error) {
 	grpc, err := grpc.Dial(cfg.GRPCUSERPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("error Dialing to grpc client: %s, ", cfg.GRPCUSERPORT)
+		log.Printf("Error Dialing to grpc client: %s, ", cfg.GRPCUSERPORT)
 		return nil, err
 	}
-	log.Printf("succesfully Connected to Admin Client at port: %v", cfg.GRPCUSERPORT)
+	log.Printf("Succesfully Connected to Admin Client at port: %v", cfg.GRPCUSERPORT)
 	return pb.NewUserClient(grpc), nil
 }

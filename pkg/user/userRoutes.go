@@ -43,7 +43,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Configure) {
 		user.GET("/home/packages", UserHandler.ViewPackages)
 		user.GET("/package/search", UserHandler.SearchPackage)
 		user.GET("/package/search/filter", UserHandler.PackageFilter)
-		user.GET("/catagories/view", UserHandler.ViewCatagories)
+		user.GET("/catagories/view", UserHandler.ViewCategories)
 		user.GET("/package/view", UserHandler.ViewPackage)
 		user.GET("/package/foodmenu/view", UserHandler.ViewFoodMenus)
 		user.GET("/destination/view", UserHandler.ViewDestination)
@@ -118,8 +118,8 @@ func (c *User) ViewActivity(ctx *gin.Context) {
 	handler.ViewActivity(ctx, c.client)
 }
 
-func (c *User) ViewCatagories(ctx *gin.Context) {
-	handler.ViewCatagories(ctx, c.client)
+func (c *User) ViewCategories(ctx *gin.Context) {
+	handler.ViewCategories(ctx, c.client)
 }
 
 func (c *User) SearchPackage(ctx *gin.Context) {

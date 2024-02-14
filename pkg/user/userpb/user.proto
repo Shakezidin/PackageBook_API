@@ -14,8 +14,8 @@ service User {
     rpc UserProfileUpdate(UserSignup)returns(UserResponce);
     rpc UserViewDestination(UserView)returns(UserDestination);
     rpc UserViewActivity(UserView)returns(UserActivity);
-    rpc UserViewCatagories(UserView)returns(UserCategories);
-    rpc UserSearchPacakge(UserSearch)returns(UserPackages);
+    rpc UserViewCategories(UserView)returns(UserCategories);
+    rpc UserSearchPackage(UserSearch)returns(UserPackages);
     rpc UserFilterPackage(UserFilter)returns(UserPackages);
     rpc UserViewPackage(UserView)returns(UserPackage);
     rpc UserViewFoodMenu(UserView)returns(UserFoodMenus);

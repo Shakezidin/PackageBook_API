@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -11,63 +9,62 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewPackage retrieves details of a specific package.
 func ViewPackage(ctx *gin.Context, client pb.UserClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("package ID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
 
 	var ctxt = context.Background()
 	response, err := client.UserViewPackage(ctxt, &pb.UserView{
-		Id: int64(packageId),
+		Id: int64(packageID),
 	})
 	if err != nil {
-		log.Printf("activity fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Package fetched successfully",
+		"Data":    response,
 	})
 }
 
-func ViewCatagories(ctx *gin.Context, client pb.UserClient) {
+// ViewCategories retrieves a list of categories.
+func ViewCategories(ctx *gin.Context, client pb.UserClient) {
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
-	response, err := client.UserViewCatagories(ctxt, &pb.UserView{
+	response, err := client.UserViewCategories(ctxt, &pb.UserView{
 		Page: int64(pageInt),
 	})
 
 	if err != nil {
-		log.Printf("catagories fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("catagories fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Categories fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewPackages retrieves a list of packages.
 func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
@@ -78,30 +75,28 @@ func ViewPackages(ctx *gin.Context, client pb.UserClient) {
 	})
 
 	if err != nil {
-		log.Printf("packages fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("packages fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Packages fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewFoodMenus retrieves food menus for a specific package.
 func ViewFoodMenus(ctx *gin.Context, client pb.UserClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "packageID missing",
+			"Error":  "Package ID missing",
 		})
 		return
 	}
@@ -109,23 +104,22 @@ func ViewFoodMenus(ctx *gin.Context, client pb.UserClient) {
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
 	response, err := client.UserViewFoodMenu(ctxt, &pb.UserView{
-		Id:   int64(packageId),
+		Id:   int64(packageID),
 		Page: int64(pageInt),
 	})
 
 	if err != nil {
-		log.Printf("food menu fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("food menu fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Food menu fetched successfully",
+		"Data":    response,
 	})
 }
 
@@ -134,23 +128,22 @@ type Filter struct {
 	MinPrice   float64 `json:"minprice" validate:"min=5"`
 	MaxPrice   float64 `json:"maxprice" validate:"max=10000"`
 	Orderby    string  `json:"orderby"`
-	CategoryId string  `json:"categoryid"`
+	CategoryID string  `json:"categoryid"`
 }
 
+// PackageFilter filters packages based on various criteria.
 func PackageFilter(ctx *gin.Context, client pb.UserClient) {
 	var filter Filter
 
 	if err := ctx.BindJSON(&filter); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Binding error",
 		})
 		return
 	}
 
-	categoryId, _ := strconv.Atoi(filter.CategoryId)
+	categoryID, _ := strconv.Atoi(filter.CategoryID)
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
@@ -160,22 +153,21 @@ func PackageFilter(ctx *gin.Context, client pb.UserClient) {
 		MinPrice:     int64(filter.MinPrice),
 		MaxPrice:     int64(filter.MaxPrice),
 		OrderBy:      filter.Orderby,
-		CategoryId:   int64(categoryId),
+		CategoryId:   int64(categoryID),
 		Departurtime: filter.StartTime,
 	})
 
 	if err != nil {
-		log.Printf("packages fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("packages fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Packages fetched successfully",
+		"Data":    response,
 	})
 }

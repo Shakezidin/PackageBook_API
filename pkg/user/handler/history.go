@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,50 +11,52 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ViewHistory retrieves user's booking history.
 func ViewHistory(ctx *gin.Context, client pb.UserClient) {
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
-	var ctxt = context.Background()
+
+	// Extract user ID from token
 	_, id, err := middleware.ValidateToken(ctx, "user")
 	userId, err := strconv.Atoi(id)
 	if err != nil {
-		log.Printf("token validation error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
+
+	var ctxt = context.Background()
 	response, err := client.UserViewHistory(ctxt, &pb.UserView{
 		Page: int64(pageInt),
 		Id:   int64(userId),
 	})
 
 	if err != nil {
-		log.Printf("history fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("history  fetched succesfully"),
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "history fetched successfully",
 		"data":    response,
 	})
 }
 
+// ViewBooking retrieves user's booking details.
 func ViewBooking(ctx *gin.Context, client pb.UserClient) {
 	var ctxt = context.Background()
 	id := ctx.GetHeader("id")
 	Id, err := strconv.Atoi(id)
 	if err != nil {
-		log.Printf("token validation error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  "Booking ID missing",
 		})
 		return
 	}
@@ -65,64 +65,62 @@ func ViewBooking(ctx *gin.Context, client pb.UserClient) {
 	})
 
 	if err != nil {
-		log.Printf("booking fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("booking  fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Booking fetched successfully",
+		"Data":    response,
 	})
 }
 
+// PackageCancel cancels a user's booking.
 func PackageCancel(ctx *gin.Context, client pb.UserClient) {
 	id := ctx.GetHeader("id")
 	startdate := ctx.GetHeader("startdate")
 	Id, err := strconv.Atoi(id)
 	if err != nil {
-		log.Printf("Error booking id missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "booking id missing",
+			"Status": http.StatusBadRequest,
+			"Error":  "Booking ID missing",
 		})
 		return
 	}
 
 	strtdate, err := time.Parse("02-01-2006", startdate)
 	if err != nil {
-		log.Printf("Error while date passing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "Error while date passing",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error while parsing date",
 		})
 		return
 	}
 
 	duration := strtdate.Sub(time.Now())
 	if duration <= 24*time.Hour {
-		log.Printf("cannot cancel the package")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  "cancellation time out",
+			"Status": http.StatusBadRequest,
+			"Error":  "Cancellation time out",
 		})
 		return
 	}
 
-	_, userid, err := middleware.ValidateToken(ctx, "user")
+	// Extract user ID from token
+	_, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
-		log.Printf("token validation error")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"Status": http.StatusUnauthorized,
+			"Error":  err.Error(),
 		})
 		return
 	}
-	userId, _ := strconv.Atoi(userid)
+	userId, _ := strconv.Atoi(userID)
+
 	var ctxt = context.Background()
 	response, err := client.UserCancelBooking(ctxt, &pb.UserView{
 		Id:     int64(Id),
@@ -130,17 +128,16 @@ func PackageCancel(ctx *gin.Context, client pb.UserClient) {
 	})
 
 	if err != nil {
-		log.Printf("Error while cancelling package", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("Package cancelled successfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Package cancelled successfully",
+		"Data":    response,
 	})
 }

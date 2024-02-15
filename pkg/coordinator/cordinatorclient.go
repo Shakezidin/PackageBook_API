@@ -3,8 +3,8 @@ package coordinator
 import (
 	"log"
 
-	pb "github.com/Shakezidin/pkg/coordinator/pb"
 	"github.com/Shakezidin/pkg/config"
+	pb "github.com/Shakezidin/pkg/coordinator/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -12,9 +12,9 @@ import (
 func ClientDial(cfg config.Configure) (pb.CoordinatorClient, error) {
 	grpc, err := grpc.Dial(cfg.GRPCCORDINATORPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("error Dialing to grpc client: %s, ", cfg.GRPCCORDINATORPORT)
+		log.Printf("Error Dialing to grpc client: %s, ", cfg.GRPCCORDINATORPORT)
 		return nil, err
 	}
-	log.Printf("succesfully Connected to Admin Client at port: %v", cfg.GRPCCORDINATORPORT)
+	log.Printf("Succesfully Connected to Admin Client at port: %v", cfg.GRPCCORDINATORPORT)
 	return pb.NewCoordinatorClient(grpc), nil
 }

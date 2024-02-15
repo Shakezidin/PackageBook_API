@@ -35,7 +35,7 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/signup/verify", CoordinatorHandler.CoordinatorSignupVerify)
 		coordinator.POST("/login", CoordinatorHandler.CoordinatorLogin)
 
-		coordinator.GET("/dashbord/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDashBord)
+		coordinator.GET("/dashbord/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewDashboard)
 
 		coordinator.GET("/packages/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackages)
 
@@ -43,12 +43,12 @@ func NewCoordinatorRoute(c *gin.Engine, cfg config.Configure) {
 		coordinator.POST("/password/forget/verify", CoordinatorHandler.ForgetPasswordVerify)
 		coordinator.POST("/password/forget/newpassword", CoordinatorHandler.NewPassword)
 
-		coordinator.GET("/catagory/view", CoordinatorHandler.CoordinatorViewCatagory)
+		coordinator.GET("/catagory/view", CoordinatorHandler.CoordinatorViewCategory)
 		coordinator.GET("/location/suggest", CoordinatorHandler.CoordinatorLocations)
 
 		coordinator.POST("/package/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddPackage)
 		coordinator.GET("/package/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.ViewPackage)
-		
+
 		coordinator.POST("/foodmenu/add", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorAddFoodMenu)
 		coordinator.GET("/foodmenu/view", CoordinatorHandler.CoordinatorAuthenticate, CoordinatorHandler.CoordinatorViewFoodMenus)
 
@@ -68,8 +68,8 @@ func (a *Coordinator) CoordinatorAuthenticate(ctx *gin.Context) {
 	email, _, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error":  err.Error(),
-			"status": http.StatusUnauthorized,
+			"Error":  err.Error(),
+			"Status": http.StatusUnauthorized,
 		})
 		return
 	}
@@ -133,8 +133,8 @@ func (c *Coordinator) CoordinatorLocations(ctx *gin.Context) {
 	handler.SuggestLocation(ctx)
 }
 
-func (c *Coordinator) CoordinatorViewCatagory(ctx *gin.Context) {
-	handler.CoordinatorViewCatagory(ctx, c.client)
+func (c *Coordinator) CoordinatorViewCategory(ctx *gin.Context) {
+	handler.CoordinatorViewCategory(ctx, c.client)
 }
 
 func (c *Coordinator) CoordinatorAddFoodMenu(ctx *gin.Context) {
@@ -157,6 +157,6 @@ func (c *Coordinator) ViewTraveller(ctx *gin.Context) {
 	handler.ViewTraveller(ctx, c.client)
 }
 
-func (c *Coordinator) ViewDashBord(ctx *gin.Context) {
-	handler.ViewDashBord(ctx, c.client)
+func (c *Coordinator) ViewDashboard(ctx *gin.Context) {
+	handler.ViewDashboard(ctx, c.client)
 }

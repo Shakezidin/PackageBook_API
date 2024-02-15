@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -15,85 +14,77 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// AddPackage handles the addition of a new package.
 func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var pkg dto.Addpackage
 
 	destination := ctx.GetHeader("destination")
-	startlocation := ctx.GetHeader("startlocation")
-	categoryIdStr := ctx.GetHeader("id")
-	categoryId, err := strconv.Atoi(categoryIdStr)
+	startLocation := ctx.GetHeader("startlocation")
+	categoryIDStr := ctx.GetHeader("id")
+	categoryID, err := strconv.Atoi(categoryIDStr)
 	if err != nil {
-		fmt.Println("categoryID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Category ID missing",
 		})
 		return
 	}
 
-	_, Id, err := middleware.ValidateToken(ctx, "coordinator")
+	_, ID, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
-		log.Printf("token validation error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
 	if err := ctx.BindJSON(&pkg); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error while binding JSON",
 		})
 		return
 	}
 	pkg.Destination = destination
-	pkg.StartLocation = startlocation
+	pkg.StartLocation = startLocation
 
 	validate := validator.New()
 	err = validate.Struct(pkg)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"Status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
+				"Error": fmt.Sprintf("Error in field %v, error: %v", e.Field(), e.Tag()),
 			})
 		}
 		return
 	}
 
-	id, _ := strconv.Atoi(Id)
+	id, _ := strconv.Atoi(ID)
 
-	startdate, err := time.Parse("02-01-2006", pkg.StartDate)
-	enddate, err := time.Parse("02-01-2006", pkg.EndDate)
+	startDate, err := time.Parse("02-01-2006", pkg.StartDate)
+	_, err = time.Parse("03:04 PM", pkg.StartTime)
+	endDate, err := time.Parse("02-01-2006", pkg.EndDate)
 	if err != nil {
-		log.Printf("date fromat error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Error":  "Date format error",
 		})
 		return
 	}
 
-	if !enddate.Add(24 * time.Hour).After(startdate) {
-		log.Printf("error in start date and enddate")
+	if !endDate.Add(24 * time.Hour).After(startDate) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error in start date and end date",
 		})
 		return
 	}
-	var ctxt = context.Background()
+
+	ctxt := context.Background()
 	response, err := client.CoordinatorAddPackage(ctxt, &cpb.Package{
 		CoorinatorId:     int64(id),
 		Packagename:      pkg.Name,
@@ -105,115 +96,110 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 		Image:            pkg.Image,
 		DestinationCount: int64(pkg.DestinationCount),
 		Destination:      pkg.Destination,
-		CategoryId:       int64(categoryId),
+		CategoryId:       int64(categoryID),
 		Description:      pkg.Description,
 		MaxCapacity:      pkg.MaxCapacity,
 	})
 
 	if err != nil {
-		log.Printf("pakcage %s creattion error", pkg.Name, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	ctx.JSON(http.StatusCreated, gin.H{
+		"Status": http.StatusCreated,
+		"Data":   response,
 	})
 }
 
+// ViewPackage fetches a package by ID.
 func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("packageId missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	ctxt := context.Background()
 	response, err := client.CoordinatorViewPackage(ctxt, &cpb.View{
-		Id: int64(packageId),
+		Id: int64(packageID),
 	})
 
 	if err != nil {
-		log.Printf("package fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("packages fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Packages fetched successfully",
+		"Data":    response,
 	})
-
 }
 
+// ViewPackages fetches packages for a coordinator.
 func ViewPackages(ctx *gin.Context, client cpb.CoordinatorClient) {
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
 	_, id, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
-		log.Printf("token validation error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 	}
-	Id, _ := strconv.Atoi(id)
-	var ctxt = context.Background()
+	ID, _ := strconv.Atoi(id)
+	ctxt := context.Background()
 	response, err := client.CoordinatorViewPackages(ctxt, &cpb.View{
-		Id:   int64(Id),
+		Id:   int64(ID),
 		Page: int64(pageInt),
 	})
 
 	if err != nil {
-		log.Printf("packages fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("packages fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Packages fetched successfully",
+		"Data":    response,
 	})
 }
 
-func CoordinatorViewCatagory(ctx *gin.Context, client cpb.CoordinatorClient) {
+// CoordinatorViewCategory fetches categories.
+func CoordinatorViewCategory(ctx *gin.Context, client cpb.CoordinatorClient) {
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, _ := strconv.Atoi(pageStr)
-	var ctxt = context.Background()
-	response, err := client.ViewCatagories(ctxt, &cpb.View{
+	ctxt := context.Background()
+	response, err := client.ViewCategories(ctxt, &cpb.View{
 		Page: int64(page),
 	})
 
 	if err != nil {
-		log.Printf("catagories fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("catagories fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Categories fetched successfully",
+		"Data":    response,
 	})
 }

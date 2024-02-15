@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,40 +13,37 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// CoordinatorAddFoodMenu handles the addition of a new food menu for a package.
 func CoordinatorAddFoodMenu(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var foodmenu dto.FoodMenu
 
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "packageID missing",
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
 
 	if err := ctx.BindJSON(&foodmenu); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error binding JSON",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error binding JSON",
 		})
 		return
 	}
+
 	validate := validator.New()
-	err = validate.Struct(foodmenu)
-	if err != nil {
+	if err := validate.Struct(foodmenu); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"Status": http.StatusBadRequest,
+			"Error":  "Validation error",
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
+				"Error": fmt.Sprintf("Error in field %v, error: %v", e.Field(), e.Tag()),
 			})
 		}
 		return
@@ -55,18 +51,16 @@ func CoordinatorAddFoodMenu(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	_, err = time.Parse("02-01-2006", foodmenu.Date)
 	if err != nil {
-		log.Printf("date fromat error")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Date format error",
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	ctxt := context.Background()
 	response, err := client.CoordinatorAddFoodMenu(ctxt, &cpb.FoodMenu{
-		PackageID: int64(packageId),
+		PackageID: int64(packageID),
 		Breakfast: foodmenu.Breakfast,
 		Lunch:     foodmenu.Lunch,
 		Dinner:    foodmenu.Dinner,
@@ -74,54 +68,52 @@ func CoordinatorAddFoodMenu(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("food menu creattion error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("food menu created succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusCreated, gin.H{
+		"Status":  http.StatusCreated,
+		"Message": "Food menu created successfully",
+		"Data":    response,
 	})
 }
 
+// CoordinatorViewFoodMenus fetches food menus for a specific package.
 func CoordinatorViewFoodMenus(ctx *gin.Context, client cpb.CoordinatorClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	packageIDStr := ctx.GetHeader("id")
+	packageID, err := strconv.Atoi(packageIDStr)
 	if err != nil {
-		fmt.Println("packageID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "packageID missing",
+			"Status": http.StatusBadRequest,
+			"Error":  "PackageID missing",
 		})
 		return
 	}
+
 	page := ctx.DefaultQuery("page", "1")
 	pageInt, _ := strconv.Atoi(page)
-	var ctxt = context.Background()
+
+	ctxt := context.Background()
 	response, err := client.CoordinatorViewFoodMenu(ctxt, &cpb.View{
-		Id:   int64(packageId),
+		Id:   int64(packageID),
 		Page: int64(pageInt),
 	})
 
 	if err != nil {
-		log.Printf("food menu fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("food menu fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Food menu fetched successfully",
+		"Data":    response,
 	})
-
 }

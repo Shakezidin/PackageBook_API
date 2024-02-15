@@ -165,7 +165,6 @@ message AdminPackage{
     repeated AdminDestination Destinations = 17;
 }
 
-
 message AdminPackages{
     repeated AdminPackage packages = 1;
 }

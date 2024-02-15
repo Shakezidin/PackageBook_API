@@ -13,50 +13,52 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TravellerDetail represents details of a traveller.
-
+// TravellerDetail represents details of a traveller
 type TravellerDetail struct {
 	Name       string   `json:"name"`
 	Age        string   `json:"age"`
 	Gender     string   `json:"gender"`
-	ActivityId []string `json:"id"`
+	ActivityID []string `json:"activity_id"`
 }
 
+// TravellerDetails represents a collection of traveller details.
 type TravellerDetails struct {
 	Travellers []TravellerDetail `json:"travellers"`
 }
 
+// AddTraveller handles the addition of traveller details.
 func AddTraveller(ctx *gin.Context, client pb.UserClient) {
-	pkgId := ctx.GetHeader("id")
-	if pkgId == "" {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error":  "package ID missing",
-			"status": http.StatusBadRequest,
+	packageID := ctx.GetHeader("id")
+	if packageID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  "Package ID missing",
 		})
 		return
 	}
+
 	var travellerDetails TravellerDetails
 	var td []*pb.UserTravellerDetails
 
 	if err := ctx.ShouldBindJSON(&travellerDetails); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Error":  errors.New("binding error"),
-			"Status": http.StatusBadRequest,
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"status": http.StatusBadRequest,
 		})
 		return
 	}
 
 	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  errors.New("error getting value from token"),
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("error getting value from token"),
 		})
 		return
 	}
 
 	for _, travellerMap := range travellerDetails.Travellers {
-		activityIDs := travellerMap.ActivityId
+		activityIDs := travellerMap.ActivityID
 		td = append(td, &pb.UserTravellerDetails{
 			Name:       travellerMap.Name,
 			Age:        travellerMap.Age,
@@ -69,11 +71,11 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
 		TravellerDetails: td,
 		UserId:           userID,
-		PackageId:        pkgId,
+		PackageId:        packageID,
 	})
 
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":  err.Error(),
 			"status": http.StatusBadRequest,
 		})
@@ -92,8 +94,8 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	refID := ctx.GetHeader("refid")
 	if refID == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  "Reference ID is missing",
+			"status": http.StatusBadRequest,
+			"error":  errors.New("reference ID is empty"),
 		})
 		return
 	}
@@ -103,9 +105,9 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 
 	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"Status": http.StatusUnauthorized,
-			"Error":  "Email ID not present in jwt token, please login again",
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errors.New("email id not present in jwt token, please login again"),
 		})
 		return
 	}
@@ -119,8 +121,8 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  err.Error(),
+			"status": http.StatusBadRequest,
+			"error":  err.Error(),
 		})
 		return
 	}

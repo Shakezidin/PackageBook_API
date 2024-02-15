@@ -1,5 +1,28 @@
 package dto
 
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+)
+
+// JSONB is a custom type for handling JSON data in the database.
+type JSONB []interface{}
+
+// Value method converts the JSONB value to a driver.Value.
+func (a JSONB) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+// Scan method scans the JSONB value from the database into the JSONB struct.
+func (a *JSONB) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(b, &a)
+}
+
 // Addpackage represents the structure for adding a tour package.
 type Addpackage struct {
 	Name             string `json:"name"`                // Name of the tour package.

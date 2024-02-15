@@ -6,7 +6,7 @@ option go_package = ".";
 
 
 service Admin {
-    rpc AdminLoginRequest(AdminLogin) returns (AdminResponse);
+    rpc AdminLoginRequest(AdminLogin)returns(AdminResponse);
     rpc AdminAddCategory(AdminCategory)returns(AdminResponse);
     rpc AdminViewPackages(AdminView)returns(AdminPackages);
     rpc AdminViewpackage(AdminView)returns(AdminPackage);

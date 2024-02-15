@@ -43,6 +43,7 @@ func ForgetPassword(ctx *gin.Context, client pb.UserClient) {
 
 	ctx.JSON(http.StatusAccepted, gin.H{
 		"Status": http.StatusAccepted,
+		"message":"password change initiated, check message for OTP",
 		"Data":   response,
 	})
 }
@@ -168,7 +169,7 @@ func UpdateProfile(ctx *gin.Context, client pb.UserClient) {
 func handleError(ctx *gin.Context, err error, msg string) {
 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 		"Status": http.StatusBadRequest,
-		"Error":  msg,
+		"Error":  err.Error(),
 	})
 }
 

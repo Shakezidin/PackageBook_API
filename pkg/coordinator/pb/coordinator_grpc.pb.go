@@ -64,7 +64,7 @@ type CoordinatorClient interface {
 	ViewHistory(ctx context.Context, in *View, opts ...grpc.CallOption) (*Histories, error)
 	ViewBooking(ctx context.Context, in *View, opts ...grpc.CallOption) (*History, error)
 	ViewTraveller(ctx context.Context, in *View, opts ...grpc.CallOption) (*TravellerDetails, error)
-	ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error)
+	ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*Dashboard, error)
 }
 
 type coordinatorClient struct {
@@ -246,8 +246,8 @@ func (c *coordinatorClient) ViewTraveller(ctx context.Context, in *View, opts ..
 	return out, nil
 }
 
-func (c *coordinatorClient) ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*DashBord, error) {
-	out := new(DashBord)
+func (c *coordinatorClient) ViewDashBord(ctx context.Context, in *View, opts ...grpc.CallOption) (*Dashboard, error) {
+	out := new(Dashboard)
 	err := c.cc.Invoke(ctx, Coordinator_ViewDashBord_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -278,7 +278,7 @@ type CoordinatorServer interface {
 	ViewHistory(context.Context, *View) (*Histories, error)
 	ViewBooking(context.Context, *View) (*History, error)
 	ViewTraveller(context.Context, *View) (*TravellerDetails, error)
-	ViewDashBord(context.Context, *View) (*DashBord, error)
+	ViewDashBord(context.Context, *View) (*Dashboard, error)
 	mustEmbedUnimplementedCoordinatorServer()
 }
 
@@ -343,7 +343,7 @@ func (UnimplementedCoordinatorServer) ViewBooking(context.Context, *View) (*Hist
 func (UnimplementedCoordinatorServer) ViewTraveller(context.Context, *View) (*TravellerDetails, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewTraveller not implemented")
 }
-func (UnimplementedCoordinatorServer) ViewDashBord(context.Context, *View) (*DashBord, error) {
+func (UnimplementedCoordinatorServer) ViewDashBord(context.Context, *View) (*Dashboard, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewDashBord not implemented")
 }
 func (UnimplementedCoordinatorServer) mustEmbedUnimplementedCoordinatorServer() {}

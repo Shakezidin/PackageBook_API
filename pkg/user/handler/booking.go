@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -13,51 +14,49 @@ import (
 )
 
 // TravellerDetail represents details of a traveller.
+
 type TravellerDetail struct {
 	Name       string   `json:"name"`
 	Age        string   `json:"age"`
 	Gender     string   `json:"gender"`
-	ActivityID []string `json:"activity_id"`
+	ActivityId []string `json:"id"`
 }
 
-// TravellerDetails represents a collection of traveller details.
 type TravellerDetails struct {
 	Travellers []TravellerDetail `json:"travellers"`
 }
 
-// AddTraveller handles the addition of traveller details.
 func AddTraveller(ctx *gin.Context, client pb.UserClient) {
-	packageID := ctx.GetHeader("id")
-	if packageID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  "Package ID missing",
+	pkgId := ctx.GetHeader("id")
+	if pkgId == "" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error":  "package ID missing",
+			"status": http.StatusBadRequest,
 		})
 		return
 	}
-
 	var travellerDetails TravellerDetails
 	var td []*pb.UserTravellerDetails
 
 	if err := ctx.ShouldBindJSON(&travellerDetails); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Error":  errors.New("binding error"),
 			"Status": http.StatusBadRequest,
-			"Error":  "Binding error",
 		})
 		return
 	}
 
 	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"status": http.StatusUnauthorized,
-			"error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  errors.New("error getting value from token"),
 		})
 		return
 	}
 
 	for _, travellerMap := range travellerDetails.Travellers {
-		activityIDs := travellerMap.ActivityID
+		activityIDs := travellerMap.ActivityId
 		td = append(td, &pb.UserTravellerDetails{
 			Name:       travellerMap.Name,
 			Age:        travellerMap.Age,
@@ -70,21 +69,21 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
 		TravellerDetails: td,
 		UserId:           userID,
-		PackageId:        packageID,
+		PackageId:        pkgId,
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"Status": http.StatusBadRequest,
-			"Error":  err.Error(),
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"status": http.StatusBadRequest,
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"Status":  http.StatusAccepted,
-		"Message": "User details saved successfully",
-		"Data":    response,
+		"status":  http.StatusAccepted,
+		"message": "user details saved successfully",
+		"data":    response,
 	})
 }
 

@@ -82,9 +82,9 @@ func PaymentSuccess(ctx *gin.Context, client pb.UserClient) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"Status":  http.StatusCreated,
-		"Message": "Booking Confirmed",
-		"Data":    response,
+		"status":  http.StatusAccepted,
+		"message": "Booking Confirmed",
+		"data":    response,
 	})
 }
 

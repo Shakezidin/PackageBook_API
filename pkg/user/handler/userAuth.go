@@ -53,6 +53,7 @@ func UserSignupHandler(ctx *gin.Context, client pb.UserClient, role string) {
 		Password: user.Password,
 		Role:     role,
 	})
+	fmt.Println(err)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

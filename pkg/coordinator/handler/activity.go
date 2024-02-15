@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -19,7 +18,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	destinationIdStr := ctx.GetHeader("id")
 	destinationId, err := strconv.Atoi(destinationIdStr)
 	if err != nil {
-		fmt.Println("packageId missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -29,7 +27,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	if err := ctx.BindJSON(&activity); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -44,7 +41,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 			"status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
 			})
@@ -65,7 +61,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("activity %s creattion error", activity.ActivityName, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -84,7 +79,6 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	packageId, err := strconv.Atoi(packageIdStr)
 
 	if err != nil {
-		fmt.Println("activity ID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -99,7 +93,6 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("error while fetching activity", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -109,7 +102,7 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
+		"message": "activity fetched succesfully",
 		"data":    response,
 	})
 }

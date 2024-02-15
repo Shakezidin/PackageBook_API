@@ -24,11 +24,11 @@ service Coordinator {
     rpc ViewHistory(View)returns(Histories);
     rpc ViewBooking(View)returns(History);
     rpc ViewTraveller(View)returns(TravellerDetails);
-    rpc ViewDashBord(View)returns(DashBord);
+    rpc ViewDashBord(View)returns(Dashboard);
     
 }
 
-message DashBord{
+message Dashboard{
     int64 wallet = 1;
     int64 today = 2;
     int64 monthly = 3;

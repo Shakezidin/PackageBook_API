@@ -24,8 +24,8 @@ func OnlinePayment(ctx *gin.Context, client pb.UserClient, typ string) {
 	defer cancel()
 
 	response, err := client.UserOnlinePayment(cont, &pb.UserBooking{
-		Typ:   typ,
-		RefId: refID,
+		Type:   typ,
+		Ref_ID: refID,
 	})
 
 	if err != nil {
@@ -37,11 +37,11 @@ func OnlinePayment(ctx *gin.Context, client pb.UserClient, typ string) {
 	}
 
 	ctx.HTML(http.StatusCreated, "app.html", gin.H{
-		"userID":           response.UserId,
-		"total":            response.TotalFare,
-		"BookingReference": response.BookingReference,
+		"userID":           response.User_ID,
+		"total":            response.Total_Fare,
+		"BookingReference": response.Booking_Reference,
 		"Email":            response.Email,
-		"orderID":          response.OrderId,
+		"orderID":          response.Order_ID,
 	})
 }
 
@@ -66,9 +66,9 @@ func PaymentSuccess(ctx *gin.Context, client pb.UserClient) {
 	defer cancel()
 
 	response, err := client.UserPaymentConfirmed(cont, &pb.UserPaymentConfirmedRequest{
-		PaymentId:   paymentID,
-		ReferenceID: refID,
-		OrderID:     orderID,
+		Payment_ID:   paymentID,
+		Reference_ID: refID,
+		Order_ID:     orderID,
 		Signature:   signature,
 		Total:       paymentAmount,
 	})

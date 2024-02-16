@@ -61,7 +61,7 @@ func ViewPackage(ctx *gin.Context, client pb.AdminClient) {
 
 	// Call the gRPC service to fetch the package
 	response, err := client.AdminViewpackage(ctxt, &pb.AdminView{
-		Id: int64(packageId),
+		ID: int64(packageId),
 	})
 
 	// Handle errors
@@ -99,7 +99,7 @@ func PackageStatus(ctx *gin.Context, client pb.AdminClient) {
 
 	// Call the gRPC service to update the package status
 	response, err := client.AdminPacakgeStatus(ctxt, &pb.AdminView{
-		Id: int64(packageId),
+		ID: int64(packageId),
 	})
 
 	// Handle errors

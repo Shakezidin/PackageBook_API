@@ -45,15 +45,15 @@ func SearchPackage(ctx *gin.Context, client pb.UserClient) {
 
 	ctxt := context.Background()
 	response, err := client.UserSearchPackage(ctxt, &pb.UserSearch{
-		CatagoryId:       int64(catagoryID),
-		Travelercount:    int64(travelerCount),
-		PickupPlace:      pickupPlace,
-		Finaldestination: finalDestination,
-		Date:             date,
-		Page:             int64(page),
-		Enddate:          endDate,
-		MaxDestination:   int64(maxStops),
-		Destination:      destinations,
+		Category_ID:       int64(catagoryID),
+		Traveler_Count:    int64(travelerCount),
+		Pickup_Place:      pickupPlace,
+		Final_Destination: finalDestination,
+		Date:              date,
+		Page:              int64(page),
+		End_Date:          endDate,
+		Max_Destination:   int64(maxStops),
+		Destination:       destinations,
 	})
 
 	if err != nil {

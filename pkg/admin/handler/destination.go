@@ -27,7 +27,7 @@ func ViewDestination(ctx *gin.Context, client pb.AdminClient) {
 
 	// Call the gRPC service to fetch the destination
 	response, err := client.AdminViewDestination(ctxt, &pb.AdminView{
-		Id: int64(destinationId),
+		ID: int64(destinationId),
 	})
 
 	// Handle errors

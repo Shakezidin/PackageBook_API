@@ -86,19 +86,19 @@ func AddPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctxt := context.Background()
 	response, err := client.CoordinatorAddPackage(ctxt, &cpb.Package{
-		CoorinatorId:     int64(id),
-		Packagename:      pkg.Name,
-		Startdate:        pkg.StartDate,
-		Starttime:        pkg.StartTime,
-		Startlocation:    pkg.StartLocation,
-		Enddate:          pkg.EndDate,
+		Coorinator_ID:     int64(id),
+		Package_Name:      pkg.Name,
+		Start_Date:        pkg.StartDate,
+		Start_Time:        pkg.StartTime,
+		Start_Location:    pkg.StartLocation,
+		End_Date:          pkg.EndDate,
 		Price:            int64(pkg.Price),
 		Image:            pkg.Image,
-		DestinationCount: int64(pkg.DestinationCount),
+		Destination_Count: int64(pkg.DestinationCount),
 		Destination:      pkg.Destination,
-		CategoryId:       int64(categoryID),
+		Category_ID:       int64(categoryID),
 		Description:      pkg.Description,
-		MaxCapacity:      pkg.MaxCapacity,
+		Max_Capacity:      pkg.MaxCapacity,
 	})
 
 	if err != nil {
@@ -129,7 +129,7 @@ func ViewPackage(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctxt := context.Background()
 	response, err := client.CoordinatorViewPackage(ctxt, &cpb.View{
-		Id: int64(packageID),
+		ID: int64(packageID),
 	})
 
 	if err != nil {
@@ -161,7 +161,7 @@ func ViewPackages(ctx *gin.Context, client cpb.CoordinatorClient) {
 	ID, _ := strconv.Atoi(id)
 	ctxt := context.Background()
 	response, err := client.CoordinatorViewPackages(ctxt, &cpb.View{
-		Id:   int64(ID),
+		ID:   int64(ID),
 		Page: int64(pageInt),
 	})
 

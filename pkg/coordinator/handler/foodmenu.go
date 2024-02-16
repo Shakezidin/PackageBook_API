@@ -60,7 +60,7 @@ func CoordinatorAddFoodMenu(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctxt := context.Background()
 	response, err := client.CoordinatorAddFoodMenu(ctxt, &cpb.FoodMenu{
-		PackageID: int64(packageID),
+		Package_ID: int64(packageID),
 		Breakfast: foodmenu.Breakfast,
 		Lunch:     foodmenu.Lunch,
 		Dinner:    foodmenu.Dinner,
@@ -99,7 +99,7 @@ func CoordinatorViewFoodMenus(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	ctxt := context.Background()
 	response, err := client.CoordinatorViewFoodMenu(ctxt, &cpb.View{
-		Id:   int64(packageID),
+		ID:   int64(packageID),
 		Page: int64(pageInt),
 	})
 

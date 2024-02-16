@@ -37,7 +37,7 @@ func ViewHistory(ctx *gin.Context, client pb.UserClient) {
 	var ctxt = context.Background()
 	response, err := client.UserViewHistory(ctxt, &pb.UserView{
 		Page: int64(pageInt),
-		Id:   int64(userId),
+		ID:   int64(userId),
 	})
 
 	if err != nil {
@@ -68,7 +68,7 @@ func ViewBooking(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 	response, err := client.UserViewBooking(ctxt, &pb.UserView{
-		Id: int64(Id),
+		ID: int64(Id),
 	})
 
 	if err != nil {
@@ -130,8 +130,8 @@ func PackageCancel(ctx *gin.Context, client pb.UserClient) {
 
 	var ctxt = context.Background()
 	response, err := client.UserCancelBooking(ctxt, &pb.UserView{
-		Id:     int64(Id),
-		UserId: int64(userId),
+		ID:     int64(Id),
+		User_ID: int64(userId),
 	})
 
 	if err != nil {

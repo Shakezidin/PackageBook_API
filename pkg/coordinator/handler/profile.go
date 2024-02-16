@@ -77,7 +77,7 @@ func ForgetPasswordVerify(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	response, err := client.CoordinatorForgetPasswordVerify(cont, &cpb.ForgetPasswordVerify{
-		Otp:   otp.OTP,
+		OTP:   otp.OTP,
 		Phone: otp.Phone,
 	})
 
@@ -135,8 +135,8 @@ func NewPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	}
 
 	response, err := client.CoordinatorNewPassword(cont, &cpb.Newpassword{
-		Newpassword: newpassword.NewPassword,
-		Id:          userId,
+		New_Password: newpassword.NewPassword,
+		ID:          userId,
 	})
 
 	if err != nil {
@@ -166,7 +166,7 @@ func ViewDashboard(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	Id, _ := strconv.Atoi(id)
 	response, err := client.ViewDashboard(ctx, &cpb.View{
-		Id: int64(Id),
+		ID: int64(Id),
 	})
 
 	if err != nil {

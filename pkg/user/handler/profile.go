@@ -31,7 +31,7 @@ func ForgetPassword(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.UserForgetPassword(cont, &pb.UserforgetPassword{
+	response, err := client.UserForgetPassword(cont, &pb.UserForget_Password{
 		Phone: frgtpswrd.Phone,
 	})
 	if err != nil {
@@ -66,8 +66,8 @@ func ForgetPasswordVerify(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.UserForgetPasswordVerify(cont, &pb.UserforgetPasswordVerify{
-		Otp:   otp.OTP,
+	response, err := client.UserForgetPasswordVerify(cont, &pb.UserForget_PasswordVerify{
+		OTP:   otp.OTP,
 		Phone: otp.Phone,
 	})
 	if err != nil {
@@ -115,9 +115,9 @@ func NewPassword(ctx *gin.Context, client pb.UserClient) {
 		return
 	}
 
-	response, err := client.UserNewPassword(cont, &pb.Usernewpassword{
-		Newpassword: newPassword.NewPassword,
-		Id:          userID,
+	response, err := client.UserNewPassword(cont, &pb.UserNew_Password{
+		New_Password: newPassword.NewPassword,
+		ID:          userID,
 	})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -148,7 +148,7 @@ func UpdateProfile(ctx *gin.Context, client pb.UserClient) {
 
 	userIDInt, _ := strconv.Atoi(userID)
 	response, err := client.UserProfileUpdate(context.Background(), &pb.UserSignup{
-		Id:    int64(userIDInt),
+		ID:    int64(userIDInt),
 		Name:  updateUser.Name,
 		Email: updateUser.Email,
 		Phone: updateUser.Phone,

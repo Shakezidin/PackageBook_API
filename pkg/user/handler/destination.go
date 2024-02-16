@@ -23,7 +23,7 @@ func ViewDestination(ctx *gin.Context, client pb.UserClient) {
 
 	var ctxt = context.Background()
 	response, err := client.UserViewDestination(ctxt, &pb.UserView{
-		Id: int64(destinationID),
+		ID: int64(destinationID),
 	})
 
 	if err != nil {
@@ -56,7 +56,7 @@ func ViewActivity(ctx *gin.Context, client pb.UserClient) {
 
 	var ctxt = context.Background()
 	response, err := client.UserViewActivity(ctxt, &pb.UserView{
-		Id: int64(activityID),
+		ID: int64(activityID),
 	})
 
 	if err != nil {

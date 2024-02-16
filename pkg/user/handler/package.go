@@ -23,7 +23,7 @@ func ViewPackage(ctx *gin.Context, client pb.UserClient) {
 
 	var ctxt = context.Background()
 	response, err := client.UserViewPackage(ctxt, &pb.UserView{
-		Id: int64(packageID),
+		ID: int64(packageID),
 	})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -104,7 +104,7 @@ func ViewFoodMenus(ctx *gin.Context, client pb.UserClient) {
 	pageInt, _ := strconv.Atoi(page)
 	var ctxt = context.Background()
 	response, err := client.UserViewFoodMenu(ctxt, &pb.UserView{
-		Id:   int64(packageID),
+		ID:   int64(packageID),
 		Page: int64(pageInt),
 	})
 
@@ -150,11 +150,11 @@ func PackageFilter(ctx *gin.Context, client pb.UserClient) {
 	response, err := client.UserFilterPackage(ctxt, &pb.UserFilter{
 		Status:       true,
 		Page:         int64(pageInt),
-		MinPrice:     int64(filter.MinPrice),
-		MaxPrice:     int64(filter.MaxPrice),
-		OrderBy:      filter.Orderby,
-		CategoryId:   int64(categoryID),
-		Departurtime: filter.StartTime,
+		Min_Price:     int64(filter.MinPrice),
+		Max_Price:     int64(filter.MaxPrice),
+		Order_By:      filter.Orderby,
+		Category_ID:   int64(categoryID),
+		Departure_Time: filter.StartTime,
 	})
 
 	if err != nil {

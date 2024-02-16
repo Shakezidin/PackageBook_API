@@ -26,7 +26,7 @@ func ViewUser(ctx *gin.Context, client pb.AdminClient) {
 
 	// Call the gRPC service to fetch the user
 	response, err := client.AdminViewUser(ctxt, &pb.AdminView{
-		Id: int64(id),
+		ID: int64(id),
 	})
 
 	// Handle errors

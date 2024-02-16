@@ -53,12 +53,12 @@ func AddDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorAddDestination(ctxt, &cpb.Destination{
-		DestinationName:    destination.DestinationName,
-		Description:        destination.Description,
-		PackageID:          int64(packageID),
-		Image:              destination.Image,
-		TransportationMode: destination.TransportationMode,
-		ArrivalLocation:    destination.ArrivalLocation,
+		Destination_Name:    destination.DestinationName,
+		Description:         destination.Description,
+		Package_ID:          int64(packageID),
+		Image:               destination.Image,
+		Transportation_Mode: destination.TransportationMode,
+		Arrival_Location:    destination.ArrivalLocation,
 	})
 
 	if err != nil {
@@ -90,7 +90,7 @@ func ViewDestination(ctx *gin.Context, client cpb.CoordinatorClient) {
 
 	var ctxt = context.Background()
 	response, err := client.CoordinatorViewDestination(ctxt, &cpb.View{
-		Id: int64(packageID),
+		ID: int64(packageID),
 	})
 
 	if err != nil {

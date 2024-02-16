@@ -5,13 +5,13 @@ package userpb;
 option go_package = ".";
 
 service User {
-    rpc UserLoginRequest(UserLogin) returns (UserLoginResponce);
-    rpc UserSignupRequest(UserSignup) returns(UserResponce);
-    rpc UserSignupVerifyRequest(UserVerify)returns(UserResponce);
-    rpc UserForgetPassword(UserforgetPassword)returns(UserResponce);
-    rpc UserForgetPasswordVerify(UserforgetPasswordVerify)returns(UserResponce);
-    rpc UserNewPassword(Usernewpassword)returns(UserResponce);
-    rpc UserProfileUpdate(UserSignup)returns(UserResponce);
+    rpc UserLoginRequest(UserLogin) returns (UserLoginResponse);
+    rpc UserSignupRequest(UserSignup) returns(UserResponse);
+    rpc UserSignupVerifyRequest(UserVerify)returns(UserResponse);
+    rpc UserForgetPassword(UserForget_Password) returns(UserResponse);
+    rpc UserForgetPasswordVerify(UserForget_PasswordVerify)returns(UserResponse);
+    rpc UserNewPassword(UserNew_Password)returns(UserResponse);
+    rpc UserProfileUpdate(UserSignup)returns(UserResponse);
     rpc UserViewDestination(UserView)returns(UserDestination);
     rpc UserViewActivity(UserView)returns(UserActivity);
     rpc UserViewCategories(UserView)returns(UserCategories);
@@ -20,147 +20,147 @@ service User {
     rpc UserViewPackage(UserView)returns(UserPackage);
     rpc UserViewFoodMenu(UserView)returns(UserFoodMenus);
     rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
-    rpc UserOfflineBooking(UserBooking)returns(UserBookingResponce);
+    rpc UserOfflineBooking(UserBooking)returns(UserBookingResponse);
     rpc UserViewPackages (UserView)returns(UserPackages);
     rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
-    rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponce);
+    rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponse);
     rpc UserViewHistory(UserView)returns(UserHistories);
     rpc UserViewBooking(UserView)returns(UserHistory);
-    rpc UserCancelBooking(UserView)returns(UserResponce);
-    rpc UserRefreshToken(TokenData)returns(UserLoginResponce);
+    rpc UserCancelBooking(UserView)returns(UserResponse);
+    rpc UserRefreshToken(TokenData)returns(UserLoginResponse);
 }
 
 message TokenData{
-    string role = 1;
-    string email = 2;
-    string id = 3;
+    string Role = 1;
+    string Email = 2;
+    string ID = 3;
 }
 
 message UserHistories{
-    repeated UserHistory history = 1;
+    repeated UserHistory Histories = 1;
 }
 
 message UserHistory{
-    int64 Id = 1;
-    string paymentMode = 2;
-    string BookingStatus = 3;
-    string CancelledStatus = 4;
-    int64  TotalPrice = 5;
-    int64  UserId = 6;
-    string bookingId = 7;
-    string BookDate = 8;
-    string StartDate = 9;
-    repeated UserTravellerDetails travellers = 10;
-    int64 PaidAmount = 11;
+    int64 ID = 1;
+    string Payment_Mode = 2;
+    string Booking_Status = 3;
+    string Cancelled_Status = 4;
+    int64  Total_Price = 5;
+    int64  User_ID = 6;
+    string Booking_ID = 7;
+    string Book_Date = 8;
+    string Start_Date = 9;
+    repeated UserTravellerDetails Travellers = 10;
+    int64 Paid_Amount = 11;
 }
 
 message UserPaymentConfirmedRequest{
-    string email = 1;
-    string ReferenceID = 2;
-    string PaymentId = 3;
+    string Email = 1;
+    string Reference_ID = 2;
+    string Payment_ID = 3;
     string UserID = 4;
-    string OrderID = 5;
-    string signature = 6;
-    string total = 7;
+    string Order_ID = 5;
+    string Signature = 6;
+    string Total = 7;
 }
 
 message UserFilter {
-    int64 page = 1;
-    string departurtime = 2;
-    int64 minPrice = 3;
-    int64 maxPrice = 4;
-    int64 categoryId = 5;
-    string OrderBy = 6;
-    bool status = 7;
+    int64 Page = 1;
+    string Departure_Time = 2;
+    int64 Min_Price = 3;
+    int64 Max_Price = 4;
+    int64 Category_ID = 5;
+    string Order_By = 6;
+    bool Status = 7;
 }
 
 message UserOnlinePaymentResponse {
-    int32 user_id = 1;
-    float total_fare = 2;
-    string booking_reference = 3;
-    string email = 4;
-    string order_id = 5;
+    int32 User_ID = 1;
+    float Total_Fare = 2;
+    string Booking_Reference = 3;
+    string Email = 4;
+    string Order_ID = 5;
 }
 
-message UserBookingResponce{
-    string status = 1;
-    string booking_Id = 2;
+message UserBookingResponse{
+    string Status = 1;
+    string Booking_ID = 2;
 }
 
 message UserBooking{
-    string refId = 1;
-    int64 userId = 2;
-    string Typ = 3;
+    string Ref_ID = 1;
+    int64 User_ID = 2;
+    string Type = 3;
 }
 
 message UserTravellerResponse {
-    string status = 1;
-    int64 package_price = 2;
-    int64 activityTotalPrice = 3;
-    int64 totalPrice = 4;
-    int64 advanceAmount = 5;
-    string refId = 6;
+    string Status = 1;
+    int64 Package_Price = 2;
+    int64 Activity_Total_Price = 3;
+    int64 Total_Price = 4;
+    int64 Advance_Amount = 5;
+    string Ref_ID = 6;
 }
 
 message UserTravellerDetails {
-    string name = 1;
-    string age = 2;
-    string gender = 3;
-    repeated string activityId = 4;
+    string Name = 1;
+    string Age = 2;
+    string Gender = 3;
+    repeated string Activity_ID = 4;
 }
   
 message UserTravellerRequest {
-    repeated UserTravellerDetails traveller_details = 1;
-    string UserId = 2;
-    string packageId = 3;
+    repeated UserTravellerDetails Traveller_Details = 1;
+    string User_ID = 2;
+    string Package_ID = 3;
 }
 
 message UserPackages{
-    repeated UserPackage packages = 1;
+    repeated UserPackage Packages = 1;
 }
 
 message UserSearch{
-    int64 catagoryId = 1;
-    int64 travelercount = 2;
-    string pickup_place = 3;
-    string finaldestination = 4;
-    string date = 5;
-    int64 page = 6;
-    string enddate = 7;
-    int64 maxDestination = 8;
-    repeated string destination = 9;
+    int64 Category_ID = 1;
+    int64 Traveler_Count = 2;
+    string Pickup_Place = 3;
+    string Final_Destination = 4;
+    string Date = 5;
+    int64 Page = 6;
+    string End_Date = 7;
+    int64 Max_Destination = 8;
+    repeated string Destination = 9;
 }
 
 message UserCategories{
-    repeated UserCategory catagory = 1;
+    repeated UserCategory Categories = 1;
 }
 
-message Usernewpassword{
-    string newpassword = 1;
-    string Id = 2;
+message UserNew_Password{
+    string New_Password = 1;
+    string ID = 2;
 }
 
-message UserforgetPasswordVerify{
-    string otp = 1;
-    string phone = 2;
+message UserForget_PasswordVerify{
+    string OTP = 1;
+    string Phone = 2;
 }
 
-message UserforgetPassword{
-    string phone =1;
+message UserForget_Password{
+    string Phone =1;
 }
 
 message UserCategory{
-    int64 categoryId =1;
-    string categoryName = 2;
+    int64 Category_ID =1;
+    string Category_Name = 2;
 }
 
 message UserFoodMenus{
-    repeated UserFoodMenu Foodmenu= 1;
+    repeated UserFoodMenu Food_Menus = 1;
 }
 
-message    UserFoodMenu {
-    int64  FoodMenuId = 1;
-    int64  PackageID = 2;
+message UserFoodMenu {
+    int64  Food_Menu_ID = 1;
+    int64  Package_ID = 2;
     string Breakfast = 3;
     string Lunch     = 4;
     string Dinner    = 5;  
@@ -168,84 +168,84 @@ message    UserFoodMenu {
 }
 
 message UserActivity{
-    int64  activityId = 1;
-    string activityname = 2;
-    string description = 3;
+    int64  Activity_ID = 1;
+    string Activity_Name = 2;
+    string Description = 3;
     string Location = 4;
-    string ActivityType = 5;
+    string Activity_Type = 5;
     int64  Amount = 6;
-    string date = 7;
-    string time = 8;
-    int64  destinationId = 9;
+    string Date = 7;
+    string Time = 8;
+    int64  Destination_ID = 9;
 }
 
 message UserDestination{
-    int64  destinationId = 1;
-    string DestinationName = 2;
+    int64  Destination_ID = 1;
+    string Destination_Name = 2;
     string Description = 3;
-    int64  minprice = 4;
-    int64  maxCapacity = 5;
-    string image = 6;
-    repeated UserActivity activity = 7;
-    int64  PackageID = 8;
-    string TransportationMode = 9;
-    string ArrivalLocation   = 10;
+    int64  Min_Price = 4;
+    int64  Max_Capacity = 5;
+    string Image = 6;
+    repeated UserActivity Activity = 7;
+    int64  Package_ID = 8;
+    string Transportation_Mode = 9;
+    string Arrival_Location = 10;
 }
 
 message UserPackage{
-    int64  PackageId = 1;
-    string packagename = 2;
-    int64  CoorinatorId = 3;
-    string startlocation = 4;
-    int64  availableSpace = 5;
-    string startdate = 6;
-    string starttime = 7;
-    string enddate = 8;
-    int64  price = 9;
-    string image = 10;
-    int64  destinationCount = 11;
-    string destination = 12;
+    int64  Package_ID = 1;
+    string Package_Name = 2;
+    int64  Coordinator_ID = 3;
+    string Start_Location = 4;
+    int64  Available_Space = 5;
+    string Start_Date = 6;
+    string Start_Time = 7;
+    string End_Date = 8;
+    int64  Price = 9;
+    string Image = 10;
+    int64  Destination_Count = 11;
+    string Destination = 12;
     string Description = 13;
-    int64  maxCapacity = 14;
-    int64  categoryId = 15;  
-    UserCategory category = 16;
+    int64  Max_Capacity = 14;
+    int64  Category_ID = 15;  
+    UserCategory Category = 16;
     repeated UserDestination Destinations = 17;
 }
 
 message UserView{
-    int64 Id = 1;
-    string status = 2;
-    int64 page = 3;
-    int64 userId = 4;
+    int64 ID = 1;
+    string Status = 2;
+    int64 Page = 3;
+    int64 User_ID = 4;
 }
 
 message UserLogin{
-    string email = 1;
-    string password = 2;
-    string role = 3;
+    string Email = 1;
+    string Password = 2;
+    string Role = 3;
 }
 
-message UserLoginResponce{
-    string token = 1;
-    string refreshToken = 2;
+message UserLoginResponse{
+    string Token = 1;
+    string Refresh_Token = 2;
 }
 
 message UserSignup{
-    string name =1;
-    string email = 2;
-    string phone = 3;
-    string password = 4;
-    string role = 5;
-    int64  Id = 6;
+    string Name =1;
+    string Email = 2;
+    string Phone = 3;
+    string Password = 4;
+    string Role = 5;
+    int64  ID = 6;
 }
 
-message UserResponce{
-    string status = 1;
-    string message = 2;
-    int64  Id = 3;
+message UserResponse{
+    string Status = 1;
+    string Message = 2;
+    int64  ID = 3;
 }
 
 message UserVerify{
     int32 OTP =1;
-    string email = 2;
+    string Email = 2;
 }

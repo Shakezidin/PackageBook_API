@@ -60,15 +60,15 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 			Name:       travellerMap.Name,
 			Age:        travellerMap.Age,
 			Gender:     travellerMap.Gender,
-			ActivityId: activityIDs,
+			Activity_ID: activityIDs,
 		})
 	}
 
 	ctx.Set("registered_email", email)
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
-		TravellerDetails: td,
-		UserId:           userID,
-		PackageId:        pkgId,
+		Traveller_Details: td,
+		User_ID:           userID,
+		Package_ID:        pkgId,
 	})
 
 	if err != nil {
@@ -112,8 +112,8 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	userId, _ := strconv.Atoi(userID)
 
 	response, err := client.UserOfflineBooking(cont, &pb.UserBooking{
-		RefId:  refID,
-		UserId: int64(userId),
+		Ref_ID:  refID,
+		User_ID: int64(userId),
 	})
 
 	if err != nil {

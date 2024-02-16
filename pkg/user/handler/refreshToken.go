@@ -20,7 +20,7 @@ func ValidateRefreshToken(ctx *gin.Context, client pb.UserClient) {
 	ctxt := context.Background()
 	response, err := client.UserRefreshToken(ctxt, &pb.TokenData{
 		Role: "user",
-		Id:   id,
+		ID:   id,
 	})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

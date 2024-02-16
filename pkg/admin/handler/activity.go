@@ -29,7 +29,7 @@ func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
 	ctxt := context.Background()
 
 	// Call the gRPC service to fetch the activity by ID.
-	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{Id: int64(activityId)})
+	response, err := client.AdminViewActivity(ctxt, &pb.AdminView{ID: int64(activityId)})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"Status": http.StatusInternalServerError,
@@ -39,7 +39,7 @@ func ViewActivity(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	// Check if the response is nil or the activity ID is 0, indicating that the activity was not found.
-	if response == nil || response.ActivityId == 0 {
+	if response == nil || response.Activity_ID == 0 {
 		errMsg := "Activity not found"
 		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"Status": http.StatusNotFound,

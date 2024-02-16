@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -17,11 +16,8 @@ type Configure struct {
 
 // LoadConfigure loads configuration from environment variables.
 func LoadConfigure() (*Configure, error) {
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		fmt.Println("Error loading the .env file:", err)
-		os.Exit(1)
-	}
+	godotenv.Load("../../.env")
+
 	cfg := &Configure{
 		APIPORT:            os.Getenv("APIPORT"),
 		ADMINPORT:          os.Getenv("GRPCADMINPORT"),

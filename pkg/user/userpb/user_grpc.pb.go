@@ -48,13 +48,13 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
-	UserLoginRequest(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginResponce, error)
-	UserSignupRequest(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
-	UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponce, error)
-	UserForgetPassword(ctx context.Context, in *UserforgetPassword, opts ...grpc.CallOption) (*UserResponce, error)
-	UserForgetPasswordVerify(ctx context.Context, in *UserforgetPasswordVerify, opts ...grpc.CallOption) (*UserResponce, error)
-	UserNewPassword(ctx context.Context, in *Usernewpassword, opts ...grpc.CallOption) (*UserResponce, error)
-	UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error)
+	UserLoginRequest(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginResponse, error)
+	UserSignupRequest(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponse, error)
+	UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponse, error)
+	UserForgetPassword(ctx context.Context, in *UserForget_Password, opts ...grpc.CallOption) (*UserResponse, error)
+	UserForgetPasswordVerify(ctx context.Context, in *UserForget_PasswordVerify, opts ...grpc.CallOption) (*UserResponse, error)
+	UserNewPassword(ctx context.Context, in *UserNew_Password, opts ...grpc.CallOption) (*UserResponse, error)
+	UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponse, error)
 	UserViewDestination(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserDestination, error)
 	UserViewActivity(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserActivity, error)
 	UserViewCategories(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserCategories, error)
@@ -63,14 +63,14 @@ type UserClient interface {
 	UserViewPackage(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackage, error)
 	UserViewFoodMenu(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserFoodMenus, error)
 	UserTravellerDetails(ctx context.Context, in *UserTravellerRequest, opts ...grpc.CallOption) (*UserTravellerResponse, error)
-	UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponce, error)
+	UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponse, error)
 	UserViewPackages(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserPackages, error)
 	UserOnlinePayment(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserOnlinePaymentResponse, error)
-	UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error)
+	UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponse, error)
 	UserViewHistory(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistories, error)
 	UserViewBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserHistory, error)
-	UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error)
-	UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error)
+	UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponse, error)
+	UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponse, error)
 }
 
 type userClient struct {
@@ -81,8 +81,8 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) UserLoginRequest(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginResponce, error) {
-	out := new(UserLoginResponce)
+func (c *userClient) UserLoginRequest(ctx context.Context, in *UserLogin, opts ...grpc.CallOption) (*UserLoginResponse, error) {
+	out := new(UserLoginResponse)
 	err := c.cc.Invoke(ctx, User_UserLoginRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,8 +90,8 @@ func (c *userClient) UserLoginRequest(ctx context.Context, in *UserLogin, opts .
 	return out, nil
 }
 
-func (c *userClient) UserSignupRequest(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserSignupRequest(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserSignupRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -99,8 +99,8 @@ func (c *userClient) UserSignupRequest(ctx context.Context, in *UserSignup, opts
 	return out, nil
 }
 
-func (c *userClient) UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserSignupVerifyRequest(ctx context.Context, in *UserVerify, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserSignupVerifyRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -108,8 +108,8 @@ func (c *userClient) UserSignupVerifyRequest(ctx context.Context, in *UserVerify
 	return out, nil
 }
 
-func (c *userClient) UserForgetPassword(ctx context.Context, in *UserforgetPassword, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserForgetPassword(ctx context.Context, in *UserForget_Password, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserForgetPassword_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -117,8 +117,8 @@ func (c *userClient) UserForgetPassword(ctx context.Context, in *UserforgetPassw
 	return out, nil
 }
 
-func (c *userClient) UserForgetPasswordVerify(ctx context.Context, in *UserforgetPasswordVerify, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserForgetPasswordVerify(ctx context.Context, in *UserForget_PasswordVerify, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserForgetPasswordVerify_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -126,8 +126,8 @@ func (c *userClient) UserForgetPasswordVerify(ctx context.Context, in *Userforge
 	return out, nil
 }
 
-func (c *userClient) UserNewPassword(ctx context.Context, in *Usernewpassword, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserNewPassword(ctx context.Context, in *UserNew_Password, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserNewPassword_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -135,8 +135,8 @@ func (c *userClient) UserNewPassword(ctx context.Context, in *Usernewpassword, o
 	return out, nil
 }
 
-func (c *userClient) UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserProfileUpdate(ctx context.Context, in *UserSignup, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserProfileUpdate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -216,8 +216,8 @@ func (c *userClient) UserTravellerDetails(ctx context.Context, in *UserTraveller
 	return out, nil
 }
 
-func (c *userClient) UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponce, error) {
-	out := new(UserBookingResponce)
+func (c *userClient) UserOfflineBooking(ctx context.Context, in *UserBooking, opts ...grpc.CallOption) (*UserBookingResponse, error) {
+	out := new(UserBookingResponse)
 	err := c.cc.Invoke(ctx, User_UserOfflineBooking_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -243,8 +243,8 @@ func (c *userClient) UserOnlinePayment(ctx context.Context, in *UserBooking, opt
 	return out, nil
 }
 
-func (c *userClient) UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponce, error) {
-	out := new(UserBookingResponce)
+func (c *userClient) UserPaymentConfirmed(ctx context.Context, in *UserPaymentConfirmedRequest, opts ...grpc.CallOption) (*UserBookingResponse, error) {
+	out := new(UserBookingResponse)
 	err := c.cc.Invoke(ctx, User_UserPaymentConfirmed_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -270,8 +270,8 @@ func (c *userClient) UserViewBooking(ctx context.Context, in *UserView, opts ...
 	return out, nil
 }
 
-func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponce, error) {
-	out := new(UserResponce)
+func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts ...grpc.CallOption) (*UserResponse, error) {
+	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, User_UserCancelBooking_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -279,8 +279,8 @@ func (c *userClient) UserCancelBooking(ctx context.Context, in *UserView, opts .
 	return out, nil
 }
 
-func (c *userClient) UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponce, error) {
-	out := new(UserLoginResponce)
+func (c *userClient) UserRefreshToken(ctx context.Context, in *TokenData, opts ...grpc.CallOption) (*UserLoginResponse, error) {
+	out := new(UserLoginResponse)
 	err := c.cc.Invoke(ctx, User_UserRefreshToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -292,13 +292,13 @@ func (c *userClient) UserRefreshToken(ctx context.Context, in *TokenData, opts .
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
-	UserLoginRequest(context.Context, *UserLogin) (*UserLoginResponce, error)
-	UserSignupRequest(context.Context, *UserSignup) (*UserResponce, error)
-	UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponce, error)
-	UserForgetPassword(context.Context, *UserforgetPassword) (*UserResponce, error)
-	UserForgetPasswordVerify(context.Context, *UserforgetPasswordVerify) (*UserResponce, error)
-	UserNewPassword(context.Context, *Usernewpassword) (*UserResponce, error)
-	UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error)
+	UserLoginRequest(context.Context, *UserLogin) (*UserLoginResponse, error)
+	UserSignupRequest(context.Context, *UserSignup) (*UserResponse, error)
+	UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponse, error)
+	UserForgetPassword(context.Context, *UserForget_Password) (*UserResponse, error)
+	UserForgetPasswordVerify(context.Context, *UserForget_PasswordVerify) (*UserResponse, error)
+	UserNewPassword(context.Context, *UserNew_Password) (*UserResponse, error)
+	UserProfileUpdate(context.Context, *UserSignup) (*UserResponse, error)
 	UserViewDestination(context.Context, *UserView) (*UserDestination, error)
 	UserViewActivity(context.Context, *UserView) (*UserActivity, error)
 	UserViewCategories(context.Context, *UserView) (*UserCategories, error)
@@ -307,14 +307,14 @@ type UserServer interface {
 	UserViewPackage(context.Context, *UserView) (*UserPackage, error)
 	UserViewFoodMenu(context.Context, *UserView) (*UserFoodMenus, error)
 	UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error)
-	UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error)
+	UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponse, error)
 	UserViewPackages(context.Context, *UserView) (*UserPackages, error)
 	UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error)
-	UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error)
+	UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponse, error)
 	UserViewHistory(context.Context, *UserView) (*UserHistories, error)
 	UserViewBooking(context.Context, *UserView) (*UserHistory, error)
-	UserCancelBooking(context.Context, *UserView) (*UserResponce, error)
-	UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error)
+	UserCancelBooking(context.Context, *UserView) (*UserResponse, error)
+	UserRefreshToken(context.Context, *TokenData) (*UserLoginResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -322,25 +322,25 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
-func (UnimplementedUserServer) UserLoginRequest(context.Context, *UserLogin) (*UserLoginResponce, error) {
+func (UnimplementedUserServer) UserLoginRequest(context.Context, *UserLogin) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLoginRequest not implemented")
 }
-func (UnimplementedUserServer) UserSignupRequest(context.Context, *UserSignup) (*UserResponce, error) {
+func (UnimplementedUserServer) UserSignupRequest(context.Context, *UserSignup) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSignupRequest not implemented")
 }
-func (UnimplementedUserServer) UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponce, error) {
+func (UnimplementedUserServer) UserSignupVerifyRequest(context.Context, *UserVerify) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSignupVerifyRequest not implemented")
 }
-func (UnimplementedUserServer) UserForgetPassword(context.Context, *UserforgetPassword) (*UserResponce, error) {
+func (UnimplementedUserServer) UserForgetPassword(context.Context, *UserForget_Password) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserForgetPassword not implemented")
 }
-func (UnimplementedUserServer) UserForgetPasswordVerify(context.Context, *UserforgetPasswordVerify) (*UserResponce, error) {
+func (UnimplementedUserServer) UserForgetPasswordVerify(context.Context, *UserForget_PasswordVerify) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserForgetPasswordVerify not implemented")
 }
-func (UnimplementedUserServer) UserNewPassword(context.Context, *Usernewpassword) (*UserResponce, error) {
+func (UnimplementedUserServer) UserNewPassword(context.Context, *UserNew_Password) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserNewPassword not implemented")
 }
-func (UnimplementedUserServer) UserProfileUpdate(context.Context, *UserSignup) (*UserResponce, error) {
+func (UnimplementedUserServer) UserProfileUpdate(context.Context, *UserSignup) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserProfileUpdate not implemented")
 }
 func (UnimplementedUserServer) UserViewDestination(context.Context, *UserView) (*UserDestination, error) {
@@ -367,7 +367,7 @@ func (UnimplementedUserServer) UserViewFoodMenu(context.Context, *UserView) (*Us
 func (UnimplementedUserServer) UserTravellerDetails(context.Context, *UserTravellerRequest) (*UserTravellerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserTravellerDetails not implemented")
 }
-func (UnimplementedUserServer) UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponce, error) {
+func (UnimplementedUserServer) UserOfflineBooking(context.Context, *UserBooking) (*UserBookingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserOfflineBooking not implemented")
 }
 func (UnimplementedUserServer) UserViewPackages(context.Context, *UserView) (*UserPackages, error) {
@@ -376,7 +376,7 @@ func (UnimplementedUserServer) UserViewPackages(context.Context, *UserView) (*Us
 func (UnimplementedUserServer) UserOnlinePayment(context.Context, *UserBooking) (*UserOnlinePaymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserOnlinePayment not implemented")
 }
-func (UnimplementedUserServer) UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponce, error) {
+func (UnimplementedUserServer) UserPaymentConfirmed(context.Context, *UserPaymentConfirmedRequest) (*UserBookingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPaymentConfirmed not implemented")
 }
 func (UnimplementedUserServer) UserViewHistory(context.Context, *UserView) (*UserHistories, error) {
@@ -385,10 +385,10 @@ func (UnimplementedUserServer) UserViewHistory(context.Context, *UserView) (*Use
 func (UnimplementedUserServer) UserViewBooking(context.Context, *UserView) (*UserHistory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserViewBooking not implemented")
 }
-func (UnimplementedUserServer) UserCancelBooking(context.Context, *UserView) (*UserResponce, error) {
+func (UnimplementedUserServer) UserCancelBooking(context.Context, *UserView) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCancelBooking not implemented")
 }
-func (UnimplementedUserServer) UserRefreshToken(context.Context, *TokenData) (*UserLoginResponce, error) {
+func (UnimplementedUserServer) UserRefreshToken(context.Context, *TokenData) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRefreshToken not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
@@ -459,7 +459,7 @@ func _User_UserSignupVerifyRequest_Handler(srv interface{}, ctx context.Context,
 }
 
 func _User_UserForgetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserforgetPassword)
+	in := new(UserForget_Password)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -471,13 +471,13 @@ func _User_UserForgetPassword_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: User_UserForgetPassword_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserForgetPassword(ctx, req.(*UserforgetPassword))
+		return srv.(UserServer).UserForgetPassword(ctx, req.(*UserForget_Password))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _User_UserForgetPasswordVerify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserforgetPasswordVerify)
+	in := new(UserForget_PasswordVerify)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -489,13 +489,13 @@ func _User_UserForgetPasswordVerify_Handler(srv interface{}, ctx context.Context
 		FullMethod: User_UserForgetPasswordVerify_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserForgetPasswordVerify(ctx, req.(*UserforgetPasswordVerify))
+		return srv.(UserServer).UserForgetPasswordVerify(ctx, req.(*UserForget_PasswordVerify))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _User_UserNewPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Usernewpassword)
+	in := new(UserNew_Password)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -507,7 +507,7 @@ func _User_UserNewPassword_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: User_UserNewPassword_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserNewPassword(ctx, req.(*Usernewpassword))
+		return srv.(UserServer).UserNewPassword(ctx, req.(*UserNew_Password))
 	}
 	return interceptor(ctx, in, info, handler)
 }

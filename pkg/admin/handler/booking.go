@@ -20,7 +20,7 @@ func ViewBookings(ctx *gin.Context, client pb.AdminClient) {
 
 	ctxt := context.Background()
 	response, err := client.AdminViewBookings(ctxt, &pb.AdminView{
-		Id:     int64(id),
+		ID:     int64(id),
 		Status: payment,
 		Page:   int64(page),
 	})
@@ -54,7 +54,7 @@ func ViewBooking(ctx *gin.Context, client pb.AdminClient) {
 
 	ctxt := context.Background()
 	response, err := client.AdminViewBooking(ctxt, &pb.AdminView{
-		Id: int64(ID),
+		ID: int64(ID),
 	})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
@@ -121,16 +121,16 @@ func FilterBookings(ctx *gin.Context, client pb.AdminClient) {
 	pageInt, _ := strconv.Atoi(page)
 	ctxt := context.Background()
 	response, err := client.AdminSearchBooking(ctxt, &pb.AdminBookingSearchCriteria{
-		PaymentMode:     search.PaymentMode,
-		BookingStatus:   search.BookingStatus,
-		CancelledStatus: search.CancelledStatus,
-		UserEmail:       search.UserEmail,
-		BookingId:       search.BookingID,
-		BookDate:        search.BookDate,
-		StartDate:       search.StartDate,
-		CoordinatorId:   uint32(search.CoordinatorID),
+		Payment_Mode:     search.PaymentMode,
+		Booking_Status:   search.BookingStatus,
+		Cancelled_Status: search.CancelledStatus,
+		User_Email:       search.UserEmail,
+		Booking_ID:       search.BookingID,
+		Book_Date:        search.BookDate,
+		Start_Date:       search.StartDate,
+		Coordinator_ID:   uint32(search.CoordinatorID),
 		Page:            int64(pageInt),
-		CatageryId:      int64(search.CategoryID),
+		Category_ID:      int64(search.CategoryID),
 	})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

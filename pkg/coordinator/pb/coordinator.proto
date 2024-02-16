@@ -17,10 +17,10 @@ service Coordinator {
     rpc CoordinatorViewPackage(View)returns(Package);
     rpc CoordinatorViewDestination(View)returns(Destination);
     rpc CoordinatorViewActivity(View)returns(Activity);
-    rpc CoordinatorForgetPassword(forgetPassword)returns(Responce);
-    rpc CoordinatorForgetPasswordVerify(forgetPasswordVerify)returns(Responce);
-    rpc CoordinatorNewPassword(newpassword)returns(Responce);
-    rpc ViewCategories(View)returns(Catagories);
+    rpc CoordinatorForgetPassword(ForgetPassword)returns(Responce);
+    rpc CoordinatorForgetPasswordVerify(ForgetPasswordVerify)returns(Responce);
+    rpc CoordinatorNewPassword(Newpassword)returns(Responce);
+    rpc ViewCategories(View)returns(Categories);
     rpc ViewHistory(View)returns(Histories);
     rpc ViewBooking(View)returns(History);
     rpc ViewTraveller(View)returns(TravellerDetails);
@@ -28,115 +28,115 @@ service Coordinator {
 }
 
 message Dashboard{
-    int64 wallet = 1;
-    int64 today = 2;
-    int64 monthly = 3;
+    int64 Wallet = 1;
+    int64 Today = 2;
+    int64 Monthly = 3;
 }
 
 message Histories{
-    repeated History history = 1;
+    repeated History Histories = 1;
 }
 
 message History{
-    int64 Id = 1;
-    string paymentMode = 2;
-    string BookingStatus = 3;
-    string CancelledStatus = 4;
-    int64  TotalPrice = 5;
-    int64  UserId = 6;
-    string bookingId = 7;
-    string BookDate = 8;
-    string StartDate = 9;
-    repeated TravellerDetails travellers = 10;
-    int64 PaidAmount = 11;
+    int64  ID = 1;
+    string Payment_Mode = 2;
+    string Booking_Status = 3;
+    string Cancelled_Status = 4;
+    int64  Total_Price = 5;
+    int64  User_ID = 6;
+    string Booking_ID = 7;
+    string Book_Date = 8;
+    string Start_Date = 9;
+    repeated TravellerDetails Travellers = 10;
+    int64  Paid_Amount = 11;
 }
 
 message TravellerDetails {
-    string name = 1;
-    string age = 2;
-    string gender = 3;
-    repeated string activityId = 4;
-    int64 Id = 5;
-    repeated Activity activity = 6;
+    string Name = 1;
+    string Age = 2;
+    string Gender = 3;
+    repeated string Activity_ID = 4;
+    int64 ID = 5;
+    repeated Activity Activity = 6;
 }
 
 message PackagesResponce{
     repeated Package Packages = 1;
 }
 
-message Catagories{
-    repeated Category Catagories = 1;
+message Categories{
+    repeated Category Categories = 1;
 }
 
 message Verify{
     int32  OTP =1;
-    string email = 2;
+    string Email = 2;
 }
 
 message Responce{
-    string status = 1;
-    string message = 2;
-    int64 Id = 3;
+    string Status = 1;
+    string Message = 2;
+    int64  ID = 3;
 }
 
 message Signup{
-    string name =1;
-    string email = 2;
-    string phone = 3;
-    string password = 4;
-    string role = 5;
+    string Name =1;
+    string Email = 2;
+    string Phone = 3;
+    string Password = 4;
+    string Role = 5;
 }
 
-message newpassword{
-    string newpassword = 1;
-    string Id = 2;
+message Newpassword{
+    string New_Password = 1;
+    string ID = 2;
 }
 
-message forgetPasswordVerify{
-    string otp = 1;
-    string phone = 2;
+message ForgetPasswordVerify{
+    string OTP = 1;
+    string Phone = 2;
 }
 
-message forgetPassword{
-    string phone =1;
+message ForgetPassword{
+    string Phone =1;
 }
 
 message View{
-    int64 Id = 1;
-    string status = 2;
-    int64 page = 3;
+    int64  ID = 1;
+    string Status = 2;
+    int64  Page = 3;
 }
 
 message Login{
-    string email = 1;
-    string password = 2;
-    string role = 3;
+    string Email = 1;
+    string Password = 2;
+    string Role = 3;
 }
 
 message SignupResponce{
-    string status = 1;
-    string message = 2;
+    string Status = 1;
+    string Message = 2;
 }
 
 message Activity{
-    int64  activityId = 1;
-    string activityname = 2;
-    string description = 3;
+    int64  Activity_ID = 1;
+    string Activity_Name = 2;
+    string Description = 3;
     string Location = 4;
-    string ActivityType = 5;
+    string Activity_Type = 5;
     int64  Amount = 6;
-    string date = 7;
-    string time = 8;
-    int64  destinationId = 9;
+    string Date = 7;
+    string Time = 8;
+    int64  Destination_ID = 9;
 }
 
 message FoodMenus{
-    repeated FoodMenu Foodmenu= 1;
+    repeated FoodMenu Food_Menus = 1;
 }
 
-message    FoodMenu {
-    int64  FoodMenuId = 1;
-    int64  PackageID = 2;
+message FoodMenu {
+    int64  Foodmenu_ID = 1;
+    int64  Package_ID = 2;
     string Breakfast = 3;
     string Lunch     = 4;
     string Dinner    = 5;  
@@ -144,43 +144,43 @@ message    FoodMenu {
 }
 
 message Destination{
-    int64   destinationId = 1;
-    string  DestinationName = 2;
+    int64   Destination_ID = 1;
+    string  Destination_Name = 2;
     string  Description = 3;
-    int64   minprice = 4;
-    int64   maxCapacity = 5;
-    string  image = 6;
-    repeated Activity activity = 7;
-    int64   PackageID = 8;
-    string TransportationMode = 9;
-    string ArrivalLocation   = 10;
+    int64   Min_Price = 4;
+    int64   Max_Capacity = 5;
+    string  Image = 6;
+    repeated Activity Activity = 7;
+    int64   Package_ID = 8;
+    string  Transportation_Mode = 9;
+    string  Arrival_Location   = 10;
 }
 
 message Package{
-    int64  PackageId = 1;
-    string packagename = 2;
-    int64  CoorinatorId = 3;
-    string startlocation = 4;
-    int64  availableSpace = 5;
-    string startdate = 6;
-    string starttime = 7;
-    string enddate = 8;
-    int64  price = 9;
-    string image = 10;
-    int64  destinationCount = 11;
-    string destination = 12;
+    int64  Package_ID = 1;
+    string Package_Name = 2;
+    int64  Coorinator_ID = 3;
+    string Start_Location = 4;
+    int64  Available_Space = 5;
+    string Start_Date = 6;
+    string Start_Time = 7;
+    string End_Date = 8;
+    int64  Price = 9;
+    string Image = 10;
+    int64  Destination_Count = 11;
+    string Destination = 12;
     string Description = 13;
-    int64  maxCapacity = 14;
-    int64  categoryId = 15;  
-    Category category = 16;
+    int64  Max_Capacity = 14;
+    int64  Category_ID = 15;  
+    Category Category = 16;
     repeated Destination Destinations = 17;
 }
 
 message Category{
-    int64 CatagoryId = 1;
-    string categoryName = 2;
+    int64 Category_ID = 1;
+    string Category_Name = 2;
 }
 
 message LoginResponce{
-    string            token = 1;
+    string Token = 1;
 }

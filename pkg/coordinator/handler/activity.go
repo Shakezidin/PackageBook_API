@@ -58,14 +58,14 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	ctxt := context.Background()
 	// Call gRPC service to add activity
 	response, err := client.CoordinatorAddActivity(ctxt, &cpb.Activity{
-		Activityname:  activity.ActivityName,
-		Description:   activity.Description,
-		Location:      activity.Location,
-		ActivityType:  activity.ActivityType,
-		Amount:        int64(activity.Price),
-		Date:          activity.Date,
-		Time:          activity.Time,
-		DestinationId: int64(destinationID),
+		Activity_Name:  activity.ActivityName,
+		Description:    activity.Description,
+		Location:       activity.Location,
+		Activity_Type:  activity.ActivityType,
+		Amount:         int64(activity.Price),
+		Date:           activity.Date,
+		Time:           activity.Time,
+		Destination_ID: int64(destinationID),
 	})
 
 	if err != nil {
@@ -101,7 +101,7 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	ctxt := context.Background()
 	// Call gRPC service to fetch activity by ID
 	response, err := client.CoordinatorViewActivity(ctxt, &cpb.View{
-		Id: int64(activityID),
+		ID: int64(activityID),
 	})
 
 	if err != nil {

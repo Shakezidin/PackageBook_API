@@ -27,7 +27,7 @@ func ViewBookings(ctx *gin.Context, client cpb.CoordinatorClient) {
 	// Call gRPC service to view booking history
 	response, err := client.ViewHistory(ctxt, &cpb.View{
 		Status: "true",
-		Id:     int64(ID),
+		ID:     int64(ID),
 	})
 
 	if err != nil {
@@ -62,7 +62,7 @@ func ViewBooking(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var ctxt = context.Background()
 	// Call gRPC service to view booking details
 	response, err := client.ViewBooking(ctxt, &cpb.View{
-		Id: int64(ID),
+		ID: int64(ID),
 	})
 
 	if err != nil {
@@ -97,7 +97,7 @@ func ViewTraveller(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var ctxt = context.Background()
 	// Call gRPC service to view traveller details
 	response, err := client.ViewTraveller(ctxt, &cpb.View{
-		Id: int64(ID),
+		ID: int64(ID),
 	})
 
 	if err != nil {

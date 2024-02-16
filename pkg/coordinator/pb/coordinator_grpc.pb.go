@@ -60,7 +60,7 @@ type CoordinatorClient interface {
 	CoordinatorForgetPassword(ctx context.Context, in *ForgetPassword, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorForgetPasswordVerify(ctx context.Context, in *ForgetPasswordVerify, opts ...grpc.CallOption) (*Responce, error)
 	CoordinatorNewPassword(ctx context.Context, in *Newpassword, opts ...grpc.CallOption) (*Responce, error)
-	ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error)
+	ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Categories, error)
 	ViewHistory(ctx context.Context, in *View, opts ...grpc.CallOption) (*Histories, error)
 	ViewBooking(ctx context.Context, in *View, opts ...grpc.CallOption) (*History, error)
 	ViewTraveller(ctx context.Context, in *View, opts ...grpc.CallOption) (*TravellerDetails, error)
@@ -210,8 +210,8 @@ func (c *coordinatorClient) CoordinatorNewPassword(ctx context.Context, in *Newp
 	return out, nil
 }
 
-func (c *coordinatorClient) ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Catagories, error) {
-	out := new(Catagories)
+func (c *coordinatorClient) ViewCategories(ctx context.Context, in *View, opts ...grpc.CallOption) (*Categories, error) {
+	out := new(Categories)
 	err := c.cc.Invoke(ctx, Coordinator_ViewCategories_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -274,7 +274,7 @@ type CoordinatorServer interface {
 	CoordinatorForgetPassword(context.Context, *ForgetPassword) (*Responce, error)
 	CoordinatorForgetPasswordVerify(context.Context, *ForgetPasswordVerify) (*Responce, error)
 	CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error)
-	ViewCategories(context.Context, *View) (*Catagories, error)
+	ViewCategories(context.Context, *View) (*Categories, error)
 	ViewHistory(context.Context, *View) (*Histories, error)
 	ViewBooking(context.Context, *View) (*History, error)
 	ViewTraveller(context.Context, *View) (*TravellerDetails, error)
@@ -331,7 +331,7 @@ func (UnimplementedCoordinatorServer) CoordinatorForgetPasswordVerify(context.Co
 func (UnimplementedCoordinatorServer) CoordinatorNewPassword(context.Context, *Newpassword) (*Responce, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CoordinatorNewPassword not implemented")
 }
-func (UnimplementedCoordinatorServer) ViewCategories(context.Context, *View) (*Catagories, error) {
+func (UnimplementedCoordinatorServer) ViewCategories(context.Context, *View) (*Categories, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewCategories not implemented")
 }
 func (UnimplementedCoordinatorServer) ViewHistory(context.Context, *View) (*Histories, error) {

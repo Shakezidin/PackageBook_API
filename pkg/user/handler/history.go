@@ -18,6 +18,13 @@ func ViewHistory(ctx *gin.Context, client pb.UserClient) {
 
 	// Extract user ID from token
 	_, id, err := middleware.ValidateToken(ctx, "user")
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
+		})
+		return
+	}
 	userId, err := strconv.Atoi(id)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

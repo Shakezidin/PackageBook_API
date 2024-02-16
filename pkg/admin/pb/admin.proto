@@ -17,7 +17,7 @@ service Admin {
     rpc AdminViewCoordinators(AdminView)returns(AdminUsers);
     rpc AdminViewBookings(AdminView)returns(AdminHistories);
     rpc AdminViewBooking(AdminView)returns(AdminHistory);
-    rpc AdminViewDashBord(AdminView)returns(AdminDashboard);
+    rpc AdminViewDashboard(AdminView)returns(AdminDashboard);
     rpc AdminSearchBooking(AdminBookingSearchCriteria)returns(AdminHistories);
     rpc AdminViewUsers(AdminView)returns(AdminUsers);
     rpc AdminViewUser(AdminView)returns(AdminUser);

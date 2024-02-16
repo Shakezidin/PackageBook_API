@@ -74,7 +74,7 @@ func ViewDashboard(ctx *gin.Context, client pb.AdminClient) {
 	}
 
 	// Call the gRPC service to fetch the admin dashboard.
-	response, err := client.AdminViewDashBord(ctx, &pb.AdminView{Status: email})
+	response, err := client.AdminViewDashboard(ctx, &pb.AdminView{Status: email})
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"Status": http.StatusInternalServerError,

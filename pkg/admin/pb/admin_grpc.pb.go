@@ -30,7 +30,7 @@ const (
 	Admin_AdminViewCoordinators_FullMethodName = "/pb.Admin/AdminViewCoordinators"
 	Admin_AdminViewBookings_FullMethodName     = "/pb.Admin/AdminViewBookings"
 	Admin_AdminViewBooking_FullMethodName      = "/pb.Admin/AdminViewBooking"
-	Admin_AdminViewDashBord_FullMethodName     = "/pb.Admin/AdminViewDashBord"
+	Admin_AdminViewDashboard_FullMethodName    = "/pb.Admin/AdminViewDashboard"
 	Admin_AdminSearchBooking_FullMethodName    = "/pb.Admin/AdminSearchBooking"
 	Admin_AdminViewUsers_FullMethodName        = "/pb.Admin/AdminViewUsers"
 	Admin_AdminViewUser_FullMethodName         = "/pb.Admin/AdminViewUser"
@@ -51,7 +51,7 @@ type AdminClient interface {
 	AdminViewCoordinators(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminUsers, error)
 	AdminViewBookings(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminHistories, error)
 	AdminViewBooking(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminHistory, error)
-	AdminViewDashBord(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminDashboard, error)
+	AdminViewDashboard(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminDashboard, error)
 	AdminSearchBooking(ctx context.Context, in *AdminBookingSearchCriteria, opts ...grpc.CallOption) (*AdminHistories, error)
 	AdminViewUsers(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminUsers, error)
 	AdminViewUser(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminUser, error)
@@ -164,9 +164,9 @@ func (c *adminClient) AdminViewBooking(ctx context.Context, in *AdminView, opts 
 	return out, nil
 }
 
-func (c *adminClient) AdminViewDashBord(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminDashboard, error) {
+func (c *adminClient) AdminViewDashboard(ctx context.Context, in *AdminView, opts ...grpc.CallOption) (*AdminDashboard, error) {
 	out := new(AdminDashboard)
-	err := c.cc.Invoke(ctx, Admin_AdminViewDashBord_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Admin_AdminViewDashboard_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ type AdminServer interface {
 	AdminViewCoordinators(context.Context, *AdminView) (*AdminUsers, error)
 	AdminViewBookings(context.Context, *AdminView) (*AdminHistories, error)
 	AdminViewBooking(context.Context, *AdminView) (*AdminHistory, error)
-	AdminViewDashBord(context.Context, *AdminView) (*AdminDashboard, error)
+	AdminViewDashboard(context.Context, *AdminView) (*AdminDashboard, error)
 	AdminSearchBooking(context.Context, *AdminBookingSearchCriteria) (*AdminHistories, error)
 	AdminViewUsers(context.Context, *AdminView) (*AdminUsers, error)
 	AdminViewUser(context.Context, *AdminView) (*AdminUser, error)
@@ -259,8 +259,8 @@ func (UnimplementedAdminServer) AdminViewBookings(context.Context, *AdminView) (
 func (UnimplementedAdminServer) AdminViewBooking(context.Context, *AdminView) (*AdminHistory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminViewBooking not implemented")
 }
-func (UnimplementedAdminServer) AdminViewDashBord(context.Context, *AdminView) (*AdminDashboard, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AdminViewDashBord not implemented")
+func (UnimplementedAdminServer) AdminViewDashboard(context.Context, *AdminView) (*AdminDashboard, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminViewDashboard not implemented")
 }
 func (UnimplementedAdminServer) AdminSearchBooking(context.Context, *AdminBookingSearchCriteria) (*AdminHistories, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminSearchBooking not implemented")
@@ -482,20 +482,20 @@ func _Admin_AdminViewBooking_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Admin_AdminViewDashBord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Admin_AdminViewDashboard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AdminView)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminServer).AdminViewDashBord(ctx, in)
+		return srv.(AdminServer).AdminViewDashboard(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Admin_AdminViewDashBord_FullMethodName,
+		FullMethod: Admin_AdminViewDashboard_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminServer).AdminViewDashBord(ctx, req.(*AdminView))
+		return srv.(AdminServer).AdminViewDashboard(ctx, req.(*AdminView))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -606,8 +606,8 @@ var Admin_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Admin_AdminViewBooking_Handler,
 		},
 		{
-			MethodName: "AdminViewDashBord",
-			Handler:    _Admin_AdminViewDashBord_Handler,
+			MethodName: "AdminViewDashboard",
+			Handler:    _Admin_AdminViewDashboard_Handler,
 		},
 		{
 			MethodName: "AdminSearchBooking",

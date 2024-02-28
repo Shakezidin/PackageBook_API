@@ -25,10 +25,10 @@ func validateQueryParam(ctx *gin.Context, paramName string) (string, bool) {
 
 // SearchPackage searches for packages based on given parameters.
 func SearchPackage(ctx *gin.Context, client pb.UserClient) {
-	catagoryIDStr, valid1 := validateQueryParam(ctx, "catagoryid")
+	catagoryIDStr, valid1 := validateQueryParam(ctx, "categoryid")
 	pickupPlace, valid2 := validateQueryParam(ctx, "pickup_place")
-	finalDestination, valid3 := validateQueryParam(ctx, "finaldestination")
-	date, valid4 := validateQueryParam(ctx, "fromdate")
+	finalDestination, valid3 := validateQueryParam(ctx, "final_destination")
+	date, valid4 := validateQueryParam(ctx, "from_date")
 	if !valid1 || !valid2 || !valid3 || !valid4 {
 		return
 	}

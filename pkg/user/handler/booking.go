@@ -4,16 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/Shakezidin/middleware"
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 
+// TravellerDetail represents details of a traveller
 type TravellerDetail struct {
 	Name       string   `json:"name"`
 	Age        string   `json:"age"`
@@ -25,18 +25,9 @@ type TravellerDetails struct {
 	Travellers []TravellerDetail `json:"travellers"`
 }
 
-func extractUserID(ctx *gin.Context) (string, error) {
-	_, userID, err := middleware.ValidateToken(ctx, "user")
-	if err != nil {
-		return "", errors.New("error extracting user ID from token")
-	}
-	return userID, nil
-}
-
 func AddTraveller(ctx *gin.Context, client pb.UserClient) {
-	pkgId := ctx.GetHeader("packageId")
+	pkgId := ctx.GetHeader("id")
 	if pkgId == "" {
-		log.Println("package id required")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error":  "package id missing",
 			"status": http.StatusBadRequest,
@@ -47,7 +38,6 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	var td []*pb.UserTravellerDetails
 
 	if err := ctx.ShouldBindJSON(&travellerDetails); err != nil {
-		log.Println("unable to bind JSON, err:", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error":  err.Error(),
 			"status": http.StatusBadRequest,
@@ -70,19 +60,18 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 			Name:       travellerMap.Name,
 			Age:        travellerMap.Age,
 			Gender:     travellerMap.Gender,
-			ActivityId: activityIDs,
+			Activity_ID: activityIDs,
 		})
 	}
 
 	ctx.Set("registered_email", email)
 	response, err := client.UserTravellerDetails(ctx, &pb.UserTravellerRequest{
-		TravellerDetails: td,
-		UserId:           userID,
-		PackageId:        pkgId,
+		Traveller_Details: td,
+		User_ID:           userID,
+		Package_ID:        pkgId,
 	})
 
 	if err != nil {
-		log.Println("unable to bind JSON, err:", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error":  err.Error(),
 			"status": http.StatusBadRequest,
@@ -97,13 +86,13 @@ func AddTraveller(ctx *gin.Context, client pb.UserClient) {
 	})
 }
 
+// AdvancePayment handles the advance payment for a booking.
 func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
-	refId := ctx.GetHeader("refid")
-	if refId == "" {
-		log.Println("reference id is empty")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+	refID := ctx.GetHeader("refid")
+	if refID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  errors.New("reference id is empty"),
+			"error":  errors.New("reference ID is empty"),
 		})
 		return
 	}
@@ -111,26 +100,24 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	email, userId, err := middleware.ValidateToken(ctx, "user")
+	email, userID, err := middleware.ValidateToken(ctx, "user")
 	if err != nil {
-		log.Println("user id not present in jwt token, please login again")
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  errors.New("email id not present in jwt token, please login again"),
 		})
 		return
 	}
 
-	userID, _ := strconv.Atoi(userId)
+	userId, _ := strconv.Atoi(userID)
 
 	response, err := client.UserOfflineBooking(cont, &pb.UserBooking{
-		RefId:  refId,
-		UserId: int64(userID),
+		Ref_ID:  refID,
+		User_ID: int64(userId),
 	})
 
 	if err != nil {
-		log.Printf("unable to do payment for %v err: %v", email, err.Error())
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
 		})
@@ -138,8 +125,8 @@ func AdvancePayment(ctx *gin.Context, client pb.UserClient) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("%v offline booking success", email),
-		"data":    response,
+		"Status":  http.StatusCreated,
+		"Message": fmt.Sprintf("%v offline booking success", email),
+		"Data":    response,
 	})
 }

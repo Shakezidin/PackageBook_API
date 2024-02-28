@@ -2,80 +2,74 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
-	pb "github.com/Shakezidin/pkg/user/pb"
+	pb "github.com/Shakezidin/pkg/user/userpb"
 	"github.com/gin-gonic/gin"
 )
 
+// ViewDestination retrieves destination details.
 func ViewDestination(ctx *gin.Context, client pb.UserClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
+	destinationIDStr := ctx.GetHeader("id")
+	destinationID, err := strconv.Atoi(destinationIDStr)
 	if err != nil {
-		fmt.Println("destination ID missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Error":  "Destination ID missing",
 		})
 		return
 	}
 
 	var ctxt = context.Background()
 	response, err := client.UserViewDestination(ctxt, &pb.UserView{
-		Id: int64(packageId),
+		ID: int64(destinationID),
 	})
 
 	if err != nil {
-		log.Printf("destination fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("destination fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Destination fetched successfully",
+		"Data":    response,
 	})
 }
 
+// ViewActivity retrieves activity details.
 func ViewActivity(ctx *gin.Context, client pb.UserClient) {
-	activityIdStr := ctx.GetHeader("id")
-	activityId, err := strconv.Atoi(activityIdStr)
+	activityIDStr := ctx.GetHeader("id")
+	activityID, err := strconv.Atoi(activityIDStr)
 
 	if err != nil {
-		fmt.Println("destination missing")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Error":  "activity ID missing",
 		})
 		return
 	}
 
 	var ctxt = context.Background()
 	response, err := client.UserViewActivity(ctxt, &pb.UserView{
-		Id: int64(activityId),
+		ID: int64(activityID),
 	})
 
 	if err != nil {
-		log.Printf("activity fetching  error", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
-		"data":    response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "Activity fetched successfully",
+		"Data":    response,
 	})
 }

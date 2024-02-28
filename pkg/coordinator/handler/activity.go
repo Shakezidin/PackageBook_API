@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -13,30 +12,34 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// AddActivity handles the addition of a new activity by the coordinator.
 func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 	var activity dto.AddActivities
 
-	destinationIdStr := ctx.GetHeader("id")
-	destinationId, err := strconv.Atoi(destinationIdStr)
+	// Retrieve destination ID from header
+	destinationIDStr := ctx.GetHeader("id")
+	destinationID, err := strconv.Atoi(destinationIDStr)
 	if err != nil {
-		fmt.Println("packageId missing")
+		// Return error response if destination ID is missing or invalid
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Destination ID missing or invalid",
 		})
 		return
 	}
 
+	// Bind JSON data to activity struct
 	if err := ctx.BindJSON(&activity); err != nil {
-		log.Printf("error binding JSON")
+
+		// Return error response if JSON data is invalid
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Invalid JSON data",
 		})
 		return
 	}
+
+	// Validate the activity struct
 	validate := validator.New()
 	err = validate.Struct(activity)
 	if err != nil {
@@ -44,7 +47,6 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 			"status": http.StatusBadRequest,
 		})
 		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
 			})
@@ -52,20 +54,21 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	var ctxt = context.Background()
+	// Create a background context
+	ctxt := context.Background()
+	// Call gRPC service to add activity
 	response, err := client.CoordinatorAddActivity(ctxt, &cpb.Activity{
-		Activityname:  activity.ActivityName,
-		Description:   activity.Description,
-		Location:      activity.Location,
-		ActivityType:  activity.ActivityType,
-		Amount:        int64(activity.Price),
-		Date:          activity.Date,
-		Time:          activity.Time,
-		DestinationId: int64(destinationId),
+		Activity_Name:  activity.ActivityName,
+		Description:    activity.Description,
+		Location:       activity.Location,
+		Activity_Type:  activity.ActivityType,
+		Amount:         int64(activity.Price),
+		Date:           activity.Date,
+		Time:           activity.Time,
+		Destination_ID: int64(destinationID),
 	})
 
 	if err != nil {
-		log.Printf("activity %s creattion error", activity.ActivityName, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -73,33 +76,35 @@ func AddActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	// Return success response with created activity data
+	ctx.JSON(http.StatusCreated, gin.H{
+		"Status": http.StatusCreated,
+		"Data":   response,
 	})
 }
 
+// ViewActivity fetches a specific activity by its ID.
 func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
-	packageIdStr := ctx.GetHeader("id")
-	packageId, err := strconv.Atoi(packageIdStr)
-
+	// Retrieve activity ID from header
+	activityIDStr := ctx.GetHeader("id")
+	activityID, err := strconv.Atoi(activityIDStr)
 	if err != nil {
-		fmt.Println("activity ID missing")
+		// Return error response if activity ID is missing or invalid
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Activity ID missing or invalid",
 		})
 		return
 	}
 
-	var ctxt = context.Background()
+	// Create a background context
+	ctxt := context.Background()
+	// Call gRPC service to fetch activity by ID
 	response, err := client.CoordinatorViewActivity(ctxt, &cpb.View{
-		Id: int64(packageId),
+		ID: int64(activityID),
 	})
 
 	if err != nil {
-		log.Printf("error while fetching activity", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"error":  err.Error(),
@@ -107,9 +112,10 @@ func ViewActivity(ctx *gin.Context, client cpb.CoordinatorClient) {
 		return
 	}
 
+	// Return success response with fetched activity data
 	ctx.JSON(200, gin.H{
 		"status":  http.StatusAccepted,
-		"message": fmt.Sprintf("activity fetched succesfully"),
+		"message": "activity fetched succesfully",
 		"data":    response,
 	})
 }

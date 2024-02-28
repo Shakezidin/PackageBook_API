@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Shakezidin/middleware"
@@ -14,18 +14,17 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// ForgetPassword initiates the process of resetting a user's password.
 func ForgetPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-	var frgtpswrd dto.ForgetPassword
 
+	var frgtpswrd dto.ForgetPassword
 	if err := ctx.BindJSON(&frgtpswrd); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error binding JSON",
 		})
 		return
 	}
@@ -33,15 +32,7 @@ func ForgetPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	validate := validator.New()
 	err := validate.Struct(frgtpswrd)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-		})
-		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
-			})
-		}
+		handleValidationError(ctx, err)
 		return
 	}
 
@@ -50,32 +41,30 @@ func ForgetPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	})
 
 	if err != nil {
-		log.Printf("error senting otp in user %v err: %v", frgtpswrd.Phone, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	ctx.JSON(http.StatusAccepted, gin.H{
+		"Status": http.StatusAccepted,
+		"Data":   response,
 	})
 }
 
+// ForgetPasswordVerify verifies the OTP sent to the user for password reset.
 func ForgetPasswordVerify(ctx *gin.Context, client cpb.CoordinatorClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-	var otp dto.PswrdOtp
 
+	var otp dto.PswrdOtp
 	if err := ctx.BindJSON(&otp); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error binding JSON",
 		})
 		return
 	}
@@ -83,50 +72,40 @@ func ForgetPasswordVerify(ctx *gin.Context, client cpb.CoordinatorClient) {
 	validate := validator.New()
 	err := validate.Struct(otp)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-		})
-		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
-			})
-		}
+		handleValidationError(ctx, err)
 		return
 	}
 
 	response, err := client.CoordinatorForgetPasswordVerify(cont, &cpb.ForgetPasswordVerify{
-		Otp:   otp.OTP,
+		OTP:   otp.OTP,
 		Phone: otp.Phone,
 	})
 
 	if err != nil {
-		log.Printf("error senting otp in phone %v err: %v", otp.Phone, err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	ctx.JSON(http.StatusAccepted, gin.H{
+		"Status": http.StatusAccepted,
+		"Data":   response,
 	})
 }
 
+// NewPassword sets the new password after successful verification of OTP.
 func NewPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	timeout := time.Second * 1000
 	cont, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
-	var newpassword dto.NewChange
 
+	var newpassword dto.NewChange
 	if err := ctx.BindJSON(&newpassword); err != nil {
-		log.Printf("error binding JSON")
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
-			"msg":    "error",
+			"Status": http.StatusBadRequest,
+			"Error":  "Error binding JSON",
 		})
 		return
 	}
@@ -134,53 +113,84 @@ func NewPassword(ctx *gin.Context, client cpb.CoordinatorClient) {
 	validate := validator.New()
 	err := validate.Struct(newpassword)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-		})
-		for _, e := range err.(validator.ValidationErrors) {
-			log.Printf("struct validation errors %v, %v", e.Field(), e.Tag())
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"error": fmt.Sprintf("error in field %v, error: %v", e.Field(), e.Tag()),
-			})
-		}
+		handleValidationError(ctx, err)
 		return
 	}
 
 	_, userId, err := middleware.ValidateToken(ctx, "coordinator")
 	if err != nil {
-		fmt.Println("tocken validation error")
-		ctx.JSON(200, gin.H{
-			"status": http.StatusAccepted,
-			"data":   "tocken validation error",
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  "Token validation error",
 		})
 		return
 	}
 
 	if newpassword.ConfirmPassword != newpassword.NewPassword {
-		fmt.Println("password missmach")
-		ctx.JSON(200, gin.H{
-			"status": http.StatusAccepted,
-			"data":   "massword missmatch",
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  "Password mismatch",
 		})
 		return
 	}
 
 	response, err := client.CoordinatorNewPassword(cont, &cpb.Newpassword{
-		Newpassword: newpassword.NewPassword,
-		Id:          userId,
+		New_Password: newpassword.NewPassword,
+		ID:          userId,
 	})
 
 	if err != nil {
-		log.Printf("error setting new password err: %v", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"error":  err.Error(),
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
 		})
 		return
 	}
 
-	ctx.JSON(200, gin.H{
-		"status": http.StatusAccepted,
-		"data":   response,
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status": http.StatusOK,
+		"Data":   response,
 	})
+}
+
+// ViewDashboard retrieves the dashboard data for a coordinator.
+func ViewDashboard(ctx *gin.Context, client cpb.CoordinatorClient) {
+	_, id, err := middleware.ValidateToken(ctx, "coordinator")
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
+		})
+		return
+	}
+
+	Id, _ := strconv.Atoi(id)
+	response, err := client.ViewDashboard(ctx, &cpb.View{
+		ID: int64(Id),
+	})
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
+			"Error":  err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"Status": http.StatusOK,
+		"Data":   response,
+	})
+}
+
+// handleValidationError handles validation errors.
+func handleValidationError(ctx *gin.Context, err error) {
+	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"Status": http.StatusBadRequest,
+	})
+	for _, e := range err.(validator.ValidationErrors) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Error": fmt.Sprintf("Error in field %v, error: %v", e.Field(), e.Tag()),
+		})
+	}
 }

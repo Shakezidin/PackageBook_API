@@ -1,0 +1,251 @@
+syntax ="proto3";
+
+package userpb;
+
+option go_package = ".";
+
+service User {
+    rpc UserLoginRequest(UserLogin) returns (UserLoginResponse);
+    rpc UserSignupRequest(UserSignup) returns(UserResponse);
+    rpc UserSignupVerifyRequest(UserVerify)returns(UserResponse);
+    rpc UserForgetPassword(UserForget_Password) returns(UserResponse);
+    rpc UserForgetPasswordVerify(UserForget_PasswordVerify)returns(UserResponse);
+    rpc UserNewPassword(UserNew_Password)returns(UserResponse);
+    rpc UserProfileUpdate(UserSignup)returns(UserResponse);
+    rpc UserViewDestination(UserView)returns(UserDestination);
+    rpc UserViewActivity(UserView)returns(UserActivity);
+    rpc UserViewCategories(UserView)returns(UserCategories);
+    rpc UserSearchPackage(UserSearch)returns(UserPackages);
+    rpc UserFilterPackage(UserFilter)returns(UserPackages);
+    rpc UserViewPackage(UserView)returns(UserPackage);
+    rpc UserViewFoodMenu(UserView)returns(UserFoodMenus);
+    rpc UserTravellerDetails(UserTravellerRequest)returns(UserTravellerResponse);
+    rpc UserOfflineBooking(UserBooking)returns(UserBookingResponse);
+    rpc UserViewPackages (UserView)returns(UserPackages);
+    rpc UserOnlinePayment(UserBooking)returns(UserOnlinePaymentResponse);
+    rpc UserPaymentConfirmed(UserPaymentConfirmedRequest)returns(UserBookingResponse);
+    rpc UserViewHistory(UserView)returns(UserHistories);
+    rpc UserViewBooking(UserView)returns(UserHistory);
+    rpc UserCancelBooking(UserView)returns(UserResponse);
+    rpc UserRefreshToken(TokenData)returns(UserLoginResponse);
+}
+
+message TokenData{
+    string Role = 1;
+    string Email = 2;
+    string ID = 3;
+}
+
+message UserHistories{
+    repeated UserHistory Histories = 1;
+}
+
+message UserHistory{
+    int64 ID = 1;
+    string Payment_Mode = 2;
+    string Booking_Status = 3;
+    string Cancelled_Status = 4;
+    int64  Total_Price = 5;
+    int64  User_ID = 6;
+    string Booking_ID = 7;
+    string Book_Date = 8;
+    string Start_Date = 9;
+    repeated UserTravellerDetails Travellers = 10;
+    int64 Paid_Amount = 11;
+}
+
+message UserPaymentConfirmedRequest{
+    string Email = 1;
+    string Reference_ID = 2;
+    string Payment_ID = 3;
+    string UserID = 4;
+    string Order_ID = 5;
+    string Signature = 6;
+    string Total = 7;
+}
+
+message UserFilter {
+    int64 Page = 1;
+    string Departure_Time = 2;
+    int64 Min_Price = 3;
+    int64 Max_Price = 4;
+    int64 Category_ID = 5;
+    string Order_By = 6;
+    bool Status = 7;
+}
+
+message UserOnlinePaymentResponse {
+    int32 User_ID = 1;
+    float Total_Fare = 2;
+    string Booking_Reference = 3;
+    string Email = 4;
+    string Order_ID = 5;
+}
+
+message UserBookingResponse{
+    string Status = 1;
+    string Booking_ID = 2;
+}
+
+message UserBooking{
+    string Ref_ID = 1;
+    int64 User_ID = 2;
+    string Type = 3;
+}
+
+message UserTravellerResponse {
+    string Status = 1;
+    int64 Package_Price = 2;
+    int64 Activity_Total_Price = 3;
+    int64 Total_Price = 4;
+    int64 Advance_Amount = 5;
+    string Ref_ID = 6;
+}
+
+message UserTravellerDetails {
+    string Name = 1;
+    string Age = 2;
+    string Gender = 3;
+    repeated string Activity_ID = 4;
+}
+  
+message UserTravellerRequest {
+    repeated UserTravellerDetails Traveller_Details = 1;
+    string User_ID = 2;
+    string Package_ID = 3;
+}
+
+message UserPackages{
+    repeated UserPackage Packages = 1;
+}
+
+message UserSearch{
+    int64 Category_ID = 1;
+    int64 Traveler_Count = 2;
+    string Pickup_Place = 3;
+    string Final_Destination = 4;
+    string Date = 5;
+    int64 Page = 6;
+    string End_Date = 7;
+    int64 Max_Destination = 8;
+    repeated string Destination = 9;
+}
+
+message UserCategories{
+    repeated UserCategory Categories = 1;
+}
+
+message UserNew_Password{
+    string New_Password = 1;
+    string ID = 2;
+}
+
+message UserForget_PasswordVerify{
+    string OTP = 1;
+    string Phone = 2;
+}
+
+message UserForget_Password{
+    string Phone =1;
+}
+
+message UserCategory{
+    int64 Category_ID =1;
+    string Category_Name = 2;
+}
+
+message UserFoodMenus{
+    repeated UserFoodMenu Food_Menus = 1;
+}
+
+message UserFoodMenu {
+    int64  Food_Menu_ID = 1;
+    int64  Package_ID = 2;
+    string Breakfast = 3;
+    string Lunch     = 4;
+    string Dinner    = 5;  
+    string Date      = 6;  
+}
+
+message UserActivity{
+    int64  Activity_ID = 1;
+    string Activity_Name = 2;
+    string Description = 3;
+    string Location = 4;
+    string Activity_Type = 5;
+    int64  Amount = 6;
+    string Date = 7;
+    string Time = 8;
+    int64  Destination_ID = 9;
+}
+
+message UserDestination{
+    int64  Destination_ID = 1;
+    string Destination_Name = 2;
+    string Description = 3;
+    int64  Min_Price = 4;
+    int64  Max_Capacity = 5;
+    string Image = 6;
+    repeated UserActivity Activity = 7;
+    int64  Package_ID = 8;
+    string Transportation_Mode = 9;
+    string Arrival_Location = 10;
+}
+
+message UserPackage{
+    int64  Package_ID = 1;
+    string Package_Name = 2;
+    int64  Coordinator_ID = 3;
+    string Start_Location = 4;
+    int64  Available_Space = 5;
+    string Start_Date = 6;
+    string Start_Time = 7;
+    string End_Date = 8;
+    int64  Price = 9;
+    string Image = 10;
+    int64  Destination_Count = 11;
+    string Destination = 12;
+    string Description = 13;
+    int64  Max_Capacity = 14;
+    int64  Category_ID = 15;  
+    UserCategory Category = 16;
+    repeated UserDestination Destinations = 17;
+}
+
+message UserView{
+    int64 ID = 1;
+    string Status = 2;
+    int64 Page = 3;
+    int64 User_ID = 4;
+}
+
+message UserLogin{
+    string Email = 1;
+    string Password = 2;
+    string Role = 3;
+}
+
+message UserLoginResponse{
+    string Token = 1;
+    string Refresh_Token = 2;
+}
+
+message UserSignup{
+    string Name =1;
+    string Email = 2;
+    string Phone = 3;
+    string Password = 4;
+    string Role = 5;
+    int64  ID = 6;
+}
+
+message UserResponse{
+    string Status = 1;
+    string Message = 2;
+    int64  ID = 3;
+}
+
+message UserVerify{
+    int32 OTP =1;
+    string Email = 2;
+}

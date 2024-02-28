@@ -8,6 +8,7 @@ import (
 	"github.com/Shakezidin/pkg/coordinator"
 	"github.com/Shakezidin/pkg/server"
 	"github.com/Shakezidin/pkg/user"
+	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	}
 
 	server := server.Server()
+	server.R.Use(cors.Default())
 	server.R.LoadHTMLGlob("../../templates/*")
 	admin.NewAdminRoutes(server.R, *config)
 	coordinator.NewCoordinatorRoute(server.R, *config)
